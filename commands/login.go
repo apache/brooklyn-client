@@ -20,8 +20,8 @@ func NewLogin(network *net.Network) (cmd *Login){
 func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "login",
-		Description: "",
-		Usage:       "",
+		Description: "login to brooklyn",
+		Usage:       "BROOKLYN_NAME login",
 		Flags: []cli.Flag{},
 	}
 }	

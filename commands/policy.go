@@ -22,7 +22,7 @@ func (cmd *Policy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "policy",
 		Description: "show the status of a policy for an application and entity",
-		Usage:       "",
+		Usage:       "BROOKLYN_NAME policy APPLICATION ENITITY POLICY",
 		Flags: []cli.Flag{},
 	}
 }	

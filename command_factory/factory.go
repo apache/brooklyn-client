@@ -21,6 +21,7 @@ func NewFactory(network *net.Network) (factory concreteFactory) {
 	factory.cmdsByName = make(map[string]command.Command)
 	factory.cmdsByName["login"] = commands.NewLogin(network)
 	factory.cmdsByName["tree"] = commands.NewTree(network)
+	factory.cmdsByName["entities"] = commands.NewEntities(network)
 	factory.cmdsByName["catalog"] = commands.NewCatalog(network)
 	factory.cmdsByName["version"] = commands.NewVersion(network)
 	factory.cmdsByName["create"] = commands.NewCreate(network)
@@ -32,6 +33,7 @@ func NewFactory(network *net.Network) (factory concreteFactory) {
 	factory.cmdsByName["policy"] = commands.NewPolicy(network)
 	factory.cmdsByName["config"] = commands.NewConfig(network)
 	factory.cmdsByName["locations"] = commands.NewLocations(network)
+	factory.cmdsByName["activities"] = commands.NewActivities(network)
 	return factory
 }
 

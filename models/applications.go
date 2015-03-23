@@ -48,14 +48,6 @@ type ApplicationSpec struct {
 
 type Status string
 
-type EntitySummary struct {
-	CatalogItemId string         `json:"links"`
-	Name          string         `json:"name"`
-	Links         map[string]URI `json:"links"`
-	Id            string         `json:"id"`
-	Type          string         `json:"type"`
-}
-
 type LinkWithMetadata struct {
 }
 

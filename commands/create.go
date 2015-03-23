@@ -22,7 +22,7 @@ func (cmd *Create) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "create",
 		Description: "create a new brooklyn application from the supplied YAML",
-		Usage:       "",
+		Usage:       "BROOKLYN_NAME create FILEPATH",
 		Flags: []cli.Flag{},
 	}
 }	

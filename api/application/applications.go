@@ -26,7 +26,7 @@ func Tree(network *net.Network) []models.Tree {
 }
 
 func Application(network *net.Network, app string)  models.ApplicationSummary {
-	url := "/v1/applications/" + app
+	url := fmt.Sprintf("/v1/applications/%s", app)
 	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {

@@ -23,7 +23,7 @@ func (cmd *Effectors) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "effectors",
 		Description: "show the list of effectors for an application and entity",
-		Usage:       "",
+		Usage:       "BROOKLYN_NAME effectors APPLICATION ENITITY",
 		Flags: []cli.Flag{},
 	}
 }	

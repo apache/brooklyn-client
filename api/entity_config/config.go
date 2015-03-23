@@ -8,8 +8,8 @@ import(
 )
 
 func ConfigList(network *net.Network, application, entity string) []models.ConfigSummary {
-	url := "/v1/applications/" + application + "/entities/"+ entity + "/config"
-	req := network.NewGetRequest(url)
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config", application, entity)
+    req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
@@ -24,7 +24,7 @@ func ConfigList(network *net.Network, application, entity string) []models.Confi
 }
 
 func ConfigValue(network *net.Network, application, entity, config string) string {
-	url := "/v1/applications/" + application + "/entities/"+ entity + "/config/" + config
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
 	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
@@ -32,4 +32,20 @@ func ConfigValue(network *net.Network, application, entity, config string) strin
 	}
 
 	return string(body)
+}
+
+func ConfigCurrentState(network *net.Network, application, entity string) map[string]interface{} {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/current-state", application, entity)
+    req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	
+	var currentState map[string]interface{}
+	err = json.Unmarshal(body, &currentState)
+	if err != nil{
+		fmt.Println(err)
+	}
+	return currentState
 }

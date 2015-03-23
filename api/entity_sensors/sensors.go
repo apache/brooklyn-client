@@ -8,8 +8,8 @@ import(
 )
 
 func SensorList(network *net.Network, application, entity string) []models.SensorSummary {
-	url := "/v1/applications/" + application + "/entities/"+ entity + "/sensors"
-	req := network.NewGetRequest(url)
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors", application, entity)
+    req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
@@ -24,8 +24,8 @@ func SensorList(network *net.Network, application, entity string) []models.Senso
 }
 
 func SensorValue(network *net.Network, application, entity, sensor string) string {
-	url := "/v1/applications/" + application + "/entities/"+ entity + "/sensors/" + sensor
-	req := network.NewGetRequest(url)
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
+    req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)

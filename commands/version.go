@@ -21,8 +21,8 @@ func NewVersion(network *net.Network) (cmd *Version){
 func (cmd *Version) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "version",
-		Description: "",
-		Usage:       "",
+		Description: "display the version of the connected Brooklyn",
+		Usage:       "BROOKLYN_NAME version",
 		Flags: []cli.Flag{},
 	}
 }	

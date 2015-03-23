@@ -8,8 +8,8 @@ import(
 )
 
 func EffectorList(network *net.Network, application, entity string) []models.EffectorSummary {
-	url := "/v1/applications/" + application + "/entities/"+ entity + "/effectors"
-	req := network.NewGetRequest(url)
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/effectors", application, entity)
+    req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)

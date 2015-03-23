@@ -8,8 +8,8 @@ import(
 )
 
 func PolicyList(network *net.Network, application, entity string) []models.PolicySummary {
-	url := "/v1/applications/" + application + "/entities/"+ entity + "/policies"
-	req := network.NewGetRequest(url)
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies", application, entity)
+    req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
@@ -24,8 +24,8 @@ func PolicyList(network *net.Network, application, entity string) []models.Polic
 }
 
 func PolicyStatus(network *net.Network, application, entity, policy string) string {
-	url := "/v1/applications/" + application + "/entities/"+ entity + "/policies/" + policy
-	req := network.NewGetRequest(url)
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s", application, entity, policy)
+    req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)

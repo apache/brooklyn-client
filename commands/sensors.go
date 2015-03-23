@@ -22,7 +22,7 @@ func (cmd *Sensors) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "sensors",
 		Description: "show the sensors for an application and entity",
-		Usage:       "",
+		Usage:       "BROOKLYN_NAME sensors APPLICATION ENTITY",
 		Flags: []cli.Flag{},
 	}
 }	
