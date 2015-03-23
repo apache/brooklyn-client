@@ -9,10 +9,10 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func Tree() []models.Tree {
-	url := "http://192.168.50.101:8081/v1/applications/tree"
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func Tree(network *net.Network) []models.Tree {
+	url := "/v1/applications/tree"
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -25,10 +25,10 @@ func Tree() []models.Tree {
 	return tree
 }
 
-func Application(app string)  models.ApplicationSummary {
-	url := "http://192.168.50.101:8081/v1/applications/" + app
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func Application(network *net.Network, app string)  models.ApplicationSummary {
+	url := "/v1/applications/" + app
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -41,16 +41,16 @@ func Application(app string)  models.ApplicationSummary {
 	return appSummary
 }
 
-func Create(filePath string) models.TaskSummary{
-	url := "http://192.168.50.101:8081/v1/applications"
+func Create(network *net.Network, filePath string) models.TaskSummary{
+	url := "/v1/applications"
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer file.Close()
-	req := net.NewPostRequest(url, file)
+	req := network.NewPostRequest(url, file)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	body, err := net.SendRequest(req)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -5,14 +5,16 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/api/locations"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/terminal"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Locations struct {
-	
+	network *net.Network
 }
 
-func NewLocations() (cmd *Locations){
+func NewLocations(network *net.Network) (cmd *Locations){
 	cmd = new(Locations)
+	cmd.network = network
 	return
 }
 
@@ -26,7 +28,7 @@ func (cmd *Locations) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Locations) Run(c *cli.Context) {
-	locationList := locations.LocationList()
+	locationList := locations.LocationList(cmd.network)
 	table := terminal.NewTable([]string{"Id", "Name", "Spec"})
 	for _, location := range locationList {
 		table.Add(location.Id, location.Name, location.Spec)

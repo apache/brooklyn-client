@@ -7,10 +7,10 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func LocationList() []models.LocationSummary {
-	url := "http://192.168.50.101:8081/v1/locations"
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func LocationList(network *net.Network,) []models.LocationSummary {
+	url := "/v1/locations"
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}

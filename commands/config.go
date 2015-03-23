@@ -5,14 +5,16 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/api/entity_config"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/terminal"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Config struct {
-	
+	network *net.Network
 }
 
-func NewConfig() (cmd *Config){
+func NewConfig(network *net.Network) (cmd *Config){
 	cmd = new(Config)
+	cmd.network = network
 	return
 }
 
@@ -26,10 +28,10 @@ func (cmd *Config) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Config) Run(c *cli.Context) {
-	config := entity_config.ConfigList(c.Args()[0], c.Args()[1])
+	config := entity_config.ConfigList(cmd.network, c.Args()[0], c.Args()[1])
 	table := terminal.NewTable([]string{"Key", "Value"})
 	for _, key := range config {
-		value := entity_config.ConfigValue(c.Args()[0], c.Args()[1], key.Name)
+		value := entity_config.ConfigValue(cmd.network, c.Args()[0], c.Args()[1], key.Name)
 		table.Add(key.Name, value)
 	}
 	table.Print()

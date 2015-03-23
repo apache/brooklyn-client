@@ -6,14 +6,16 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/api/application"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/models"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Tree struct {
-	
+	network *net.Network
 }
 
-func NewTree() (cmd *Tree){
+func NewTree(network *net.Network) (cmd *Tree){
 	cmd = new(Tree)
+	cmd.network = network
 	return
 }
 
@@ -27,7 +29,7 @@ func (cmd *Tree) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Tree) Run(c *cli.Context) {
-	trees := application.Tree()
+	trees := application.Tree(cmd.network)
 	cmd.printTrees(trees, "")
 }
 

@@ -7,21 +7,35 @@ import(
 	"fmt"
 )
 
-func NewRequest(method, path string, body io.Reader) *http.Request{
-	req, _ := http.NewRequest(method, path, body)
-	req.SetBasicAuth("brooklyn", "Sns4Hh9j7l")
+type Network struct {
+	BrooklynUrl string
+	BrooklynUser string
+	BrooklynPass string
+}
+
+func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string) (net *Network) {
+	net = new(Network)
+	net.BrooklynUrl = brooklynUrl
+	net.BrooklynUser = brooklynUser
+	net.BrooklynPass = brooklynPass
+	return
+}
+
+func (net *Network) NewRequest(method, path string, body io.Reader) *http.Request{
+	req, _ := http.NewRequest(method, net.BrooklynUrl + path, body)
+	req.SetBasicAuth(net.BrooklynUser, net.BrooklynPass)
 	return req
 }
 
-func NewGetRequest(url string) *http.Request{
-	return NewRequest("GET", url, nil)
+func (net *Network) NewGetRequest(url string) *http.Request{
+	return net.NewRequest("GET", url, nil)
 }
 
-func NewPostRequest(url string, body io.Reader) *http.Request{
-	return NewRequest("POST", url, body)
+func (net *Network) NewPostRequest(url string, body io.Reader) *http.Request{
+	return net.NewRequest("POST", url, body)
 }
 
-func SendRequest(req *http.Request) ([]byte, error) {
+func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	defer resp.Body.Close()

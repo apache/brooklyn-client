@@ -7,10 +7,10 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func PolicyList(application, entity string) []models.PolicySummary {
-	url := "http://192.168.50.101:8081/v1/applications/" + application + "/entities/"+ entity + "/policies"
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func PolicyList(network *net.Network, application, entity string) []models.PolicySummary {
+	url := "/v1/applications/" + application + "/entities/"+ entity + "/policies"
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -23,10 +23,10 @@ func PolicyList(application, entity string) []models.PolicySummary {
 	return policyList
 }
 
-func PolicyStatus(application, entity, policy string) string {
-	url := "http://192.168.50.101:8081/v1/applications/" + application + "/entities/"+ entity + "/policies/" + policy
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func PolicyStatus(network *net.Network, application, entity, policy string) string {
+	url := "/v1/applications/" + application + "/entities/"+ entity + "/policies/" + policy
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}

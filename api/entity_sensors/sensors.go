@@ -7,10 +7,10 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func SensorList(application, entity string) []models.SensorSummary {
-	url := "http://192.168.50.101:8081/v1/applications/" + application + "/entities/"+ entity + "/sensors"
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func SensorList(network *net.Network, application, entity string) []models.SensorSummary {
+	url := "/v1/applications/" + application + "/entities/"+ entity + "/sensors"
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -23,10 +23,10 @@ func SensorList(application, entity string) []models.SensorSummary {
 	return sensorList
 }
 
-func SensorValue(application, entity, sensor string) string {
-	url := "http://192.168.50.101:8081/v1/applications/" + application + "/entities/"+ entity + "/sensors/" + sensor
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func SensorValue(network *net.Network, application, entity, sensor string) string {
+	url := "/v1/applications/" + application + "/entities/"+ entity + "/sensors/" + sensor
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}

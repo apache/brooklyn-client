@@ -4,14 +4,16 @@ import(
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Login struct {
-	
+	network *net.Network
 }
 
-func NewLogin() (cmd *Login){
+func NewLogin(network *net.Network) (cmd *Login){
 	cmd = new(Login)
+	cmd.network = network
 	return
 }
 

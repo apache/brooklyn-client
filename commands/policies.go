@@ -5,14 +5,16 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/api/entity_policies"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/terminal"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Policies struct {
-	
+	network *net.Network
 }
 
-func NewPolicies() (cmd *Policies){
+func NewPolicies(network *net.Network) (cmd *Policies){
 	cmd = new(Policies)
+	cmd.network = network
 	return
 }
 
@@ -26,7 +28,7 @@ func (cmd *Policies) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Policies) Run(c *cli.Context) {
-	policies := entity_policies.PolicyList(c.Args()[0], c.Args()[1])
+	policies := entity_policies.PolicyList(cmd.network, c.Args()[0], c.Args()[1])
 	table := terminal.NewTable([]string{"Name", "State"})
 	for _, policy := range policies {
 		table.Add(policy.Name, string(policy.State))

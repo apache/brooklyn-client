@@ -6,14 +6,16 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/api/application"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/terminal"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Application struct {
-	
+	network *net.Network
 }
 
-func NewApplication() (cmd *Application){
+func NewApplication(network *net.Network) (cmd *Application){
 	cmd = new(Application)
+	cmd.network = network
 	return
 }
 
@@ -27,7 +29,7 @@ func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Application) Run(c *cli.Context) {
-	application := application.Application(c.Args()[0])
+	application := application.Application(cmd.network, c.Args()[0])
 	
 	table := terminal.NewTable([]string{"Name", "Id", "Status", "Location"})
 	table.Add(application.Spec.Name, application.Id, string(application.Status), strings.Join(application.Spec.Locations, ", "))

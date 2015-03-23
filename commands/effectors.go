@@ -6,14 +6,16 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/api/entity_effectors"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/terminal"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Effectors struct {
-	
+	network *net.Network
 }
 
-func NewEffectors() (cmd *Effectors){
+func NewEffectors(network *net.Network) (cmd *Effectors){
 	cmd = new(Effectors)
+	cmd.network = network
 	return
 }
 
@@ -27,7 +29,7 @@ func (cmd *Effectors) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Effectors) Run(c *cli.Context) {
-	effectors := entity_effectors.EffectorList(c.Args()[0], c.Args()[1])
+	effectors := entity_effectors.EffectorList(cmd.network, c.Args()[0], c.Args()[1])
 	table := terminal.NewTable([]string{"Name", "Description", "Parameters"})
 	for _, effector := range effectors {
 		var parameters []string

@@ -5,6 +5,7 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/command"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/commands"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Factory interface {
@@ -16,21 +17,21 @@ type concreteFactory struct {
 	cmdsByName map[string]command.Command
 }
 
-func NewFactory() (factory concreteFactory) {
+func NewFactory(network *net.Network) (factory concreteFactory) {
 	factory.cmdsByName = make(map[string]command.Command)
-	factory.cmdsByName["login"] = commands.NewLogin()
-	factory.cmdsByName["tree"] = commands.NewTree()
-	factory.cmdsByName["catalog"] = commands.NewCatalog()
-	factory.cmdsByName["version"] = commands.NewVersion()
-	factory.cmdsByName["create"] = commands.NewCreate()
-	factory.cmdsByName["application"] = commands.NewApplication()
-	factory.cmdsByName["sensors"] = commands.NewSensors()
-	factory.cmdsByName["sensor"] = commands.NewSensor()
-	factory.cmdsByName["effectors"] = commands.NewEffectors()
-	factory.cmdsByName["policies"] = commands.NewPolicies()
-	factory.cmdsByName["policy"] = commands.NewPolicy()
-	factory.cmdsByName["config"] = commands.NewConfig()
-	factory.cmdsByName["locations"] = commands.NewLocations()
+	factory.cmdsByName["login"] = commands.NewLogin(network)
+	factory.cmdsByName["tree"] = commands.NewTree(network)
+	factory.cmdsByName["catalog"] = commands.NewCatalog(network)
+	factory.cmdsByName["version"] = commands.NewVersion(network)
+	factory.cmdsByName["create"] = commands.NewCreate(network)
+	factory.cmdsByName["application"] = commands.NewApplication(network)
+	factory.cmdsByName["sensors"] = commands.NewSensors(network)
+	factory.cmdsByName["sensor"] = commands.NewSensor(network)
+	factory.cmdsByName["effectors"] = commands.NewEffectors(network)
+	factory.cmdsByName["policies"] = commands.NewPolicies(network)
+	factory.cmdsByName["policy"] = commands.NewPolicy(network)
+	factory.cmdsByName["config"] = commands.NewConfig(network)
+	factory.cmdsByName["locations"] = commands.NewLocations(network)
 	return factory
 }
 

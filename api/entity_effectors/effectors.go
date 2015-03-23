@@ -7,10 +7,10 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func EffectorList(application, entity string) []models.EffectorSummary {
-	url := "http://192.168.50.101:8081/v1/applications/" + application + "/entities/"+ entity + "/effectors"
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func EffectorList(network *net.Network, application, entity string) []models.EffectorSummary {
+	url := "/v1/applications/" + application + "/entities/"+ entity + "/effectors"
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}

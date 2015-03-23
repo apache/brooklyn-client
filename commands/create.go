@@ -5,14 +5,16 @@ import(
 	"github.com/codegangsta/cli"
 	"github.com/robertgmoss/brooklyn-cli/api/application"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Create struct {
-	
+	network *net.Network
 }
 
-func NewCreate() (cmd *Create){
+func NewCreate(network *net.Network) (cmd *Create){
 	cmd = new(Create)
+	cmd.network = network
 	return
 }
 
@@ -26,6 +28,6 @@ func (cmd *Create) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Create) Run(c *cli.Context) {
-	create := application.Create(c.Args()[0])
+	create := application.Create(cmd.network, c.Args()[0])
 	fmt.Println(create)
 }

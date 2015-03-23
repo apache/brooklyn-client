@@ -7,10 +7,10 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func ConfigList(application, entity string) []models.ConfigSummary {
-	url := "http://192.168.50.101:8081/v1/applications/" + application + "/entities/"+ entity + "/config"
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func ConfigList(network *net.Network, application, entity string) []models.ConfigSummary {
+	url := "/v1/applications/" + application + "/entities/"+ entity + "/config"
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -23,10 +23,10 @@ func ConfigList(application, entity string) []models.ConfigSummary {
 	return configList
 }
 
-func ConfigValue(application, entity, config string) string {
-	url := "http://192.168.50.101:8081/v1/applications/" + application + "/entities/"+ entity + "/config/" + config
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func ConfigValue(network *net.Network, application, entity, config string) string {
+	url := "/v1/applications/" + application + "/entities/"+ entity + "/config/" + config
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}

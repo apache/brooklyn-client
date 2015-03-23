@@ -5,14 +5,16 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/api/catalog"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/terminal"
+	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
 type Catalog struct {
-	
+	network *net.Network
 }
 
-func NewCatalog() (cmd *Catalog){
+func NewCatalog(network *net.Network) (cmd *Catalog){
 	cmd = new(Catalog)
+	cmd.network = network
 	return
 }
 
@@ -26,7 +28,7 @@ func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
 }	
 
 func (cmd *Catalog) Run(c *cli.Context) {
-	catalog := catalog.Catalog()
+	catalog := catalog.Catalog(cmd.network)
 	table := terminal.NewTable([]string{"Id", "Name", "Description"})
 	for _, app := range catalog {
 		table.Add(app.Id, app.Name, app.Description)

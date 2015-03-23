@@ -5,10 +5,10 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
-func Version() string{
-	url := "http://192.168.50.101:8081/v1/version"
-	req := net.NewGetRequest(url)
-	body, err := net.SendRequest(req)
+func Version(network *net.Network) string{
+	url := "/v1/version"
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
