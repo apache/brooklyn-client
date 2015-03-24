@@ -22,7 +22,7 @@ func NewApplication(network *net.Network) (cmd *Application){
 func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "application",
-		Description: "show the status and location of a running application",
+		Description: "Show the status and location of a running application",
 		Usage:       "BROOKLYN_NAME application APPLICATION",
 		Flags: []cli.Flag{},
 	}

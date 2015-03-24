@@ -8,27 +8,27 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
-type Entities struct {
+type Children struct {
 	network *net.Network
 }
 
-func NewEntities(network *net.Network) (cmd *Entities){
-	cmd = new(Entities)
+func NewChildren(network *net.Network) (cmd *Children){
+	cmd = new(Children)
 	cmd.network = network
 	return
 }
 
-func (cmd *Entities) Metadata() command_metadata.CommandMetadata {
+func (cmd *Children) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "entities",
-		Description: "Show the entites for an application",
-		Usage:       "BROOKLYN_NAME entities APPLICATION",
+		Name:        "entity-children",
+		Description: "Show the children of an application's entity",
+		Usage:       "BROOKLYN_NAME children APPLICATION ENTITY",
 		Flags: []cli.Flag{},
 	}
 }	
 
-func (cmd *Entities) Run(c *cli.Context) {
-	entityList := entities.EntityList(cmd.network, c.Args()[0])
+func (cmd *Children) Run(c *cli.Context) {
+	entityList := entities.Children(cmd.network, c.Args()[0], c.Args()[1])
 	table := terminal.NewTable([]string{"Id", "Name", "Type"})
 	for _, entity := range entityList {
 		table.Add(entity.Id, entity.Name, entity.Type)

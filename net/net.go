@@ -35,6 +35,10 @@ func (net *Network) NewPostRequest(url string, body io.Reader) *http.Request{
 	return net.NewRequest("POST", url, body)
 }
 
+func (net *Network) NewDeleteRequest(url string) *http.Request{
+	return net.NewRequest("DELETE", url, nil)
+}
+
 func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)

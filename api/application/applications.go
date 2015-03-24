@@ -41,6 +41,22 @@ func Application(network *net.Network, app string)  models.ApplicationSummary {
 	return appSummary
 }
 
+func Applications(network *net.Network)  []models.ApplicationSummary {
+	url := fmt.Sprintf("/v1/applications")
+	req := network.NewGetRequest(url)
+	body, err := network.SendRequest(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	
+	var appSummary []models.ApplicationSummary
+	err = json.Unmarshal(body, &appSummary)
+	if err != nil{
+		fmt.Println(err)
+	}
+	return appSummary
+}
+
 func Create(network *net.Network, filePath string) models.TaskSummary{
 	url := "/v1/applications"
 	file, err := os.Open(filepath.Clean(filePath))
@@ -50,6 +66,21 @@ func Create(network *net.Network, filePath string) models.TaskSummary{
 	defer file.Close()
 	req := network.NewPostRequest(url, file)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	body, err := network.SendRequest(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var response models.TaskSummary
+	err = json.Unmarshal(body, &response)
+	if err != nil{
+		fmt.Println(err)
+	}
+	return response
+}
+
+func Delete(network *net.Network, application string) models.TaskSummary{
+	url := fmt.Sprintf("/v1/applications/%s", application)
+	req := network.NewDeleteRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)

@@ -21,7 +21,7 @@ func NewSensors(network *net.Network) (cmd *Sensors){
 func (cmd *Sensors) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "sensors",
-		Description: "show the sensors for an application and entity",
+		Description: "Show the sensors for an application and entity",
 		Usage:       "BROOKLYN_NAME sensors APPLICATION ENTITY",
 		Flags: []cli.Flag{},
 	}

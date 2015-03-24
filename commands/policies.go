@@ -21,7 +21,7 @@ func NewPolicies(network *net.Network) (cmd *Policies){
 func (cmd *Policies) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "policies",
-		Description: "show the list of policies for an application and entity",
+		Description: "Show the list of policies for an application and entity",
 		Usage:       "BROOKLYN_NAME policies APPLICATION ENTITY",
 		Flags: []cli.Flag{},
 	}

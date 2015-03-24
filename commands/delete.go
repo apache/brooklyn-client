@@ -8,26 +8,26 @@ import(
 	"github.com/robertgmoss/brooklyn-cli/net"
 )
 
-type Create struct {
+type Delete struct {
 	network *net.Network
 }
 
-func NewCreate(network *net.Network) (cmd *Create){
-	cmd = new(Create)
+func NewDelete(network *net.Network) (cmd *Delete){
+	cmd = new(Delete)
 	cmd.network = network
 	return
 }
 
-func (cmd *Create) Metadata() command_metadata.CommandMetadata {
+func (cmd *Delete) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "create",
-		Description: "Create a new brooklyn application from the supplied YAML",
+		Name:        "delete",
+		Description: "Delete a brooklyn application",
 		Usage:       "BROOKLYN_NAME create FILEPATH",
 		Flags: []cli.Flag{},
 	}
 }	
 
-func (cmd *Create) Run(c *cli.Context) {
-	create := application.Create(cmd.network, c.Args()[0])
-	fmt.Println(create)
+func (cmd *Delete) Run(c *cli.Context) {
+	del := application.Delete(cmd.network, c.Args()[0])
+	fmt.Println(del)
 }

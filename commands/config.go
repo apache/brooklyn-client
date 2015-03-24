@@ -22,7 +22,7 @@ func NewConfig(network *net.Network) (cmd *Config){
 func (cmd *Config) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "config",
-		Description: "show the config for an application and entity",
+		Description: "Show the config for an application and entity",
 		Usage:       "BROOKLYN_NAME config APPLICATION ENTITY",
 		Flags: []cli.Flag{},
 	}
