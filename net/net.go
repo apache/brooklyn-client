@@ -1,14 +1,14 @@
 package net
 
-import(
-	"net/http"
-	"io/ioutil"
-	"io"
+import (
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
 )
 
 type Network struct {
-	BrooklynUrl string
+	BrooklynUrl  string
 	BrooklynUser string
 	BrooklynPass string
 }
@@ -21,21 +21,21 @@ func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string) (net *Network) {
 	return
 }
 
-func (net *Network) NewRequest(method, path string, body io.Reader) *http.Request{
-	req, _ := http.NewRequest(method, net.BrooklynUrl + path, body)
+func (net *Network) NewRequest(method, path string, body io.Reader) *http.Request {
+	req, _ := http.NewRequest(method, net.BrooklynUrl+path, body)
 	req.SetBasicAuth(net.BrooklynUser, net.BrooklynPass)
 	return req
 }
 
-func (net *Network) NewGetRequest(url string) *http.Request{
+func (net *Network) NewGetRequest(url string) *http.Request {
 	return net.NewRequest("GET", url, nil)
 }
 
-func (net *Network) NewPostRequest(url string, body io.Reader) *http.Request{
+func (net *Network) NewPostRequest(url string, body io.Reader) *http.Request {
 	return net.NewRequest("POST", url, body)
 }
 
-func (net *Network) NewDeleteRequest(url string) *http.Request{
+func (net *Network) NewDeleteRequest(url string) *http.Request {
 	return net.NewRequest("DELETE", url, nil)
 }
 

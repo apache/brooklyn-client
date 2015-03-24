@@ -1,12 +1,12 @@
 package application
 
-import(
+import (
+	"encoding/json"
 	"fmt"
+	"github.com/robertgmoss/brooklyn-cli/models"
+	"github.com/robertgmoss/brooklyn-cli/net"
 	"os"
 	"path/filepath"
-	"encoding/json"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
 func Tree(network *net.Network) []models.Tree {
@@ -16,48 +16,48 @@ func Tree(network *net.Network) []models.Tree {
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	var tree []models.Tree
 	err = json.Unmarshal(body, &tree)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return tree
 }
 
-func Application(network *net.Network, app string)  models.ApplicationSummary {
+func Application(network *net.Network, app string) models.ApplicationSummary {
 	url := fmt.Sprintf("/v1/applications/%s", app)
 	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	var appSummary models.ApplicationSummary
 	err = json.Unmarshal(body, &appSummary)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return appSummary
 }
 
-func Applications(network *net.Network)  []models.ApplicationSummary {
+func Applications(network *net.Network) []models.ApplicationSummary {
 	url := fmt.Sprintf("/v1/applications")
 	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	var appSummary []models.ApplicationSummary
 	err = json.Unmarshal(body, &appSummary)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return appSummary
 }
 
-func Create(network *net.Network, filePath string) models.TaskSummary{
+func Create(network *net.Network, filePath string) models.TaskSummary {
 	url := "/v1/applications"
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
@@ -72,13 +72,13 @@ func Create(network *net.Network, filePath string) models.TaskSummary{
 	}
 	var response models.TaskSummary
 	err = json.Unmarshal(body, &response)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return response
 }
 
-func Delete(network *net.Network, application string) models.TaskSummary{
+func Delete(network *net.Network, application string) models.TaskSummary {
 	url := fmt.Sprintf("/v1/applications/%s", application)
 	req := network.NewDeleteRequest(url)
 	body, err := network.SendRequest(req)
@@ -87,7 +87,7 @@ func Delete(network *net.Network, application string) models.TaskSummary{
 	}
 	var response models.TaskSummary
 	err = json.Unmarshal(body, &response)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return response

@@ -1,6 +1,6 @@
 package command_factory
 
-import(
+import (
 	"errors"
 	"github.com/robertgmoss/brooklyn-cli/command"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"

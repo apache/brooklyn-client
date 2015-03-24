@@ -1,18 +1,18 @@
 package commands
 
-import(
+import (
 	"github.com/codegangsta/cli"
 	"github.com/robertgmoss/brooklyn-cli/api/entity_sensors"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
-	"github.com/robertgmoss/brooklyn-cli/terminal"
 	"github.com/robertgmoss/brooklyn-cli/net"
+	"github.com/robertgmoss/brooklyn-cli/terminal"
 )
 
 type Sensors struct {
 	network *net.Network
 }
 
-func NewSensors(network *net.Network) (cmd *Sensors){
+func NewSensors(network *net.Network) (cmd *Sensors) {
 	cmd = new(Sensors)
 	cmd.network = network
 	return
@@ -23,9 +23,9 @@ func (cmd *Sensors) Metadata() command_metadata.CommandMetadata {
 		Name:        "sensors",
 		Description: "Show the sensors for an application and entity",
 		Usage:       "BROOKLYN_NAME sensors APPLICATION ENTITY",
-		Flags: []cli.Flag{},
+		Flags:       []cli.Flag{},
 	}
-}	
+}
 
 func (cmd *Sensors) Run(c *cli.Context) {
 	sensors := entity_sensors.SensorList(cmd.network, c.Args()[0], c.Args()[1])

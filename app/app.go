@@ -2,14 +2,14 @@ package app
 
 import (
 	"fmt"
-	"strings"
 	"github.com/codegangsta/cli"
-	"github.com/robertgmoss/brooklyn-cli/command_runner"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
+	"github.com/robertgmoss/brooklyn-cli/command_runner"
+	"strings"
 )
 
 func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
-	
+
 	cli.AppHelpTemplate = appHelpTemplate()
 	cli.CommandHelpTemplate = commandHelpTemplate()
 	app = cli.NewApp()

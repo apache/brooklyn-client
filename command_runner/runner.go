@@ -1,6 +1,6 @@
 package command_runner
 
-import(
+import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/robertgmoss/brooklyn-cli/command_factory"
@@ -25,7 +25,7 @@ func (runner ConcreteRunner) RunCmdByName(cmdName string, c *cli.Context) error 
 		fmt.Println(err)
 		return err
 	}
-	
+
 	cmd.Run(c)
 	return nil
 }

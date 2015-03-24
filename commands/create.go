@@ -1,6 +1,6 @@
 package commands
 
-import(
+import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/robertgmoss/brooklyn-cli/api/application"
@@ -12,7 +12,7 @@ type Create struct {
 	network *net.Network
 }
 
-func NewCreate(network *net.Network) (cmd *Create){
+func NewCreate(network *net.Network) (cmd *Create) {
 	cmd = new(Create)
 	cmd.network = network
 	return
@@ -23,9 +23,9 @@ func (cmd *Create) Metadata() command_metadata.CommandMetadata {
 		Name:        "create",
 		Description: "Create a new brooklyn application from the supplied YAML",
 		Usage:       "BROOKLYN_NAME create FILEPATH",
-		Flags: []cli.Flag{},
+		Flags:       []cli.Flag{},
 	}
-}	
+}
 
 func (cmd *Create) Run(c *cli.Context) {
 	create := application.Create(cmd.network, c.Args()[0])

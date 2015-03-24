@@ -1,15 +1,15 @@
 package entities
 
-import(
+import (
+	"encoding/json"
 	"fmt"
+	"github.com/robertgmoss/brooklyn-cli/models"
+	"github.com/robertgmoss/brooklyn-cli/net"
 	"os"
 	"path/filepath"
-	"encoding/json"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func Spec(network *net.Network, application, entity string) string{
+func Spec(network *net.Network, application, entity string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/spec", application, entity)
 	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
@@ -21,15 +21,15 @@ func Spec(network *net.Network, application, entity string) string{
 
 func EntityList(network *net.Network, application string) []models.EntitySummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities", application)
-    req := network.NewGetRequest(url)
+	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	var entityList []models.EntitySummary
 	err = json.Unmarshal(body, &entityList)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return entityList
@@ -37,21 +37,21 @@ func EntityList(network *net.Network, application string) []models.EntitySummary
 
 func Children(network *net.Network, application, entity string) []models.EntitySummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
-    req := network.NewGetRequest(url)
+	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	var entityList []models.EntitySummary
 	err = json.Unmarshal(body, &entityList)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return entityList
 }
 
-func AddChildren(network *net.Network,application, entity, filePath string) models.TaskSummary {
+func AddChildren(network *net.Network, application, entity, filePath string) models.TaskSummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
@@ -64,10 +64,10 @@ func AddChildren(network *net.Network,application, entity, filePath string) mode
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	var response models.TaskSummary
 	err = json.Unmarshal(body, &response)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return response

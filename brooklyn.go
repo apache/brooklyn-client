@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
-	"path/filepath"
 	"github.com/robertgmoss/brooklyn-cli/app"
 	"github.com/robertgmoss/brooklyn-cli/command_factory"
 	"github.com/robertgmoss/brooklyn-cli/command_runner"
 	"github.com/robertgmoss/brooklyn-cli/net"
+	"os"
+	"path/filepath"
 )
 
 func main() {

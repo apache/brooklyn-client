@@ -1,37 +1,37 @@
 package entity_policies
 
-import(
+import (
 	"bytes"
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"github.com/robertgmoss/brooklyn-cli/models"
+	"github.com/robertgmoss/brooklyn-cli/net"
 	"net/url"
 	"strconv"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
 // WIP
-func AddPolicy(network *net.Network, application, entity, policy string, config map[string]string) models.PolicySummary{
+func AddPolicy(network *net.Network, application, entity, policy string, config map[string]string) models.PolicySummary {
 	path := fmt.Sprintf("/v1/applications/%s/entities/%s/policies", application, entity)
 	data := url.Values{}
 	data.Set("policyType", policy)
 	//data.Add("config", config)
 	req := network.NewPostRequest(path, bytes.NewBufferString(data.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-    req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
 	var policySummary models.PolicySummary
 	err = json.Unmarshal(body, &policySummary)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return policySummary
 }
 
-func StartPolicy(network *net.Network, application, entity, policy string) string{
+func StartPolicy(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/start", application, entity, policy)
 	req := network.NewPostRequest(url, nil)
 	body, err := network.SendRequest(req)
@@ -41,7 +41,7 @@ func StartPolicy(network *net.Network, application, entity, policy string) strin
 	return string(body)
 }
 
-func StopPolicy(network *net.Network, application, entity, policy string) string{
+func StopPolicy(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/stop", application, entity, policy)
 	req := network.NewPostRequest(url, nil)
 	body, err := network.SendRequest(req)
@@ -51,7 +51,7 @@ func StopPolicy(network *net.Network, application, entity, policy string) string
 	return string(body)
 }
 
-func DestroyPolicy(network *net.Network, application, entity, policy string) string{
+func DestroyPolicy(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/destroy", application, entity, policy)
 	req := network.NewPostRequest(url, nil)
 	body, err := network.SendRequest(req)
@@ -63,15 +63,15 @@ func DestroyPolicy(network *net.Network, application, entity, policy string) str
 
 func PolicyList(network *net.Network, application, entity string) []models.PolicySummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies", application, entity)
-    req := network.NewGetRequest(url)
+	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	var policyList []models.PolicySummary
 	err = json.Unmarshal(body, &policyList)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 	}
 	return policyList
@@ -79,7 +79,7 @@ func PolicyList(network *net.Network, application, entity string) []models.Polic
 
 func PolicyStatus(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s", application, entity, policy)
-    req := network.NewGetRequest(url)
+	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
 	if err != nil {
 		fmt.Println(err)

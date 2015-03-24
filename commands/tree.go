@@ -1,6 +1,6 @@
 package commands
 
-import(
+import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/robertgmoss/brooklyn-cli/api/application"
@@ -13,7 +13,7 @@ type Tree struct {
 	network *net.Network
 }
 
-func NewTree(network *net.Network) (cmd *Tree){
+func NewTree(network *net.Network) (cmd *Tree) {
 	cmd = new(Tree)
 	cmd.network = network
 	return
@@ -24,28 +24,28 @@ func (cmd *Tree) Metadata() command_metadata.CommandMetadata {
 		Name:        "tree",
 		Description: "Show the tree of all applications",
 		Usage:       "BROOKLYN_NAME tree",
-		Flags: []cli.Flag{},
+		Flags:       []cli.Flag{},
 	}
-}	
+}
 
 func (cmd *Tree) Run(c *cli.Context) {
 	trees := application.Tree(cmd.network)
 	cmd.printTrees(trees, "")
 }
 
-func (cmd *Tree) printTrees(trees []models.Tree, indent string){
+func (cmd *Tree) printTrees(trees []models.Tree, indent string) {
 	for i, app := range trees {
-		cmd.printTree(app, indent, i == len(trees) - 1)
+		cmd.printTree(app, indent, i == len(trees)-1)
 	}
 }
 
-func (cmd *Tree) printTree(tree models.Tree, indent string, last bool){
-	fmt.Println(indent + "|-", tree.Name)
-	fmt.Println(indent+ "+-", tree.Type)
-	
+func (cmd *Tree) printTree(tree models.Tree, indent string, last bool) {
+	fmt.Println(indent+"|-", tree.Name)
+	fmt.Println(indent+"+-", tree.Type)
+
 	if last {
 		indent = indent + "  "
-	}else {
+	} else {
 		indent = indent + "| "
 	}
 	cmd.printTrees(tree.Children, indent)

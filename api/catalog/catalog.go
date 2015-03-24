@@ -1,15 +1,15 @@
 package catalog
 
-import(
+import (
+	"encoding/json"
 	"fmt"
+	"github.com/robertgmoss/brooklyn-cli/models"
+	"github.com/robertgmoss/brooklyn-cli/net"
 	"os"
 	"path/filepath"
-	"encoding/json"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/models"
 )
 
-func Catalog(network *net.Network) []models.Application{
+func Catalog(network *net.Network) []models.Application {
 	url := "/v1/catalog/applications"
 	req := network.NewGetRequest(url)
 	body, err := network.SendRequest(req)
@@ -21,7 +21,7 @@ func Catalog(network *net.Network) []models.Application{
 	return applications
 }
 
-func AddCatalog(network *net.Network, filePath string) string{
+func AddCatalog(network *net.Network, filePath string) string {
 	url := "/v1/catalog"
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
