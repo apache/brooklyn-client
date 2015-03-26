@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/robertgmoss/brooklyn-cli/models"
 	"github.com/robertgmoss/brooklyn-cli/net"
-	"os"
-	"path/filepath"
 )
 
 func Tree(network *net.Network) []models.Tree {
@@ -56,14 +54,7 @@ func Applications(network *net.Network) []models.ApplicationSummary {
 
 func Create(network *net.Network, filePath string) models.TaskSummary {
 	url := "/v1/applications"
-	file, err := os.Open(filepath.Clean(filePath))
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer file.Close()
-	req := network.NewPostRequest(url, file)
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	body, err := network.SendRequest(req)
+	body, err := network.SendPostFileRequest(url, filePath)
 	if err != nil {
 		fmt.Println(err)
 	}

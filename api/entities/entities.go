@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/robertgmoss/brooklyn-cli/models"
 	"github.com/robertgmoss/brooklyn-cli/net"
-	"os"
-	"path/filepath"
 )
 
 func Spec(network *net.Network, application, entity string) string {
@@ -50,14 +48,7 @@ func Children(network *net.Network, application, entity string) []models.EntityS
 
 func AddChildren(network *net.Network, application, entity, filePath string) models.TaskSummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
-	file, err := os.Open(filepath.Clean(filePath))
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer file.Close()
-	req := network.NewPostRequest(url, file)
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	body, err := network.SendRequest(req)
+	body, err := network.SendPostFileRequest(url, filePath)
 	if err != nil {
 		fmt.Println(err)
 	}

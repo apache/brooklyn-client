@@ -33,8 +33,7 @@ func AddPolicy(network *net.Network, application, entity, policy string, config 
 
 func StartPolicy(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/start", application, entity, policy)
-	req := network.NewPostRequest(url, nil)
-	body, err := network.SendRequest(req)
+	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -43,8 +42,7 @@ func StartPolicy(network *net.Network, application, entity, policy string) strin
 
 func StopPolicy(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/stop", application, entity, policy)
-	req := network.NewPostRequest(url, nil)
-	body, err := network.SendRequest(req)
+	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -53,8 +51,7 @@ func StopPolicy(network *net.Network, application, entity, policy string) string
 
 func DestroyPolicy(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/destroy", application, entity, policy)
-	req := network.NewPostRequest(url, nil)
-	body, err := network.SendRequest(req)
+	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

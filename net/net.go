@@ -5,6 +5,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 type Network struct {
@@ -64,13 +66,20 @@ func (net *Network) SendDeleteRequest(url string) ([]byte, error) {
 	return body, err
 }
 
-//func (net *Network) SendPostFileRequest(filePath string) ([]byte, error) {
-//	file, err := os.Open(filepath.Clean(filePath))
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//	defer file.Close()
-//	req := net.NewPostRequest(url, file)
-//	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-//	body, err := net.SendRequest(req)
-//}
+func (net *Network) SendEmptyPostRequest(url string) ([]byte, error) {
+	req := net.NewPostRequest(url, nil)
+	body, err := net.SendRequest(req)
+	return body, err
+}
+
+func (net *Network) SendPostFileRequest(url, filePath string) ([]byte, error) {
+	file, err := os.Open(filepath.Clean(filePath))
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer file.Close()
+	req := net.NewPostRequest(url, file)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	body, err := net.SendRequest(req)
+	return body, err
+}
