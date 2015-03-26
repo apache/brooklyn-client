@@ -9,8 +9,7 @@ import (
 
 func SensorList(network *net.Network, application, entity string) []models.SensorSummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -25,8 +24,7 @@ func SensorList(network *net.Network, application, entity string) []models.Senso
 
 func SensorValue(network *net.Network, application, entity, sensor string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -9,8 +9,7 @@ import (
 
 func ConfigList(network *net.Network, application, entity string) []models.ConfigSummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -25,8 +24,7 @@ func ConfigList(network *net.Network, application, entity string) []models.Confi
 
 func ConfigValue(network *net.Network, application, entity, config string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -36,8 +34,7 @@ func ConfigValue(network *net.Network, application, entity, config string) strin
 
 func ConfigCurrentState(network *net.Network, application, entity string) map[string]interface{} {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/current-state", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

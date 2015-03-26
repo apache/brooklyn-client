@@ -9,8 +9,7 @@ import (
 
 func LocationList(network *net.Network) []models.LocationSummary {
 	url := "/v1/locations"
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

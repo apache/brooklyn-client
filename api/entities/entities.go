@@ -11,8 +11,7 @@ import (
 
 func Spec(network *net.Network, application, entity string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/spec", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -21,8 +20,7 @@ func Spec(network *net.Network, application, entity string) string {
 
 func EntityList(network *net.Network, application string) []models.EntitySummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities", application)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -37,8 +35,7 @@ func EntityList(network *net.Network, application string) []models.EntitySummary
 
 func Children(network *net.Network, application, entity string) []models.EntitySummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

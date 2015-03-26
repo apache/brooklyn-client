@@ -11,8 +11,7 @@ import (
 
 func Tree(network *net.Network) []models.Tree {
 	url := "/v1/applications/tree"
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -27,8 +26,7 @@ func Tree(network *net.Network) []models.Tree {
 
 func Application(network *net.Network, app string) models.ApplicationSummary {
 	url := fmt.Sprintf("/v1/applications/%s", app)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -43,8 +41,7 @@ func Application(network *net.Network, app string) models.ApplicationSummary {
 
 func Applications(network *net.Network) []models.ApplicationSummary {
 	url := fmt.Sprintf("/v1/applications")
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -80,8 +77,7 @@ func Create(network *net.Network, filePath string) models.TaskSummary {
 
 func Delete(network *net.Network, application string) models.TaskSummary {
 	url := fmt.Sprintf("/v1/applications/%s", application)
-	req := network.NewDeleteRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendDeleteRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

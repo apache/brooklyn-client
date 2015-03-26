@@ -7,8 +7,7 @@ import (
 
 func Version(network *net.Network) string {
 	url := "/v1/version"
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

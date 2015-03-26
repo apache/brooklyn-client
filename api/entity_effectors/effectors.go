@@ -9,8 +9,7 @@ import (
 
 func EffectorList(network *net.Network, application, entity string) []models.EffectorSummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/effectors", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

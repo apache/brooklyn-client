@@ -63,8 +63,7 @@ func DestroyPolicy(network *net.Network, application, entity, policy string) str
 
 func PolicyList(network *net.Network, application, entity string) []models.PolicySummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -79,8 +78,7 @@ func PolicyList(network *net.Network, application, entity string) []models.Polic
 
 func PolicyStatus(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s", application, entity, policy)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -9,8 +9,7 @@ import (
 
 func ActivityList(network *net.Network, application, entity string) []models.TaskSummary {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/activities", application, entity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -25,8 +24,7 @@ func ActivityList(network *net.Network, application, entity string) []models.Tas
 
 func Activity(network *net.Network, activity string) models.TaskSummary {
 	url := fmt.Sprintf("/v1/activities/%s", activity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -41,8 +39,7 @@ func Activity(network *net.Network, activity string) models.TaskSummary {
 
 func ActivityChildren(network *net.Network, activity string) []models.TaskSummary {
 	url := fmt.Sprintf("/v1/activities/%s/children", activity)
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}

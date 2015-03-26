@@ -11,8 +11,7 @@ import (
 
 func Catalog(network *net.Network) []models.Application {
 	url := "/v1/catalog/applications"
-	req := network.NewGetRequest(url)
-	body, err := network.SendRequest(req)
+	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
