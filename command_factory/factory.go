@@ -2,10 +2,12 @@ package command_factory
 
 import (
 	"errors"
+	"sort"
 	"github.com/robertgmoss/brooklyn-cli/command"
 	"github.com/robertgmoss/brooklyn-cli/command_metadata"
 	"github.com/robertgmoss/brooklyn-cli/commands"
 	"github.com/robertgmoss/brooklyn-cli/net"
+	"github.com/robertgmoss/brooklyn-cli/io"
 )
 
 type Factory interface {
@@ -17,9 +19,9 @@ type concreteFactory struct {
 	cmdsByName map[string]command.Command
 }
 
-func NewFactory(network *net.Network) (factory concreteFactory) {
+func NewFactory(network *net.Network, config *io.Config) (factory concreteFactory) {
 	factory.cmdsByName = make(map[string]command.Command)
-	factory.cmdsByName["login"] = commands.NewLogin(network)
+	factory.cmdsByName["login"] = commands.NewLogin(network, config)
 	factory.cmdsByName["tree"] = commands.NewTree(network)
 	factory.cmdsByName["entities"] = commands.NewEntities(network)
 	factory.cmdsByName["entity-children"] = commands.NewChildren(network)
@@ -63,7 +65,14 @@ func (f concreteFactory) GetByCmdName(cmdName string) (cmd command.Command, err 
 }
 
 func (factory concreteFactory) CommandMetadatas() (commands []command_metadata.CommandMetadata) {
-	for _, command := range factory.cmdsByName {
+	keys := make([]string, 0, len(factory.cmdsByName))
+    for key := range factory.cmdsByName {
+        keys = append(keys, key)
+    }
+    sort.Strings(keys)
+	
+	for _, key := range keys {
+		command := factory.cmdsByName[key]
 		commands = append(commands, command.Metadata())
 	}
 	return
