@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"github.com/robertgmoss/brooklyn-cli/models"
 	"github.com/robertgmoss/brooklyn-cli/net"
+	"net/url"
 )
 
 func Spec(network *net.Network, application, entity string) string {
-	url := fmt.Sprintf("/v1/applications/%s/entities/%s/spec", application, entity)
-	body, err := network.SendGetRequest(url)
+	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/spec", application, entity)
+	body, err := network.SendGetRequest(urlStr)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -17,8 +18,8 @@ func Spec(network *net.Network, application, entity string) string {
 }
 
 func EntityList(network *net.Network, application string) []models.EntitySummary {
-	url := fmt.Sprintf("/v1/applications/%s/entities", application)
-	body, err := network.SendGetRequest(url)
+	urlStr := fmt.Sprintf("/v1/applications/%s/entities", application)
+	body, err := network.SendGetRequest(urlStr)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -32,8 +33,8 @@ func EntityList(network *net.Network, application string) []models.EntitySummary
 }
 
 func Children(network *net.Network, application, entity string) []models.EntitySummary {
-	url := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
-	body, err := network.SendGetRequest(url)
+	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
+	body, err := network.SendGetRequest(urlStr)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -47,8 +48,8 @@ func Children(network *net.Network, application, entity string) []models.EntityS
 }
 
 func AddChildren(network *net.Network, application, entity, filePath string) models.TaskSummary {
-	url := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
-	body, err := network.SendPostFileRequest(url, filePath)
+	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
+	body, err := network.SendPostFileRequest(urlStr, filePath)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -59,4 +60,14 @@ func AddChildren(network *net.Network, application, entity, filePath string) mod
 		fmt.Println(err)
 	}
 	return response
+}
+
+func Rename(network *net.Network, application, entity, newName string) string {
+	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/name?name=%s", application, entity, url.QueryEscape(newName))
+	body, err := network.SendEmptyPostRequest(urlStr)
+	if err != nil {
+		fmt.Println(err)
+	}
+	
+	return string(body)
 }

@@ -22,6 +22,17 @@ func ConfigList(network *net.Network, application, entity string) []models.Confi
 	return configList
 }
 
+func SetConfig(network *net.Network, application, entity, config, value string) string {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
+	val := []byte(value)
+	body, err := network.SendPostRequest(url, val)
+	if err != nil {
+		fmt.Println(err)
+	}
+	
+	return string(body)
+}
+
 func ConfigValue(network *net.Network, application, entity, config string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
 	body, err := network.SendGetRequest(url)

@@ -21,6 +21,7 @@ type concreteFactory struct {
 
 func NewFactory(network *net.Network, config *io.Config) (factory concreteFactory) {
 	factory.cmdsByName = make(map[string]command.Command)
+	factory.cmdsByName["access"] = commands.NewAccess(network)
 	factory.cmdsByName["login"] = commands.NewLogin(network, config)
 	factory.cmdsByName["tree"] = commands.NewTree(network)
 	factory.cmdsByName["entities"] = commands.NewEntities(network)
@@ -42,11 +43,14 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	factory.cmdsByName["stop-policy"] = commands.NewStopPolicy(network)
 	factory.cmdsByName["destroy-policy"] = commands.NewDestroyPolicy(network)
 	factory.cmdsByName["config"] = commands.NewConfig(network)
+	factory.cmdsByName["set-config"] = commands.NewSetConfig(network)
 	factory.cmdsByName["locations"] = commands.NewLocations(network)
 	factory.cmdsByName["activity"] = commands.NewActivity(network)
 	factory.cmdsByName["activity-children"] = commands.NewActivityChildren(network)
+	factory.cmdsByName["activity-stream"] = commands.NewActivityStream(network)
 	factory.cmdsByName["activities"] = commands.NewActivities(network)
 	factory.cmdsByName["spec"] = commands.NewSpec(network)
+	factory.cmdsByName["rename-entity"] = commands.NewRename(network)
 	return factory
 }
 

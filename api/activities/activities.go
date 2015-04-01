@@ -51,3 +51,12 @@ func ActivityChildren(network *net.Network, activity string) []models.TaskSummar
 	}
 	return tasks
 }
+
+func ActivityStream(network *net.Network, activity, streamId string) string {
+	url := fmt.Sprintf("/v1/activities/%s/stream/%s", activity, streamId)
+	body, err := network.SendGetRequest(url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(body)
+}
