@@ -2,7 +2,7 @@ package command
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/robertgmoss/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 )
 
 type Command interface {

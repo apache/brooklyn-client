@@ -2,7 +2,7 @@ package version
 
 import (
 	"fmt"
-	"github.com/robertgmoss/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
 func Version(network *net.Network) string {

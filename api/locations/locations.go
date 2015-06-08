@@ -3,8 +3,8 @@ package locations
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/robertgmoss/brooklyn-cli/models"
-	"github.com/robertgmoss/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/models"
+	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
 func LocationList(network *net.Network) []models.LocationSummary {

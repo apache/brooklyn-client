@@ -3,8 +3,8 @@ package app
 import (
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/robertgmoss/brooklyn-cli/command_metadata"
-	"github.com/robertgmoss/brooklyn-cli/command_runner"
+	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/command_runner"
 	"strings"
 )
 

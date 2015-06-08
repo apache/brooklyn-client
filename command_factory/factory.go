@@ -3,11 +3,11 @@ package command_factory
 import (
 	"errors"
 	"sort"
-	"github.com/robertgmoss/brooklyn-cli/command"
-	"github.com/robertgmoss/brooklyn-cli/command_metadata"
-	"github.com/robertgmoss/brooklyn-cli/commands"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/io"
+	"github.com/brooklyncentral/brooklyn-cli/command"
+	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/commands"
+	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/io"
 )
 
 type Factory interface {

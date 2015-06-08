@@ -3,8 +3,8 @@ package entity_config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/robertgmoss/brooklyn-cli/models"
-	"github.com/robertgmoss/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/models"
+	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
 func ConfigList(network *net.Network, application, entity string) []models.ConfigSummary {

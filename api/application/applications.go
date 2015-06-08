@@ -3,8 +3,8 @@ package application
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/robertgmoss/brooklyn-cli/models"
-	"github.com/robertgmoss/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/models"
+	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
 func Tree(network *net.Network) []models.Tree {

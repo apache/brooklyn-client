@@ -2,10 +2,10 @@ package commands
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/robertgmoss/brooklyn-cli/api/activities"
-	"github.com/robertgmoss/brooklyn-cli/command_metadata"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/terminal"
+	"github.com/brooklyncentral/brooklyn-cli/api/activities"
+	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"time"
 )
 

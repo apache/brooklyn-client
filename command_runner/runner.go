@@ -3,7 +3,7 @@ package command_runner
 import (
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/robertgmoss/brooklyn-cli/command_factory"
+	"github.com/brooklyncentral/brooklyn-cli/command_factory"
 )
 
 type Runner interface {

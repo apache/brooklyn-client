@@ -2,9 +2,9 @@ package commands
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/robertgmoss/brooklyn-cli/command_metadata"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/io"
+	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/io"
 )
 
 type Login struct {

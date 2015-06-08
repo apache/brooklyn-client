@@ -3,10 +3,10 @@ package commands
 import (
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/robertgmoss/brooklyn-cli/api/application"
-	"github.com/robertgmoss/brooklyn-cli/command_metadata"
-	"github.com/robertgmoss/brooklyn-cli/models"
-	"github.com/robertgmoss/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/api/application"
+	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/models"
+	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
 type Tree struct {

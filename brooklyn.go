@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/robertgmoss/brooklyn-cli/app"
-	"github.com/robertgmoss/brooklyn-cli/command_factory"
-	"github.com/robertgmoss/brooklyn-cli/command_runner"
-	"github.com/robertgmoss/brooklyn-cli/net"
-	"github.com/robertgmoss/brooklyn-cli/io"
+	"github.com/brooklyncentral/brooklyn-cli/app"
+	"github.com/brooklyncentral/brooklyn-cli/command_factory"
+	"github.com/brooklyncentral/brooklyn-cli/command_runner"
+	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/io"
 	"os"
 	"path/filepath"
 )
