@@ -57,9 +57,11 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 
 func (net *Network) SendGetRequest(url string) ([]byte, error) {
 	req := net.NewGetRequest(url)
+	req.Header.Set("Accept", "application/json, text/plain")
 	body, err := net.SendRequest(req)
 	return body, err
 }
+
 
 func (net *Network) SendDeleteRequest(url string) ([]byte, error) {
 	req := net.NewDeleteRequest(url)

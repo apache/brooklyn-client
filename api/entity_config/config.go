@@ -34,13 +34,17 @@ func SetConfig(network *net.Network, application, entity, config, value string) 
 }
 
 func ConfigValue(network *net.Network, application, entity, config string) string {
+	return string(ConfigValueAsBytes(network, application, entity, config))
+}
+
+func ConfigValueAsBytes(network *net.Network, application, entity, config string) []byte {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
 	body, err := network.SendGetRequest(url)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	return string(body)
+	return body
 }
 
 func ConfigCurrentState(network *net.Network, application, entity string) map[string]interface{} {

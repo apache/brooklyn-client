@@ -66,6 +66,21 @@ func Create(network *net.Network, filePath string) models.TaskSummary {
 	return response
 }
 
+func CreateFromBytes(network *net.Network, blueprint []byte)  models.TaskSummary {
+	url := "/v1/applications"
+	
+	body, err := network.SendPostRequest(url, blueprint)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var response models.TaskSummary
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return response
+}
+
 func Delete(network *net.Network, application string) models.TaskSummary {
 	url := fmt.Sprintf("/v1/applications/%s", application)
 	body, err := network.SendDeleteRequest(url)
