@@ -48,7 +48,7 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	factory.cmdsByName["activity"] = commands.NewActivity(network)
 	factory.cmdsByName["activity-children"] = commands.NewActivityChildren(network)
 	factory.cmdsByName["activity-stream"] = commands.NewActivityStream(network)
-	factory.cmdsByName["activities"] = commands.NewActivities(network)
+	//factory.cmdsByName["activities"] = commands.NewActivities(network)
 	factory.cmdsByName["spec"] = commands.NewSpec(network)
 	factory.cmdsByName["rename-entity"] = commands.NewRename(network)
 	return factory

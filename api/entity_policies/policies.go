@@ -31,6 +31,39 @@ func AddPolicy(network *net.Network, application, entity, policy string, config 
 	return policySummary
 }
 
+func PolicyList(network *net.Network, application, entity string) []models.PolicySummary {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies", application, entity)
+	body, err := network.SendGetRequest(url)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var policyList []models.PolicySummary
+	err = json.Unmarshal(body, &policyList)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return policyList
+}
+
+func PolicyStatus(network *net.Network, application, entity, policy string) string {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s", application, entity, policy)
+	body, err := network.SendGetRequest(url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(body)
+}
+
+func CurrentState(network *net.Network, application, entity string) string {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/current-state", application, entity)
+	body, err := network.SendGetRequest(url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(body)
+}
+
 func StartPolicy(network *net.Network, application, entity, policy string) string {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/start", application, entity, policy)
 	body, err := network.SendEmptyPostRequest(url)
@@ -58,26 +91,6 @@ func DestroyPolicy(network *net.Network, application, entity, policy string) str
 	return string(body)
 }
 
-func PolicyList(network *net.Network, application, entity string) []models.PolicySummary {
-	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies", application, entity)
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
 
-	var policyList []models.PolicySummary
-	err = json.Unmarshal(body, &policyList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return policyList
-}
 
-func PolicyStatus(network *net.Network, application, entity, policy string) string {
-	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s", application, entity, policy)
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return string(body)
-}
+

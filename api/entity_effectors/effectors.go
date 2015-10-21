@@ -21,3 +21,12 @@ func EffectorList(network *net.Network, application, entity string) []models.Eff
 	}
 	return effectorList
 }
+
+func TriggerEffector(network *net.Network, application, entity, effector string) string {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/effectors/%s", application, entity, effector)
+	body, err := network.SendEmptyPostRequest(url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(body)
+}

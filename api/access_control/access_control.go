@@ -21,3 +21,12 @@ func Access(network *net.Network) models.AccessSummary {
 	}
 	return access
 }
+
+// WIP
+//func LocationProvisioningAllowed(network *net.Network, allowed bool) {
+//	url := fmt.Sprintf("/v1/access/locationProvisioningAllowed")
+//	body, err := network.SendPostRequest(url)
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//}
