@@ -19,6 +19,13 @@ func NewApplications(network *net.Network) (cmd *Applications) {
 	return
 }
 
+// At present "list application" is the same as "applications" so just create an Application command.
+func NewListApplication(network *net.Network) (cmd *Applications) {
+	cmd = new(Applications)
+	cmd.network = network
+	return
+}
+
 func (cmd *Applications) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "applications",

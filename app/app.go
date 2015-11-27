@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/command_runner"
 	"strings"
+	"os"
 )
 
 func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
@@ -16,13 +17,14 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 	app.Commands = []cli.Command{}
 
 	for _, metadata := range metadatas {
-		app.Commands = append(app.Commands, getCommand(baseName, metadata, cmdRunner))
+		primaryCommand := getCommand(baseName, metadata, cmdRunner)
+		app.Commands = append(app.Commands, primaryCommand)
 	}
 	return
 }
 
 func getCommand(baseName string, metadata command_metadata.CommandMetadata, runner command_runner.Runner) cli.Command {
-	return cli.Command{
+	command := cli.Command{
 		Name:        metadata.Name,
 		ShortName:   metadata.ShortName,
 		Description: metadata.Description,
@@ -30,13 +32,44 @@ func getCommand(baseName string, metadata command_metadata.CommandMetadata, runn
 		Action: func(context *cli.Context) {
 			err := runner.RunCmdByName(metadata.Name, context)
 			if err != nil {
-				fmt.Println(err)
+				fmt.Fprintln(os.Stderr, err)
 			}
 		},
 		Flags:           metadata.Flags,
 		SkipFlagParsing: metadata.SkipFlagParsing,
 	}
+
+	if nil != metadata.Operands {
+		command.Subcommands = make([]cli.Command,0)
+		for _, operand := range metadata.Operands {
+			command.Subcommands = append(command.Subcommands, cli.Command{
+				Name:            operand.Name,
+				ShortName:       operand.ShortName,
+				Description:     operand.Description,
+				Usage:           operand.Usage,
+				Flags:           operand.Flags,
+				SkipFlagParsing: operand.SkipFlagParsing,
+				Action:          subCommandAction(command.Name, operand.Name, runner),
+			})
+			command.Usage = strings.Join([]string{
+				command.Usage, "\n... ", operand.Usage, "\t", operand.Description,
+			}, "")
+		}
+	}
+
+	return command
 }
+
+func subCommandAction(command string, operand string, runner command_runner.Runner) func(context *cli.Context) {
+	return func(context *cli.Context) {
+		err := runner.RunSubCmdByName(command, operand, context)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+	}
+}
+
+
 func appHelpTemplate() string {
 	return `NAME:
    {{.Name}} - {{.Usage}}
