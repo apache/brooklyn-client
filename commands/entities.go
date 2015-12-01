@@ -3,16 +3,16 @@ package commands
 import (
 	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/entities"
-	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
+    "github.com/brooklyncentral/brooklyn-cli/command_metadata"
 )
 
 type Entities struct {
 	network *net.Network
 }
 
-func NewEntities(network *net.Network) (cmd *Entities) {
+func NewListEntity(network *net.Network) (cmd *Entities) {
 	cmd = new(Entities)
 	cmd.network = network
 	return
@@ -20,9 +20,9 @@ func NewEntities(network *net.Network) (cmd *Entities) {
 
 func (cmd *Entities) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "entities",
+		Name:        "entity",
 		Description: "Show the entites for an application",
-		Usage:       "BROOKLYN_NAME entities APPLICATION",
+		Usage:       "list entity APPLICATION",
 		Flags:       []cli.Flag{},
 	}
 }

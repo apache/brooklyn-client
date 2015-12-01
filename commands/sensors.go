@@ -12,7 +12,7 @@ type Sensors struct {
 	network *net.Network
 }
 
-func NewSensors(network *net.Network) (cmd *Sensors) {
+func NewListSensor(network *net.Network) (cmd *Sensors) {
 	cmd = new(Sensors)
 	cmd.network = network
 	return
@@ -20,9 +20,9 @@ func NewSensors(network *net.Network) (cmd *Sensors) {
 
 func (cmd *Sensors) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "sensors",
+		Name:        "sensor",
 		Description: "Show the sensors for an application and entity",
-		Usage:       "BROOKLYN_NAME sensors APPLICATION ENTITY",
+		Usage:       "list sensor APPLICATION ENTITY",
 		Flags:       []cli.Flag{},
 	}
 }

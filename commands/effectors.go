@@ -13,7 +13,7 @@ type Effectors struct {
 	network *net.Network
 }
 
-func NewEffectors(network *net.Network) (cmd *Effectors) {
+func NewListEffector(network *net.Network) (cmd *Effectors) {
 	cmd = new(Effectors)
 	cmd.network = network
 	return
@@ -21,9 +21,9 @@ func NewEffectors(network *net.Network) (cmd *Effectors) {
 
 func (cmd *Effectors) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "effectors",
+		Name:        "effector",
 		Description: "Show the list of effectors for an application and entity",
-		Usage:       "BROOKLYN_NAME effectors APPLICATION ENITITY",
+		Usage:       "list effector APPLICATION ENTITY",
 		Flags:       []cli.Flag{},
 	}
 }

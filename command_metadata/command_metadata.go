@@ -10,5 +10,5 @@ type CommandMetadata struct {
 	Flags           []cli.Flag
 	SkipFlagParsing bool
 	TotalArgs       int //Optional: number of required arguments to skip for flag verification
-	Operands        []*CommandMetadata
+	Operands        []CommandMetadata
 }
