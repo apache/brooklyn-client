@@ -13,13 +13,6 @@ type Applications struct {
 	network *net.Network
 }
 
-func NewApplications(network *net.Network) (cmd *Applications) {
-	cmd = new(Applications)
-	cmd.network = network
-	return
-}
-
-// At present "list application" is the same as "applications" so just create an Application command.
 func NewListApplication(network *net.Network) (cmd *Applications) {
 	cmd = new(Applications)
 	cmd.network = network

@@ -34,7 +34,6 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	factory.cmdsByName["add-catalog"] = commands.NewAddCatalog(network)
 	factory.cmdsByName["add-children"] = commands.NewAddChildren(network)
 	factory.cmdsByName["application"] = commands.NewApplication(network)
-	factory.cmdsByName["applications"] = commands.NewApplications(network)
 	factory.cmdsByName["catalog"] = commands.NewCatalog(network)
 	factory.cmdsByName["config"] = commands.NewConfig(network)
 	factory.cmdsByName["create"] = commands.NewCreate(network)

@@ -4,8 +4,8 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/codegangsta/cli"
-	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"fmt"
+	"strings"
 )
 
 type List struct {
@@ -18,12 +18,24 @@ func NewList(network *net.Network) (cmd *List) {
 	return
 }
 
+const applicationCommand = "application"
+const entityCommand = "entity"
+const sensorCommand = "sensor"
+const effectorCommand = "effector"
+
+var listCommands = []string{
+	applicationCommand,
+    entityCommand,
+    sensorCommand,
+    effectorCommand,
+}
+var listCommandsUsage = strings.Join(listCommands, " | ")
 
 func (cmd *List) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "list",
 		Description: "List details for a variety of operands",
-		Usage:       "BROOKLYN_NAME list (application | entity | sensor | effector)",
+		Usage:       "BROOKLYN_NAME list (" + listCommandsUsage + ")",
 		Flags:       []cli.Flag{},
 		Operands:    []*command_metadata.CommandMetadata {
 			&command_metadata.CommandMetadata{
@@ -55,9 +67,5 @@ func (cmd *List) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *List) Run(c *cli.Context) {
-	command := c.Command
-	fmt.Printf("Command %s\n", command.Name)
-	table := terminal.NewTable([]string{"Name", "Id", "Status", "Location"})
-	table.Add("test", "TEST", "Test", "Here")
-	table.Print()
+	fmt.Printf( "Unrecognised item for list, please use one of (%s)\n", listCommandsUsage)
 }
