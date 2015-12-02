@@ -9,17 +9,17 @@ import (
 	"strings"
 )
 
-type Effectors struct {
+type ListEffectorSubCommand struct {
 	network *net.Network
 }
 
-func NewListEffector(network *net.Network) (cmd *Effectors) {
-	cmd = new(Effectors)
+func NewListEffector(network *net.Network) (cmd *ListEffectorSubCommand) {
+	cmd = new(ListEffectorSubCommand)
 	cmd.network = network
 	return
 }
 
-func (cmd *Effectors) Metadata() command_metadata.CommandMetadata {
+func (cmd *ListEffectorSubCommand) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "effector",
 		Description: "Show the list of effectors for an application and entity",
@@ -28,7 +28,7 @@ func (cmd *Effectors) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
-func (cmd *Effectors) Run(c *cli.Context) {
+func (cmd *ListEffectorSubCommand) Run(c *cli.Context) {
 	effectors := entity_effectors.EffectorList(cmd.network, c.Args()[0], c.Args()[1])
 	table := terminal.NewTable([]string{"Name", "Description", "Parameters"})
 	for _, effector := range effectors {

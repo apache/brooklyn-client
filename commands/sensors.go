@@ -8,17 +8,17 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 )
 
-type Sensors struct {
+type ListSensorsSubCommand struct {
 	network *net.Network
 }
 
-func NewListSensor(network *net.Network) (cmd *Sensors) {
-	cmd = new(Sensors)
+func NewListSensor(network *net.Network) (cmd *ListSensorsSubCommand) {
+	cmd = new(ListSensorsSubCommand)
 	cmd.network = network
 	return
 }
 
-func (cmd *Sensors) Metadata() command_metadata.CommandMetadata {
+func (cmd *ListSensorsSubCommand) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "sensor",
 		Description: "Show the sensors for an application and entity",
@@ -27,7 +27,7 @@ func (cmd *Sensors) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
-func (cmd *Sensors) Run(c *cli.Context) {
+func (cmd *ListSensorsSubCommand) Run(c *cli.Context) {
 	sensors := entity_sensors.SensorList(cmd.network, c.Args()[0], c.Args()[1])
 	table := terminal.NewTable([]string{"Name", "Description", "Value"})
 	for _, sensor := range sensors {

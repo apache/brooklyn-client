@@ -9,17 +9,17 @@ import (
     "github.com/brooklyncentral/brooklyn-cli/command_metadata"
 )
 
-type Applications struct {
+type ListApplicationSubCommand struct {
 	network *net.Network
 }
 
-func NewListApplication(network *net.Network) (cmd *Applications) {
-	cmd = new(Applications)
+func NewListApplication(network *net.Network) (cmd *ListApplicationSubCommand) {
+	cmd = new(ListApplicationSubCommand)
 	cmd.network = network
 	return
 }
 
-func (cmd *Applications) Metadata() command_metadata.CommandMetadata {
+func (cmd *ListApplicationSubCommand) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "application",
 		Description: "Show the status and location of running applications",
@@ -28,7 +28,7 @@ func (cmd *Applications) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
-func (cmd *Applications) Run(c *cli.Context) {
+func (cmd *ListApplicationSubCommand) Run(c *cli.Context) {
 	applications := application.Applications(cmd.network)
 
 	table := terminal.NewTable([]string{"Id", "Name", "Status", "Location"})
