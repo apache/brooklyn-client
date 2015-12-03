@@ -8,50 +8,65 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/commands"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/io"
+	"strings"
 )
 
 type Factory interface {
 	GetByCmdName(cmdName string) (cmd command.Command, err error)
+	GetBySubCmdName(cmdName string, subCmdName string) (cmd command.Command, err error)
 	CommandMetadatas() []command_metadata.CommandMetadata
 }
 
 type concreteFactory struct {
 	cmdsByName map[string]command.Command
+	subCommands map[string]map[string]command.Command
 }
 
 func NewFactory(network *net.Network, config *io.Config) (factory concreteFactory) {
 	factory.cmdsByName = make(map[string]command.Command)
+	factory.subCommands = make(map[string]map[string]command.Command)
+
 	factory.cmdsByName["access"] = commands.NewAccess(network)
-	factory.cmdsByName["login"] = commands.NewLogin(network, config)
-	factory.cmdsByName["tree"] = commands.NewTree(network)
-	factory.cmdsByName["entities"] = commands.NewEntities(network)
-	factory.cmdsByName["entity-children"] = commands.NewChildren(network)
-	factory.cmdsByName["add-children"] = commands.NewAddChildren(network)
-	factory.cmdsByName["catalog"] = commands.NewCatalog(network)
-	factory.cmdsByName["add-catalog"] = commands.NewAddCatalog(network)
-	factory.cmdsByName["version"] = commands.NewVersion(network)
-	factory.cmdsByName["create"] = commands.NewCreate(network)
-	factory.cmdsByName["delete"] = commands.NewDelete(network)
-	factory.cmdsByName["application"] = commands.NewApplication(network)
-	factory.cmdsByName["applications"] = commands.NewApplications(network)
-	factory.cmdsByName["sensors"] = commands.NewSensors(network)
-	factory.cmdsByName["sensor"] = commands.NewSensor(network)
-	factory.cmdsByName["effectors"] = commands.NewEffectors(network)
-	factory.cmdsByName["policies"] = commands.NewPolicies(network)
-	factory.cmdsByName["policy"] = commands.NewPolicy(network)
-	factory.cmdsByName["start-policy"] = commands.NewStartPolicy(network)
-	factory.cmdsByName["stop-policy"] = commands.NewStopPolicy(network)
-	factory.cmdsByName["destroy-policy"] = commands.NewDestroyPolicy(network)
-	factory.cmdsByName["config"] = commands.NewConfig(network)
-	factory.cmdsByName["set-config"] = commands.NewSetConfig(network)
-	factory.cmdsByName["locations"] = commands.NewLocations(network)
+	//factory.cmdsByName["activities"] = commands.NewActivities(network)
 	factory.cmdsByName["activity"] = commands.NewActivity(network)
 	factory.cmdsByName["activity-children"] = commands.NewActivityChildren(network)
 	factory.cmdsByName["activity-stream"] = commands.NewActivityStream(network)
-	//factory.cmdsByName["activities"] = commands.NewActivities(network)
-	factory.cmdsByName["spec"] = commands.NewSpec(network)
+	factory.cmdsByName["add-catalog"] = commands.NewAddCatalog(network)
+	factory.cmdsByName["add-children"] = commands.NewAddChildren(network)
+	factory.cmdsByName["application"] = commands.NewApplication(network)
+	factory.cmdsByName["catalog"] = commands.NewCatalog(network)
+	factory.cmdsByName["config"] = commands.NewConfig(network)
+	factory.cmdsByName["create"] = commands.NewCreate(network)
+	factory.cmdsByName["delete"] = commands.NewDelete(network)
+	factory.cmdsByName["destroy-policy"] = commands.NewDestroyPolicy(network)
+	factory.cmdsByName["entity-children"] = commands.NewChildren(network)
+	listCommand := commands.NewList(network)
+	factory.cmdsByName["list"] = listCommand;
+    factory.subCommand("list", "application", listCommand.SubCommand(commands.ListApplicationCommand))
+    factory.subCommand("list", "effector", listCommand.SubCommand(commands.ListEffectorCommand))
+    factory.subCommand("list", "entity", listCommand.SubCommand(commands.ListEntityCommand))
+    factory.subCommand("list", "sensor", listCommand.SubCommand(commands.ListSensorCommand))
+	factory.cmdsByName["locations"] = commands.NewLocations(network)
+	factory.cmdsByName["login"] = commands.NewLogin(network, config)
+	factory.cmdsByName["policies"] = commands.NewPolicies(network)
+	factory.cmdsByName["policy"] = commands.NewPolicy(network)
 	factory.cmdsByName["rename-entity"] = commands.NewRename(network)
+	factory.cmdsByName["sensor"] = commands.NewSensor(network)
+	factory.cmdsByName["set-config"] = commands.NewSetConfig(network)
+	factory.cmdsByName["spec"] = commands.NewSpec(network)
+	factory.cmdsByName["start-policy"] = commands.NewStartPolicy(network)
+	factory.cmdsByName["stop-policy"] = commands.NewStopPolicy(network)
+	factory.cmdsByName["tree"] = commands.NewTree(network)
+	factory.cmdsByName["version"] = commands.NewVersion(network)
+
 	return factory
+}
+
+func (factory concreteFactory) subCommand(commandName string, subCommandName string, subCommand command.Command)  {
+	if nil == factory.subCommands[commandName] {
+		factory.subCommands[commandName] = make(map[string]command.Command)
+	}
+	factory.subCommands[commandName][subCommandName] = subCommand
 }
 
 func (f concreteFactory) GetByCmdName(cmdName string) (cmd command.Command, err error) {
@@ -63,9 +78,20 @@ func (f concreteFactory) GetByCmdName(cmdName string) (cmd command.Command, err 
 			}
 		}
 
-		err = errors.New("Command not found")
+		err = errors.New(strings.Join([]string{"Command not found:", cmdName}, " "))
 	}
 	return
+}
+
+func (f concreteFactory) GetBySubCmdName(cmdName string, subCmdName string) (cmd command.Command, err error) {
+	_, hasPrimary := f.subCommands[cmdName]
+	if hasPrimary {
+		cmd, found := f.subCommands[cmdName][subCmdName]
+		if found {
+			return cmd, nil
+		}
+	}
+	return cmd, errors.New(strings.Join([]string{"Command not found:", cmdName, subCmdName}, " "))
 }
 
 func (factory concreteFactory) CommandMetadatas() (commands []command_metadata.CommandMetadata) {
