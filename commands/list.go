@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 	"github.com/brooklyncentral/brooklyn-cli/command"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type List struct {
@@ -27,9 +28,9 @@ func NewList(network *net.Network) (cmd *List) {
 }
 
 const ListApplicationCommand = "application"
-const ListEntityCommand = "entity"
-const ListSensorCommand = "sensor"
-const ListEffectorCommand = "effector"
+const ListEntityCommand = "entities"
+const ListSensorCommand = "sensors"
+const ListEffectorCommand = "effectors"
 
 var listCommands = []string {
 	ListApplicationCommand,
@@ -47,7 +48,7 @@ func (cmd *List) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "list",
 		Description: "List details for a variety of operands",
-		Usage:       "BROOKLYN_NAME list (" + listCommandsUsage + ")",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] list (" + listCommandsUsage + ")",
 		Flags:       []cli.Flag{},
 		Operands:    []command_metadata.CommandMetadata {
 			cmd.SubCommand(ListApplicationCommand).Metadata(),
@@ -58,6 +59,6 @@ func (cmd *List) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
-func (cmd *List) Run(c *cli.Context) {
+func (cmd *List) Run(scope scope.Scope, c *cli.Context) {
 	fmt.Printf( "Unrecognised item for list, please use one of (%s)\n", listCommandsUsage)
 }

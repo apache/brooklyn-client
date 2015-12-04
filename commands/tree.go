@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/models"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Tree struct {
@@ -23,12 +24,12 @@ func (cmd *Tree) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "tree",
 		Description: "Show the tree of all applications",
-		Usage:       "BROOKLYN_NAME tree",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] tree",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Tree) Run(c *cli.Context) {
+func (cmd *Tree) Run(scope scope.Scope, c *cli.Context) {
 	trees := application.Tree(cmd.network)
 	cmd.printTrees(trees, "")
 }

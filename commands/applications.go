@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"strings"
     "github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type ListApplicationSubCommand struct {
@@ -23,12 +24,12 @@ func (cmd *ListApplicationSubCommand) Metadata() command_metadata.CommandMetadat
 	return command_metadata.CommandMetadata{
 		Name:        "application",
 		Description: "Show the status and location of running applications",
-		Usage:       "list application",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] application",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *ListApplicationSubCommand) Run(c *cli.Context) {
+func (cmd *ListApplicationSubCommand) Run(scope scope.Scope, c *cli.Context) {
 	applications := application.Applications(cmd.network)
 
 	table := terminal.NewTable([]string{"Id", "Name", "Status", "Location"})

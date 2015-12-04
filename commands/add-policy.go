@@ -5,6 +5,7 @@ import (
 	//"github.com/brooklyncentral/brooklyn-cli/api/entity_policies"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type AddPolicy struct {
@@ -21,11 +22,11 @@ func (cmd *AddPolicy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "add-policy",
 		Description: "Add a new policy",
-		Usage:       "BROOKLYN_NAME add-policy APPLICATION ENTITY POLICY_TYPE",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] add-policy APPLICATION ENTITY POLICY_TYPE",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *AddPolicy) Run(c *cli.Context) {
+func (cmd *AddPolicy) Run(scope scope.Scope, c *cli.Context) {
 	// Todo
 }

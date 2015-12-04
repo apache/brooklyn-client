@@ -8,6 +8,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/io"
 	"os"
 	"path/filepath"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, string, string){
@@ -32,8 +33,10 @@ func main() {
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
 	network := net.NewNetwork(target, username, password)
 	cmdFactory := command_factory.NewFactory(network, config)
-	cmdRunner := command_runner.NewRunner(cmdFactory)
+
+	args, scope := scope.ScopeArguments(os.Args)
+	cmdRunner := command_runner.NewRunner(scope, cmdFactory)
 	metaDatas := cmdFactory.CommandMetadatas()
-	theApp := app.NewApp(filepath.Base(os.Args[0]), cmdRunner, metaDatas...)
-	theApp.Run(os.Args)
+	theApp := app.NewApp(filepath.Base(args[0]), cmdRunner, metaDatas...)
+	theApp.Run(args)
 }

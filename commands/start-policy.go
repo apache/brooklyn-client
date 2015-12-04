@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/api/entity_policies"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type StartPolicy struct {
@@ -22,12 +23,12 @@ func (cmd *StartPolicy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "start-policy",
 		Description: "Start or resume a policy",
-		Usage:       "BROOKLYN_NAME start-policy APPLICATION ENTITY POLICY",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] start-policy POLICY",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *StartPolicy) Run(c *cli.Context) {
-	spec := entity_policies.StartPolicy(cmd.network, c.Args()[0], c.Args()[1], c.Args()[2])
+func (cmd *StartPolicy) Run(scope scope.Scope, c *cli.Context) {
+	spec := entity_policies.StartPolicy(cmd.network, scope.Application, scope.Entity, c.Args().First())
 	fmt.Println(spec)
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/api/entity_policies"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type DestroyPolicy struct {
@@ -22,12 +23,12 @@ func (cmd *DestroyPolicy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "destroy-policy",
 		Description: "Destroy a policy",
-		Usage:       "BROOKLYN_NAME destroy-policy APPLICATION ENTITY POLICY",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] destroy-policy POLICY",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *DestroyPolicy) Run(c *cli.Context) {
-	spec := entity_policies.DestroyPolicy(cmd.network, c.Args()[0], c.Args()[1], c.Args()[2])
+func (cmd *DestroyPolicy) Run(scope scope.Scope, c *cli.Context) {
+	spec := entity_policies.DestroyPolicy(cmd.network, scope.Application, scope.Entity, c.Args().First())
 	fmt.Println(spec)
 }

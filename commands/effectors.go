@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"strings"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type ListEffectorSubCommand struct {
@@ -21,15 +22,15 @@ func NewListEffector(network *net.Network) (cmd *ListEffectorSubCommand) {
 
 func (cmd *ListEffectorSubCommand) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "effector",
+		Name:        "effectors",
 		Description: "Show the list of effectors for an application and entity",
-		Usage:       "list effector APPLICATION ENTITY",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] effectors",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *ListEffectorSubCommand) Run(c *cli.Context) {
-	effectors := entity_effectors.EffectorList(cmd.network, c.Args()[0], c.Args()[1])
+func (cmd *ListEffectorSubCommand) Run(scope scope.Scope, c *cli.Context) {
+	effectors := entity_effectors.EffectorList(cmd.network, scope.Application, scope.Entity)
 	table := terminal.NewTable([]string{"Name", "Description", "Parameters"})
 	for _, effector := range effectors {
 		var parameters []string

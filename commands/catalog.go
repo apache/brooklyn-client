@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Catalog struct {
@@ -22,12 +23,12 @@ func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "catalog",
 		Description: "List the available catalog applications",
-		Usage:       "BROOKLYN_NAME catalog",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] catalog",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Catalog) Run(c *cli.Context) {
+func (cmd *Catalog) Run(scope scope.Scope, c *cli.Context) {
 	catalog := catalog.Catalog(cmd.network)
 	table := terminal.NewTable([]string{"Id", "Name", "Description"})
 	for _, app := range catalog {

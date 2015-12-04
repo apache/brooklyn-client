@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/codegangsta/cli"
 	"os"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Login struct {
@@ -25,12 +26,12 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "login",
 		Description: "Login to brooklyn",
-		Usage:       "BROOKLYN_NAME login URL [USER PASSWORD]",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] login URL [USER PASSWORD]",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Login) Run(c *cli.Context) {
+func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	defer func() {
 		if str := recover(); str != nil {
 			fmt.Fprintf(os.Stderr, "Error: %s\n", str)

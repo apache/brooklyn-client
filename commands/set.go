@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/api/entity_config"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type SetConfig struct {
@@ -20,14 +21,14 @@ func NewSetConfig(network *net.Network) (cmd *SetConfig) {
 
 func (cmd *SetConfig) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "set-config",
+		Name:        "set",
 		Description: "Set config for an entity",
-		Usage:       "BROOKLYN_NAME set-config APPLICATION ENTITY CONFIG_KEY VALUE",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] set VALUE",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *SetConfig) Run(c *cli.Context) {
-	response := entity_config.SetConfig(cmd.network, c.Args()[0], c.Args()[1], c.Args()[2], c.Args()[3])
+func (cmd *SetConfig) Run(scope scope.Scope, c *cli.Context) {
+	response := entity_config.SetConfig(cmd.network, scope.Application, scope.Entity, scope.Config, c.Args().First())
 	fmt.Println(response)
 }

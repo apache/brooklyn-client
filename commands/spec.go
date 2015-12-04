@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/api/entities"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Spec struct {
@@ -22,12 +23,12 @@ func (cmd *Spec) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "spec",
 		Description: "Get the YAML spec used to create the entity, if available",
-		Usage:       "BROOKLYN_NAME spec APPLICATION ENTITY",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] spec",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Spec) Run(c *cli.Context) {
-	spec := entities.Spec(cmd.network, c.Args()[0], c.Args()[1])
+func (cmd *Spec) Run(scope scope.Scope, c *cli.Context) {
+	spec := entities.Spec(cmd.network, scope.Application, scope.Entity)
 	fmt.Println(spec)
 }
