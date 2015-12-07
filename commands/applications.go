@@ -10,26 +10,26 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
-type ListApplicationSubCommand struct {
+type Applications struct {
 	network *net.Network
 }
 
-func NewListApplication(network *net.Network) (cmd *ListApplicationSubCommand) {
-	cmd = new(ListApplicationSubCommand)
+func NewApplications(network *net.Network) (cmd *Applications) {
+	cmd = new(Applications)
 	cmd.network = network
 	return
 }
 
-func (cmd *ListApplicationSubCommand) Metadata() command_metadata.CommandMetadata {
+func (cmd *Applications) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "application",
+		Name:        "applications",
 		Description: "Show the status and location of running applications",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] application",
+		Usage:       "BROOKLYN_NAME applications",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *ListApplicationSubCommand) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *Applications) Run(scope scope.Scope, c *cli.Context) {
 	applications := application.Applications(cmd.network)
 
 	table := terminal.NewTable([]string{"Id", "Name", "Status", "Location"})

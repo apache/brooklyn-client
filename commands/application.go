@@ -24,7 +24,7 @@ func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "application",
 		Description: "Show the status and location of a running application",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] status",
+		Usage:       "BROOKLYN_NAME application APP",
 		Flags:       []cli.Flag{},
 	}
 }
