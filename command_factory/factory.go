@@ -41,7 +41,10 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
     factory.simpleCommand(commands.NewCreate(network))
     factory.simpleCommand(commands.NewDelete(network))
     factory.simpleCommand(commands.NewDestroyPolicy(network))
+    factory.simpleCommand(commands.NewEffectors(network))
     factory.simpleCommand(commands.NewEntities(network))
+    // NewList below is not used but we retain the code as an example of how to do a super command.
+    //	factory.superCommand(commands.NewList(network))
 	factory.simpleCommand(commands.NewLocations(network))
 	factory.simpleCommand(commands.NewLogin(network, config))
 	factory.simpleCommand(commands.NewPolicies(network))

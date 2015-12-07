@@ -10,17 +10,17 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
-type ListEffectorSubCommand struct {
+type Effectors struct {
 	network *net.Network
 }
 
-func NewListEffector(network *net.Network) (cmd *ListEffectorSubCommand) {
-	cmd = new(ListEffectorSubCommand)
+func NewEffectors(network *net.Network) (cmd *Effectors) {
+	cmd = new(Effectors)
 	cmd.network = network
 	return
 }
 
-func (cmd *ListEffectorSubCommand) Metadata() command_metadata.CommandMetadata {
+func (cmd *Effectors) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "effectors",
 		Description: "Show the list of effectors for an application and entity",
@@ -29,7 +29,7 @@ func (cmd *ListEffectorSubCommand) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
-func (cmd *ListEffectorSubCommand) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *Effectors) Run(scope scope.Scope, c *cli.Context) {
 	effectors := entity_effectors.EffectorList(cmd.network, scope.Application, scope.Entity)
 	table := terminal.NewTable([]string{"Name", "Description", "Parameters"})
 	for _, effector := range effectors {
