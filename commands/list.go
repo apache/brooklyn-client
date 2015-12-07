@@ -40,6 +40,10 @@ var listCommands = []string {
 }
 var listCommandsUsage = strings.Join(listCommands, " | ")
 
+func (cmd *List) SubCommandNames() ([]string) {
+	return listCommands
+}
+
 func (cmd *List) SubCommand(name string) command.Command {
 	return cmd.listCommands[name]
 }

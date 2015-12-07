@@ -27,53 +27,53 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	factory.cmdsByName = make(map[string]command.Command)
 	factory.subCommands = make(map[string]map[string]command.Command)
 
-	factory.command(commands.NewAccess(network))
+	factory.simpleCommand(commands.NewAccess(network))
 	//factory.command(commands.NewActivities(network))
-	factory.command(commands.NewActivity(network))
-	factory.command(commands.NewActivityChildren(network))
-	factory.command(commands.NewActivityStream(network))
-	factory.command(commands.NewAddCatalog(network))
-	factory.command(commands.NewAddChildren(network))
-	factory.command(commands.NewApplication(network))
-	factory.command(commands.NewCatalog(network))
-	factory.command(commands.NewConfig(network))
-	factory.command(commands.NewCreate(network))
-	factory.command(commands.NewDelete(network))
-	factory.command(commands.NewDestroyPolicy(network))
-	factory.command(commands.NewChildren(network))
-	listCommand := commands.NewList(network)
-	factory.command(listCommand);
-    factory.subCommand(listCommand, commands.ListApplicationCommand)
-    factory.subCommand(listCommand, commands.ListEffectorCommand)
-    factory.subCommand(listCommand, commands.ListEntityCommand)
-    factory.subCommand(listCommand, commands.ListSensorCommand)
-	factory.command(commands.NewLocations(network))
-	factory.command(commands.NewLogin(network, config))
-	factory.command(commands.NewPolicies(network))
-	factory.command(commands.NewPolicy(network))
-	factory.command(commands.NewRename(network))
-	factory.command(commands.NewSensor(network))
-	factory.command(commands.NewSetConfig(network))
-	factory.command(commands.NewSpec(network))
-	factory.command(commands.NewStartPolicy(network))
-	factory.command(commands.NewStopPolicy(network))
-	factory.command(commands.NewTree(network))
-	factory.command(commands.NewVersion(network))
+	factory.simpleCommand(commands.NewActivity(network))
+	factory.simpleCommand(commands.NewActivityChildren(network))
+	factory.simpleCommand(commands.NewActivityStream(network))
+	factory.simpleCommand(commands.NewAddCatalog(network))
+	factory.simpleCommand(commands.NewAddChildren(network))
+	factory.simpleCommand(commands.NewApplication(network))
+	factory.simpleCommand(commands.NewCatalog(network))
+	factory.simpleCommand(commands.NewConfig(network))
+	factory.simpleCommand(commands.NewCreate(network))
+	factory.simpleCommand(commands.NewDelete(network))
+	factory.simpleCommand(commands.NewDestroyPolicy(network))
+	factory.simpleCommand(commands.NewChildren(network))
+    factory.superCommand(commands.NewList(network))
+	factory.simpleCommand(commands.NewLocations(network))
+	factory.simpleCommand(commands.NewLogin(network, config))
+	factory.simpleCommand(commands.NewPolicies(network))
+	factory.simpleCommand(commands.NewPolicy(network))
+	factory.simpleCommand(commands.NewRename(network))
+	factory.simpleCommand(commands.NewSensor(network))
+	factory.simpleCommand(commands.NewSetConfig(network))
+	factory.simpleCommand(commands.NewSpec(network))
+	factory.simpleCommand(commands.NewStartPolicy(network))
+	factory.simpleCommand(commands.NewStopPolicy(network))
+	factory.simpleCommand(commands.NewTree(network))
+	factory.simpleCommand(commands.NewVersion(network))
 
 	return factory
 }
 
 
-func (factory *concreteFactory) command(command command.Command) {
-	factory.cmdsByName[command.Metadata().Name] = command
+func (factory *concreteFactory) simpleCommand(cmd command.Command) {
+	factory.cmdsByName[cmd.Metadata().Name] = cmd
 }
 
-// TODO make this more generic - instead of List use a generic Command type
-func (factory concreteFactory) subCommand(listCommand *commands.List, subCommandName string)  {
-	if nil == factory.subCommands[listCommand.Metadata().Name] {
-		factory.subCommands[listCommand.Metadata().Name] = make(map[string]command.Command)
+func (factory *concreteFactory) superCommand(cmd command.SuperCommand)  {
+
+    factory.simpleCommand(cmd)
+
+	if nil == factory.subCommands[cmd.Metadata().Name] {
+		factory.subCommands[cmd.Metadata().Name] = make(map[string]command.Command)
 	}
-	factory.subCommands[listCommand.Metadata().Name][subCommandName] = listCommand.SubCommand(subCommandName)
+
+	for _, sub := range cmd.SubCommandNames() {
+		factory.subCommands[cmd.Metadata().Name][sub] = cmd.SubCommand(sub)
+	}
 }
 
 func (f concreteFactory) GetByCmdName(cmdName string) (cmd command.Command, err error) {
