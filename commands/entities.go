@@ -9,26 +9,26 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
-type ListEntitySubCommand struct {
+type ListEntities struct {
 	network *net.Network
 }
 
-func NewListEntity(network *net.Network) (cmd *ListEntitySubCommand) {
-	cmd = new(ListEntitySubCommand)
+func NewEntities(network *net.Network) (cmd *ListEntities) {
+	cmd = new(ListEntities)
 	cmd.network = network
 	return
 }
 
-func (cmd *ListEntitySubCommand) Metadata() command_metadata.CommandMetadata {
+func (cmd *ListEntities) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "entities",
 		Description: "Show the entities for an application",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] entities",
+		Usage:       "BROOKLYN_NAME APP-SCOPE entities",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *ListEntitySubCommand) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *ListEntities) Run(scope scope.Scope, c *cli.Context) {
 	entityList := entities.EntityList(cmd.network, scope.Application)
 	table := terminal.NewTable([]string{"Id", "Name", "Type"})
 	for _, entity := range entityList {

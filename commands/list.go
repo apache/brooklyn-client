@@ -20,7 +20,7 @@ func NewList(network *net.Network) (cmd *List) {
 	cmd.network = network
 	cmd.listCommands = map[string]command.Command{
 		ListApplicationCommand: NewListApplication(cmd.network),
-		ListEntityCommand: NewListEntity(cmd.network),
+		ListEntityCommand: NewEntities(cmd.network),
 		ListSensorCommand: NewListSensor(cmd.network),
 		ListEffectorCommand: NewListEffector(cmd.network),
 	}
