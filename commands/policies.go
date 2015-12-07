@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Policies struct {
@@ -22,13 +23,13 @@ func (cmd *Policies) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "policies",
 		Description: "Show the list of policies for an application and entity",
-		Usage:       "BROOKLYN_NAME policies APPLICATION ENTITY",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] policies APPLICATION ENTITY",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Policies) Run(c *cli.Context) {
-	policies := entity_policies.PolicyList(cmd.network, c.Args()[0], c.Args()[1])
+func (cmd *Policies) Run(scope scope.Scope, c *cli.Context) {
+	policies := entity_policies.PolicyList(cmd.network, scope.Application, scope.Entity)
 	table := terminal.NewTable([]string{"Name", "State"})
 	for _, policy := range policies {
 		table.Add(policy.Name, string(policy.State))

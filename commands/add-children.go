@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"time"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type AddChildren struct {
@@ -23,13 +24,13 @@ func (cmd *AddChildren) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "add-children",
 		Description: "Add a child or children to this entity from the supplied YAML",
-		Usage:       "BROOKLYN_NAME add-children FILEPATH",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] add-children FILEPATH",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *AddChildren) Run(c *cli.Context) {
-	activity := entities.AddChildren(cmd.network, c.Args()[0], c.Args()[1], c.Args()[2])
+func (cmd *AddChildren) Run(scope scope.Scope, c *cli.Context) {
+	activity := entities.AddChildren(cmd.network, scope.Application, scope.Entity, c.Args().First())
 	table := terminal.NewTable([]string{"Id", "Task", "Submitted", "Status"})
 	table.Add(activity.Id, activity.DisplayName, time.Unix(activity.SubmitTimeUtc/1000, 0).Format(time.UnixDate), activity.CurrentStatus)
 

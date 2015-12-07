@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/api/entity_policies"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type StopPolicy struct {
@@ -22,12 +23,12 @@ func (cmd *StopPolicy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "stop-policy",
 		Description: "Suspends a policy",
-		Usage:       "BROOKLYN_NAME stop-policy APPLICATION ENTITY POLICY",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] stop-policy POLICY",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *StopPolicy) Run(c *cli.Context) {
-	spec := entity_policies.StopPolicy(cmd.network, c.Args()[0], c.Args()[1], c.Args()[2])
+func (cmd *StopPolicy) Run(scope scope.Scope, c *cli.Context) {
+	spec := entity_policies.StopPolicy(cmd.network, scope.Application, scope.Entity, c.Args().First())
 	fmt.Println(spec)
 }

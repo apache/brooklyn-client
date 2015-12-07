@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/api/version"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Version struct {
@@ -22,12 +23,12 @@ func (cmd *Version) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "version",
 		Description: "Display the version of the connected Brooklyn",
-		Usage:       "BROOKLYN_NAME version",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] version",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Version) Run(c *cli.Context) {
+func (cmd *Version) Run(scope scope.Scope, c *cli.Context) {
 	version := version.Version(cmd.network)
 	fmt.Println(version)
 }

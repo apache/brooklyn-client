@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/command_factory"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Runner interface {
@@ -13,10 +14,12 @@ type Runner interface {
 
 type ConcreteRunner struct {
 	cmdFactory command_factory.Factory
+	scope scope.Scope
 }
 
-func NewRunner(cmdFactory command_factory.Factory) (runner ConcreteRunner) {
+func NewRunner(scope scope.Scope, cmdFactory command_factory.Factory) (runner ConcreteRunner) {
 	runner.cmdFactory = cmdFactory
+	runner.scope = scope
 	return
 }
 
@@ -27,7 +30,7 @@ func (runner ConcreteRunner) RunCmdByName(cmdName string, c *cli.Context) error 
 		return err
 	}
 
-	cmd.Run(c)
+	cmd.Run(runner.scope, c)
 	return nil
 }
 
@@ -38,6 +41,6 @@ func (runner ConcreteRunner) RunSubCmdByName(cmdName string, subCommand string, 
 		return err
 	}
 
-	cmd.Run(c)
+	cmd.Run(runner.scope, c)
 	return nil
 }

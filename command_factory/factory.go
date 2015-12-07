@@ -22,51 +22,63 @@ type concreteFactory struct {
 	subCommands map[string]map[string]command.Command
 }
 
+
 func NewFactory(network *net.Network, config *io.Config) (factory concreteFactory) {
 	factory.cmdsByName = make(map[string]command.Command)
 	factory.subCommands = make(map[string]map[string]command.Command)
 
-	factory.cmdsByName["access"] = commands.NewAccess(network)
-	//factory.cmdsByName["activities"] = commands.NewActivities(network)
-	factory.cmdsByName["activity"] = commands.NewActivity(network)
-	factory.cmdsByName["activity-children"] = commands.NewActivityChildren(network)
-	factory.cmdsByName["activity-stream"] = commands.NewActivityStream(network)
-	factory.cmdsByName["add-catalog"] = commands.NewAddCatalog(network)
-	factory.cmdsByName["add-children"] = commands.NewAddChildren(network)
-	factory.cmdsByName["application"] = commands.NewApplication(network)
-	factory.cmdsByName["catalog"] = commands.NewCatalog(network)
-	factory.cmdsByName["config"] = commands.NewConfig(network)
-	factory.cmdsByName["create"] = commands.NewCreate(network)
-	factory.cmdsByName["delete"] = commands.NewDelete(network)
-	factory.cmdsByName["destroy-policy"] = commands.NewDestroyPolicy(network)
-	factory.cmdsByName["entity-children"] = commands.NewChildren(network)
-	listCommand := commands.NewList(network)
-	factory.cmdsByName["list"] = listCommand;
-    factory.subCommand("list", "application", listCommand.SubCommand(commands.ListApplicationCommand))
-    factory.subCommand("list", "effector", listCommand.SubCommand(commands.ListEffectorCommand))
-    factory.subCommand("list", "entity", listCommand.SubCommand(commands.ListEntityCommand))
-    factory.subCommand("list", "sensor", listCommand.SubCommand(commands.ListSensorCommand))
-	factory.cmdsByName["locations"] = commands.NewLocations(network)
-	factory.cmdsByName["login"] = commands.NewLogin(network, config)
-	factory.cmdsByName["policies"] = commands.NewPolicies(network)
-	factory.cmdsByName["policy"] = commands.NewPolicy(network)
-	factory.cmdsByName["rename-entity"] = commands.NewRename(network)
-	factory.cmdsByName["sensor"] = commands.NewSensor(network)
-	factory.cmdsByName["set-config"] = commands.NewSetConfig(network)
-	factory.cmdsByName["spec"] = commands.NewSpec(network)
-	factory.cmdsByName["start-policy"] = commands.NewStartPolicy(network)
-	factory.cmdsByName["stop-policy"] = commands.NewStopPolicy(network)
-	factory.cmdsByName["tree"] = commands.NewTree(network)
-	factory.cmdsByName["version"] = commands.NewVersion(network)
+	factory.simpleCommand(commands.NewAccess(network))
+	//factory.command(commands.NewActivities(network))
+	factory.simpleCommand(commands.NewActivity(network))
+	factory.simpleCommand(commands.NewActivityChildren(network))
+	factory.simpleCommand(commands.NewActivityStream(network))
+	factory.simpleCommand(commands.NewAddCatalog(network))
+	factory.simpleCommand(commands.NewAddChildren(network))
+	factory.simpleCommand(commands.NewApplication(network))
+	factory.simpleCommand(commands.NewApplications(network))
+	factory.simpleCommand(commands.NewCatalog(network))
+    factory.simpleCommand(commands.NewChildren(network))
+    factory.simpleCommand(commands.NewConfig(network))
+    factory.simpleCommand(commands.NewCreate(network))
+    factory.simpleCommand(commands.NewDelete(network))
+    factory.simpleCommand(commands.NewDestroyPolicy(network))
+    factory.simpleCommand(commands.NewEffectors(network))
+    factory.simpleCommand(commands.NewEntities(network))
+    // NewList below is not used but we retain the code as an example of how to do a super command.
+    //	factory.superCommand(commands.NewList(network))
+	factory.simpleCommand(commands.NewLocations(network))
+	factory.simpleCommand(commands.NewLogin(network, config))
+	factory.simpleCommand(commands.NewPolicies(network))
+	factory.simpleCommand(commands.NewPolicy(network))
+	factory.simpleCommand(commands.NewRename(network))
+	factory.simpleCommand(commands.NewSensor(network))
+	factory.simpleCommand(commands.NewSensors(network))
+	factory.simpleCommand(commands.NewSetConfig(network))
+	factory.simpleCommand(commands.NewSpec(network))
+	factory.simpleCommand(commands.NewStartPolicy(network))
+	factory.simpleCommand(commands.NewStopPolicy(network))
+	factory.simpleCommand(commands.NewTree(network))
+	factory.simpleCommand(commands.NewVersion(network))
 
 	return factory
 }
 
-func (factory concreteFactory) subCommand(commandName string, subCommandName string, subCommand command.Command)  {
-	if nil == factory.subCommands[commandName] {
-		factory.subCommands[commandName] = make(map[string]command.Command)
+
+func (factory *concreteFactory) simpleCommand(cmd command.Command) {
+	factory.cmdsByName[cmd.Metadata().Name] = cmd
+}
+
+func (factory *concreteFactory) superCommand(cmd command.SuperCommand)  {
+
+    factory.simpleCommand(cmd)
+
+	if nil == factory.subCommands[cmd.Metadata().Name] {
+		factory.subCommands[cmd.Metadata().Name] = make(map[string]command.Command)
 	}
-	factory.subCommands[commandName][subCommandName] = subCommand
+
+	for _, sub := range cmd.SubCommandNames() {
+		factory.subCommands[cmd.Metadata().Name][sub] = cmd.SubCommand(sub)
+	}
 }
 
 func (f concreteFactory) GetByCmdName(cmdName string) (cmd command.Command, err error) {
@@ -84,6 +96,7 @@ func (f concreteFactory) GetByCmdName(cmdName string) (cmd command.Command, err 
 }
 
 func (f concreteFactory) GetBySubCmdName(cmdName string, subCmdName string) (cmd command.Command, err error) {
+
 	_, hasPrimary := f.subCommands[cmdName]
 	if hasPrimary {
 		cmd, found := f.subCommands[cmdName][subCmdName]

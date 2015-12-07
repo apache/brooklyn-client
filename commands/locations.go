@@ -6,6 +6,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
 type Locations struct {
@@ -22,12 +23,12 @@ func (cmd *Locations) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "locations",
 		Description: "List the available locations",
-		Usage:       "BROOKLYN_NAME locations",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] locations",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Locations) Run(c *cli.Context) {
+func (cmd *Locations) Run(scope scope.Scope, c *cli.Context) {
 	locationList := locations.LocationList(cmd.network)
 	table := terminal.NewTable([]string{"Id", "Name", "Spec"})
 	for _, location := range locationList {
