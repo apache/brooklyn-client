@@ -79,21 +79,35 @@ func ScopeArguments(args []string) ([]string, Scope) {
 	command := args[0]
 	args = args[1:]
 
-	allScopesFound := false
-	for !allScopesFound && len(args) > 2 {
-		if setAppropriateScope, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
-			setAppropriateScope(&scope, args[1])
-			args = args[2:]
-		} else {
-			allScopesFound = true
-		}
-	}
+	args = defineScope(args, &scope)
 
 	args = prepend(command, args)
 
 	return args, scope
 }
 
+func defineScope(args []string, scope *Scope) ([]string) {
+
+    allScopesFound := false
+    for !allScopesFound && len(args) > 2 {
+        if setAppropriateScope, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
+            setAppropriateScope(scope, args[1])
+            args = args[2:]
+        } else {
+            allScopesFound = true
+        }
+    }
+
+    setDefaultEntityIfRequired(scope)
+
+    return args
+}
+
+func setDefaultEntityIfRequired(scope *Scope) {
+    if "" == scope.Entity {
+        scope.Entity = scope.Application
+    }
+}
 
 func prepend(v string, args[]string) []string {
 	result := make([]string, len(args) + 1)

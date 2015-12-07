@@ -9,26 +9,26 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
-type ListSensorsSubCommand struct {
+type Sensors struct {
 	network *net.Network
 }
 
-func NewListSensor(network *net.Network) (cmd *ListSensorsSubCommand) {
-	cmd = new(ListSensorsSubCommand)
+func NewSensors(network *net.Network) (cmd *Sensors) {
+	cmd = new(Sensors)
 	cmd.network = network
 	return
 }
 
-func (cmd *ListSensorsSubCommand) Metadata() command_metadata.CommandMetadata {
+func (cmd *Sensors) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "sensors",
 		Description: "Show the sensors for an application and entity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] sensors",
+		Usage:       "BROOKLYN_NAME SCOPE sensors",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *ListSensorsSubCommand) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *Sensors) Run(scope scope.Scope, c *cli.Context) {
 	sensors := entity_sensors.SensorList(cmd.network, scope.Application, scope.Entity)
 	table := terminal.NewTable([]string{"Name", "Description", "Value"})
 	for _, sensor := range sensors {
