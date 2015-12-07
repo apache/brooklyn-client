@@ -22,7 +22,7 @@ func NewApplication(network *net.Network) (cmd *Application) {
 
 func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "status",
+		Name:        "application",
 		Description: "Show the status and location of a running application",
 		Usage:       "BROOKLYN_NAME [ SCOPE ] status",
 		Flags:       []cli.Flag{},
@@ -30,7 +30,7 @@ func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Application) Run(scope scope.Scope, c *cli.Context) {
-	application := application.Application(cmd.network, scope.Application)
+	application := application.Application(cmd.network, c.Args().First())
 
 	table := terminal.NewTable([]string{"Name", "Id", "Status", "Location"})
 	table.Add(application.Spec.Name, application.Id, string(application.Status), strings.Join(application.Spec.Locations, ", "))

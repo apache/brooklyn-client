@@ -80,7 +80,7 @@ func ScopeArguments(args []string) ([]string, Scope) {
 	args = args[1:]
 
 	allScopesFound := false
-	for !allScopesFound && len(args) >= 2 {
+	for !allScopesFound && len(args) > 2 {
 		if setAppropriateScope, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
 			setAppropriateScope(&scope, args[1])
 			args = args[2:]
