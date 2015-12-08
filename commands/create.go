@@ -9,26 +9,26 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 )
 
-type Create struct {
+type Deploy struct {
 	network *net.Network
 }
 
-func NewCreate(network *net.Network) (cmd *Create) {
-	cmd = new(Create)
+func NewDeploy(network *net.Network) (cmd *Deploy) {
+	cmd = new(Deploy)
 	cmd.network = network
 	return
 }
 
-func (cmd *Create) Metadata() command_metadata.CommandMetadata {
+func (cmd *Deploy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "create",
+		Name:        "deploy",
 		Description: "Create a new brooklyn application from the supplied YAML",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] create FILEPATH",
+		Usage:       "BROOKLYN_NAME [ SCOPE ] deploy FILEPATH",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *Create) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
 	create := application.Create(cmd.network, c.Args().First())
 	fmt.Println(create)
 }
