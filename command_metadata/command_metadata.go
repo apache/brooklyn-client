@@ -4,6 +4,7 @@ import "github.com/codegangsta/cli"
 
 type CommandMetadata struct {
 	Name            string
+	Aliases         []string
 	ShortName       string
 	Usage           string
 	Description     string
