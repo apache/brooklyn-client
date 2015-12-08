@@ -9,7 +9,6 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/codegangsta/cli"
-	"os"
 )
 
 type Login struct {
