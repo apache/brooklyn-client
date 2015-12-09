@@ -26,6 +26,7 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 func getCommand(baseName string, metadata command_metadata.CommandMetadata, runner command_runner.Runner) cli.Command {
 	command := cli.Command{
 		Name:        metadata.Name,
+		Aliases:     metadata.Aliases,
 		ShortName:   metadata.ShortName,
 		Description: metadata.Description,
 		Usage:       strings.Replace(metadata.Usage, "BROOKLYN_NAME", baseName, -1),
@@ -44,6 +45,7 @@ func getCommand(baseName string, metadata command_metadata.CommandMetadata, runn
 		for _, operand := range metadata.Operands {
 			command.Subcommands = append(command.Subcommands, cli.Command{
 				Name:            operand.Name,
+                Aliases:         operand.Aliases,
 				ShortName:       operand.ShortName,
 				Description:     operand.Description,
 				Usage:           operand.Usage,
