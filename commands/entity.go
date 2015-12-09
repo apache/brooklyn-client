@@ -31,7 +31,15 @@ func (cmd *Entity) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
-	summary, err := entities.GetEntity(cmd.network, scope.Application, scope.Entity)
+	if c.Args().Present() {
+		cmd.show(scope.Application, c.Args().First())
+	} else {
+		cmd.list(scope.Application)
+	}
+}
+
+func (cmd *Entity) show(application, entity string) {
+	summary, err := entities.GetEntity(cmd.network, application, entity)
     if nil != err {
         fmt.Fprintf(os.Stderr, "Error: %s\n", err)
         os.Exit(1)
@@ -39,5 +47,15 @@ func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
 	table := terminal.NewTable([]string{"Id", "Name", "Type", "CatalogItemId"})
 	table.Add(summary.Id, summary.Name, summary.Type, summary.CatalogItemId)
 
+	table.Print()
+}
+
+
+func (cmd *Entity) list(application string) {
+	entityList := entities.EntityList(cmd.network, application)
+	table := terminal.NewTable([]string{"Id", "Name", "Type"})
+	for _, entity := range entityList {
+		table.Add(entity.Id, entity.Name, entity.Type)
+	}
 	table.Print()
 }
