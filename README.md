@@ -4,7 +4,7 @@
 
 1. Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly 
 2. Get the cli source code: go get github.com/brooklyncentral/brooklyn-cli
-3. cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli
+3. cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
 4. go build
 
 ## Running
