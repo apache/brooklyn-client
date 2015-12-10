@@ -8,6 +8,10 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
+	"strconv"
+	"encoding/json"
+	"errors"
 )
 
 type Network struct {
@@ -42,6 +46,24 @@ func (net *Network) NewDeleteRequest(url string) *http.Request {
 	return net.NewRequest("DELETE", url, nil)
 }
 
+type httpError struct {
+	Status  string `json:"status"`
+	Headers http.Header `json:"headers"`
+	Body    string `json:"body"`
+}
+
+func makeError (resp *http.Response, body []byte) error {
+	errorObject, err := json.Marshal(httpError{
+		Status: resp.Status,
+		Headers: resp.Header,
+		Body: string(body),
+	})
+	if nil != err {
+		return errors.New("Response status: " + resp.Status)
+	}
+	return errors.New(string(errorObject))
+}
+
 func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -50,12 +72,25 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	if resp.Status != "200 OK" {
-		fmt.Println("response Status:", resp.Status)
-		fmt.Println("response Headers:", resp.Header)
-		fmt.Println("response Body:", string(body))
+	if unsuccessful(resp.Status)  {
+		return body, makeError(resp, body)
 	}
 	return body, err
+}
+
+
+const httpSuccessSeriesFrom = 200;
+const httpSuccessSeriesTo = 300;
+func unsuccessful(status string) bool {
+	tokens := strings.Split(status, " ")
+	if 0 == len(tokens) {
+		return false
+	}
+	code, err := strconv.Atoi(tokens[0])
+	if nil != err {
+		return false
+	}
+	return  code < httpSuccessSeriesFrom || httpSuccessSeriesTo <= code
 }
 
 func (net *Network) SendGetRequest(url string) ([]byte, error) {
