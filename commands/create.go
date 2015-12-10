@@ -22,7 +22,7 @@ func NewDeploy(network *net.Network) (cmd *Deploy) {
 func (cmd *Deploy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "deploy",
-		Description: "Create a new brooklyn application from the supplied YAML",
+		Description: "Deploy a new brooklyn application from the supplied YAML",
 		Usage:       "BROOKLYN_NAME [ SCOPE ] deploy FILEPATH",
 		Flags:       []cli.Flag{},
 	}
