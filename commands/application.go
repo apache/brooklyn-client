@@ -23,17 +23,39 @@ func NewApplication(network *net.Network) (cmd *Application) {
 func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "application",
-		Aliases:     []string{"app"},
-		Description: "Show the status and location of a running application",
-		Usage:       "BROOKLYN_NAME application APP",
+		Aliases:     []string{"applications","app","apps"},
+		Description: "Show the status and location of running applications",
+		Usage:       "BROOKLYN_NAME application [APP]",
 		Flags:       []cli.Flag{},
 	}
 }
 
 func (cmd *Application) Run(scope scope.Scope, c *cli.Context) {
-	application := application.Application(cmd.network, c.Args().First())
+	if c.Args().Present() {
+		cmd.show(c.Args().First())
+	} else {
+		cmd.list()
+	}	
+}
 
-	table := terminal.NewTable([]string{"Name", "Id", "Status", "Location"})
-	table.Add(application.Spec.Name, application.Id, string(application.Status), strings.Join(application.Spec.Locations, ", "))
+func (cmd *Application) show(appName string) {
+	application := application.Application(cmd.network, appName)
+	table := terminal.NewTable([]string{"Id:", application.Id})
+	table.Add("Name:", application.Spec.Name)
+	table.Add("Status:", string(application.Status))
+//	table.Add("Service Up:")
+	table.Add("Type:", application.Spec.Type)
+	table.Add("LocationId:", strings.Join(application.Spec.Locations, ", "))
+//	table.Add("Location:")
+//	table.Add("LocationType:")
+	table.Print()
+}
+
+func (cmd *Application) list() {
+	applications := application.Applications(cmd.network)
+	table := terminal.NewTable([]string{"Id", "Name", "Status", "Location"})
+	for _, app := range applications {
+		table.Add(app.Id, app.Spec.Name, string(app.Status), strings.Join(app.Spec.Locations, ", "))
+	}
 	table.Print()
 }
