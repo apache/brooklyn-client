@@ -24,8 +24,9 @@ func NewEntity(network *net.Network) (cmd *Entity) {
 func (cmd *Entity) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "entity",
-		Description: "Show the details for an entity",
-		Usage:       "BROOKLYN_NAME APP-SCOPE entity",
+		Aliases:     []string{"entities","ent","ents"},
+		Description: "Show the entities of an application or entity",
+		Usage:       "BROOKLYN_NAME SCOPE entity",
 		Flags:       []cli.Flag{},
 	}
 }
@@ -34,7 +35,11 @@ func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
 	if c.Args().Present() {
 		cmd.show(scope.Application, c.Args().First())
 	} else {
-		cmd.list(scope.Application)
+		if scope.Entity == "" {
+			cmd.listapp(scope.Application)
+		} else {
+			cmd.listentity(scope.Application, scope.Entity)
+		}
 	}
 }
 
@@ -51,11 +56,22 @@ func (cmd *Entity) show(application, entity string) {
 }
 
 
-func (cmd *Entity) list(application string) {
-	entityList := entities.EntityList(cmd.network, application)
+func (cmd *Entity) listapp(application string) {
+	entitiesList := entities.EntityList(cmd.network, application)
+	
 	table := terminal.NewTable([]string{"Id", "Name", "Type"})
-	for _, entity := range entityList {
-		table.Add(entity.Id, entity.Name, entity.Type)
+	for _, entityitem := range entitiesList {
+		table.Add(entityitem.Id, entityitem.Name, entityitem.Type)
+	}
+	table.Print()
+}
+
+func (cmd *Entity) listentity(application string, entity string) {
+	entitiesList := entities.Children(cmd.network, application, entity)
+
+	table := terminal.NewTable([]string{"Id", "Name", "Type"})
+	for _, entityitem := range entitiesList {
+		table.Add(entityitem.Id, entityitem.Name, entityitem.Type)
 	}
 	table.Print()
 }
