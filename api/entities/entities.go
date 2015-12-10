@@ -140,14 +140,16 @@ func Expunge(network *net.Network, application, entity string) string {
 }
 
 //WIP
-func GetEntity(network *net.Network, application, entity string) string {
+func GetEntity(network *net.Network, application, entity string) (models.EntitySummary, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s", application, entity)
-	body, err := network.SendGetRequest(url)
+    summary := models.EntitySummary{}
+    body, err := network.SendGetRequest(url)
 	if err != nil {
-		fmt.Println(err)
+		return summary, err
 	}
-    // TODO return model
-	return string(body)
+
+    err = json.Unmarshal(body, &summary)
+    return summary, err
 }
 
 func EntityList(network *net.Network, application string) []models.EntitySummary {

@@ -8,6 +8,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "os"
 )
 
 type Config struct {
@@ -30,10 +31,21 @@ func (cmd *Config) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Config) Run(scope scope.Scope, c *cli.Context) {
-	config := entity_config.ConfigCurrentState(cmd.network, scope.Application, scope.Entity)
-	table := terminal.NewTable([]string{"Key", "Value"})
-	for key, value := range config {
-		table.Add(key, fmt.Sprintf("%v", value))
-	}
-	table.Print()
+
+    if c.Args().Present() {
+        config, err := entity_config.ConfigValue(cmd.network, scope.Application, scope.Entity, c.Args().First())
+        if nil != err {
+            fmt.Fprintln(os.Stderr, err)
+            os.Exit(1)
+        }
+        fmt.Println(config)
+
+    } else {
+        config := entity_config.ConfigCurrentState(cmd.network, scope.Application, scope.Entity)
+        table := terminal.NewTable([]string{"Key", "Value"})
+        for key, value := range config {
+            table.Add(key, fmt.Sprintf("%v", value))
+        }
+        table.Print()
+    }
 }

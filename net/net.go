@@ -45,6 +45,9 @@ func (net *Network) NewDeleteRequest(url string) *http.Request {
 func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if resp.Status != "200 OK" {

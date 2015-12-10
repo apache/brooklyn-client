@@ -7,18 +7,22 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
-func ConfigValue(network *net.Network, application, entity, config string) string {
-	return string(ConfigValueAsBytes(network, application, entity, config))
+func ConfigValue(network *net.Network, application, entity, config string) (string, error) {
+	bytes, err := ConfigValueAsBytes(network, application, entity, config)
+	if nil != err {
+		return "", err
+	}
+	return string(bytes), nil
 }
 
-func ConfigValueAsBytes(network *net.Network, application, entity, config string) []byte {
+func ConfigValueAsBytes(network *net.Network, application, entity, config string) ([]byte, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		fmt.Println(err)
+		return []byte{}, err
 	}
 
-	return body
+	return body, nil
 }
 
 func SetConfig(network *net.Network, application, entity, config, value string) string {
