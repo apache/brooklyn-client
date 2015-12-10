@@ -22,7 +22,7 @@ func NewList(network *net.Network) (cmd *List) {
 //		ListApplicationCommand: NewApplications(cmd.network),
 //		ListEntityCommand: NewEntities(cmd.network),
 //		ListSensorCommand: NewSensors(cmd.network),
-//		ListEffectorCommand: NewEffectors(cmd.network),
+//		ListEffectorCommand: NewEffector(cmd.network),
 	}
 	return
 }
