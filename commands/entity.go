@@ -35,7 +35,7 @@ func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
 	if c.Args().Present() {
 		cmd.show(scope.Application, c.Args().First())
 	} else {
-		if scope.Entity == "" {
+		if scope.Entity == scope.Application {
 			cmd.listapp(scope.Application)
 		} else {
 			cmd.listentity(scope.Application, scope.Entity)
@@ -49,9 +49,10 @@ func (cmd *Entity) show(application, entity string) {
         fmt.Fprintf(os.Stderr, "Error: %s\n", err)
         os.Exit(1)
     }
-	table := terminal.NewTable([]string{"Id", "Name", "Type", "CatalogItemId"})
-	table.Add(summary.Id, summary.Name, summary.Type, summary.CatalogItemId)
-
+	table := terminal.NewTable([]string{"Id:", summary.Id})
+	table.Add("Name:", summary.Name)
+	table.Add("Type:", summary.Type)
+	table.Add("CatalogItemId:", summary.CatalogItemId)
 	table.Print()
 }
 
