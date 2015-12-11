@@ -1,0 +1,5 @@
+name: Test Tomcat
+location:
+  vagrantbyon
+services:
+  - type: org.apache.brooklyn.entity.webapp.tomcat.TomcatServer
