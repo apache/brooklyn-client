@@ -64,17 +64,13 @@ func PostConfig(network *net.Network, application, entity, config, value string)
 
 
 
-func ConfigCurrentState(network *net.Network, application, entity string) map[string]interface{} {
+func ConfigCurrentState(network *net.Network, application, entity string) (map[string]interface{}, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/current-state", application, entity)
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var currentState map[string]interface{}
+    var currentState map[string]interface{}
+    body, err := network.SendGetRequest(url)
+    if err != nil {
+        return currentState, err
+    }
 	err = json.Unmarshal(body, &currentState)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return currentState
+	return currentState, err
 }

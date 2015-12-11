@@ -68,12 +68,14 @@ func SensorList(network *net.Network, application, entity string) []models.Senso
 }
 
 
-func CurrentState(network *net.Network, application, entity, sensor string) string {
-	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/current-state", application, entity, sensor)
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
+func CurrentState(network *net.Network, application, entity string) (map[string]interface{}, error) {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/current-state", application, entity)
+    var currentState map[string]interface{}
+    body, err := network.SendGetRequest(url)
+    if err != nil {
+        return currentState, err
+    }
 
-	return string(body)
+    err = json.Unmarshal(body, &currentState)
+	return currentState, err
 }
