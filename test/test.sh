@@ -10,7 +10,7 @@ function fail() {
 
 function report() {
     if [ 0 -ne ${#FAILS[*]} ] ; then
-        echo "Test failures" 1>&2
+        echo " ${#FAILS[*]} Test failures" 1>&2
     else
         echo All tests succeeded
     fi
