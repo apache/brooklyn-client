@@ -89,7 +89,7 @@ func ScopeArguments(args []string) ([]string, Scope) {
 func defineScope(args []string, scope *Scope) ([]string) {
 
     allScopesFound := false
-    for !allScopesFound && len(args) > 2 {
+    for !allScopesFound && len(args) > 2 && args[1][0] != '-' {
         if setAppropriateScope, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
             setAppropriateScope(scope, args[1])
             args = args[2:]
