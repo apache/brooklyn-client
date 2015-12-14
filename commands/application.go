@@ -8,6 +8,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"strings"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Application struct {
@@ -39,7 +40,10 @@ func (cmd *Application) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *Application) show(appName string) {
-	application := application.Application(cmd.network, appName)
+	application, err := application.Application(cmd.network, appName)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Id:", application.Id})
 	table.Add("Name:", application.Spec.Name)
 	table.Add("Status:", string(application.Status))
@@ -52,7 +56,10 @@ func (cmd *Application) show(appName string) {
 }
 
 func (cmd *Application) list() {
-	applications := application.Applications(cmd.network)
+	applications, err := application.Applications(cmd.network)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Id", "Name", "Status", "Location"})
 	for _, app := range applications {
 		table.Add(app.Id, app.Spec.Name, string(app.Status), strings.Join(app.Spec.Locations, ", "))

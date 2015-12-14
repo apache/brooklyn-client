@@ -16,10 +16,7 @@ func Activity(network *net.Network, activity string) (models.TaskSummary, error)
     }
 
 	err = json.Unmarshal(body, &task)
-	if err != nil {
-		return task, err
-	}
-	return task, nil
+	return task, err
 }
 
 func ActivityChildren(network *net.Network, activity string) ([]models.TaskSummary, error) {
@@ -31,17 +28,11 @@ func ActivityChildren(network *net.Network, activity string) ([]models.TaskSumma
     }
 
 	err = json.Unmarshal(body, &tasks)
-	if err != nil {
-		return tasks, err
-	}
-	return tasks, nil
+	return tasks, err
 }
 
 func ActivityStream(network *net.Network, activity, streamId string) (string,  error) {
 	url := fmt.Sprintf("/v1/activities/%s/stream/%s", activity, streamId)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		return string(body), err
-	}
-	return string(body), nil
+	return string(body), err
 }

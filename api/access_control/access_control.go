@@ -17,10 +17,7 @@ func Access(network *net.Network) (models.AccessSummary, error) {
     }
 
 	err = json.Unmarshal(body, &access)
-	if err != nil {
-		return access, err
-	}
-	return access, nil
+	return access, err
 }
 
 // WIP
