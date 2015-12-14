@@ -7,54 +7,51 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
-func LocatedLocations(network *net.Network) string {
+func LocatedLocations(network *net.Network) (string, error) {
 	url := "/v1/locations/usage/LocatedLocations"
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
-	return string(body)
+	return string(body), nil
 }
 
-func GetLocation(network *net.Network, locationId string) string {
+func GetLocation(network *net.Network, locationId string) (string, error) {
 	url := fmt.Sprintf("/v1/locations/%s", locationId)
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
-	return string(body)
+	return string(body), nil
 }
 
-func DeleteLocation(network *net.Network, locationId string) string {
+func DeleteLocation(network *net.Network, locationId string) (string, error) {
 	url := fmt.Sprintf("/v1/locations/%s", locationId)
 	body, err := network.SendDeleteRequest(url)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
-	return string(body)
+	return string(body), nil
 }
 
 // WIP
-func CreateLocation(network *net.Network, locationId string) string {
+func CreateLocation(network *net.Network, locationId string) (string, error) {
 	url := fmt.Sprintf("/v1/locations", locationId)
 	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
-	return string(body)
+	return string(body), nil
 }
 
-func LocationList(network *net.Network) []models.LocationSummary {
+func LocationList(network *net.Network) ([]models.LocationSummary, error) {
 	url := "/v1/locations"
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var locationList []models.LocationSummary
+    body, err := network.SendGetRequest(url)
+    if err != nil {
+        return locationList, err
+    }
 
-	var locationList []models.LocationSummary
 	err = json.Unmarshal(body, &locationList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return locationList
+	return locationList, err
 }

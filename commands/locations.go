@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Locations struct {
@@ -29,7 +30,10 @@ func (cmd *Locations) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Locations) Run(scope scope.Scope, c *cli.Context) {
-	locationList := locations.LocationList(cmd.network)
+	locationList, err := locations.LocationList(cmd.network)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Id", "Name", "Spec"})
 	for _, location := range locationList {
 		table.Add(location.Id, location.Name, location.Spec)
