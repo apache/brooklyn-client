@@ -120,14 +120,14 @@ func (net *Network) SendPostRequest(urlStr string, data []byte) ([]byte, error) 
 	return body, err
 }
 
-func (net *Network) SendPostFileRequest(url, filePath string) ([]byte, error) {
+func (net *Network) SendPostFileRequest(url, filePath string, contentType string) ([]byte, error) {
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer file.Close()
 	req := net.NewPostRequest(url, file)
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Content-Type", contentType)
 	body, err := net.SendRequest(req)
 	return body, err
 }

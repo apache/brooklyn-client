@@ -35,7 +35,7 @@ func Applications(network *net.Network) []models.ApplicationSummary {
 
 func Create(network *net.Network, filePath string) models.TaskSummary {
 	url := "/v1/applications"
-	body, err := network.SendPostFileRequest(url, filePath)
+	body, err := network.SendPostFileRequest(url, filePath, "application/json")
 	if err != nil {
 		fmt.Println(err)
 	}

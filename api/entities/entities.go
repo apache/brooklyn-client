@@ -9,134 +9,101 @@ import (
 )
 
 //WIP
-func GetTask(network *net.Network, application, entity, task string) string {
+func GetTask(network *net.Network, application, entity, task string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/activities/%s", application, entity, task)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
     // TODO return model
-	return string(body)
+	return string(body), err
 }
 
 //WIP
-func GetIcon(network *net.Network, application, entity string) string {
+func GetIcon(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/icon", application, entity)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
     // TODO return model
-	return string(body)
+	return string(body), err
 }
 
-func Children(network *net.Network, application, entity string) []models.EntitySummary {
+func Children(network *net.Network, application, entity string) ([]models.EntitySummary, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
-	body, err := network.SendGetRequest(urlStr)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var entityList []models.EntitySummary
+    body, err := network.SendGetRequest(urlStr)
+    if err != nil {
+        return entityList, err
+    }
 
-	var entityList []models.EntitySummary
 	err = json.Unmarshal(body, &entityList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return entityList
+	return entityList, err
 }
 
-func AddChildren(network *net.Network, application, entity, filePath string) models.TaskSummary {
+func AddChildren(network *net.Network, application, entity, filePath string) (models.TaskSummary, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
-	body, err := network.SendPostFileRequest(urlStr, filePath)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var response models.TaskSummary
+    body, err := network.SendPostFileRequest(urlStr, filePath, "application/json")
+    if err != nil {
+        return response, err
+    }
 
-	var response models.TaskSummary
 	err = json.Unmarshal(body, &response)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return response
+	return response, err
 }
 
 //WIP
-func GetLocations(network *net.Network, application, entity string) string {
+func GetLocations(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/locations", application, entity)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
     // TODO return model
-	return string(body)
+	return string(body), err
 }
 
-func Spec(network *net.Network, application, entity string) string {
+func Spec(network *net.Network, application, entity string) (string, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/spec", application, entity)
 	body, err := network.SendGetRequest(urlStr)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return string(body)
+	return string(body), err
 }
 
 //WIP
-func GetDescendants(network *net.Network, application, entity string) string {
+func GetDescendants(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/descendants", application, entity)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
     // TODO return model
-	return string(body)
+	return string(body), err
 }
 
 //WIP
-func GetDescendantsSensor(network *net.Network, application, entity, sensor string) string {
+func GetDescendantsSensor(network *net.Network, application, entity, sensor string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/descendants/sensor/%s", application, entity, sensor)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
     // TODO return model
-	return string(body)
+	return string(body), err
 }
 
-func GetActivities(network *net.Network, application, entity string) []models.TaskSummary {
+func GetActivities(network *net.Network, application, entity string) ([]models.TaskSummary, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/activities", application, entity)
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var activityList []models.TaskSummary
+    body, err := network.SendGetRequest(url)
+    if err != nil {
+        return activityList, err
+    }
 
-	var activityList []models.TaskSummary
 	err = json.Unmarshal(body, &activityList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return activityList
+	return activityList, err
 }
 
 //WIP
-func GetTags(network *net.Network, application, entity string) string {
+func GetTags(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/tags", application, entity)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
     // TODO return model
-	return string(body)
+	return string(body), err
 }
 
 //WIP
-func Expunge(network *net.Network, application, entity string) string {
+func Expunge(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/expunge", application, entity)
 	body, err := network.SendEmptyPostRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
     // TODO return model
-	return string(body)
+	return string(body), err
 }
 
 //WIP
@@ -152,27 +119,20 @@ func GetEntity(network *net.Network, application, entity string) (models.EntityS
     return summary, err
 }
 
-func EntityList(network *net.Network, application string) []models.EntitySummary {
+func EntityList(network *net.Network, application string) ([]models.EntitySummary, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities", application)
-	body, err := network.SendGetRequest(urlStr)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var entityList []models.EntitySummary
+    body, err := network.SendGetRequest(urlStr)
+    if err != nil {
+        return entityList, err
+    }
 
-	var entityList []models.EntitySummary
 	err = json.Unmarshal(body, &entityList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return entityList
+	return entityList, err
 }
 
-func Rename(network *net.Network, application, entity, newName string) string {
+func Rename(network *net.Network, application, entity, newName string) (string, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/name?name=%s", application, entity, url.QueryEscape(newName))
 	body, err := network.SendEmptyPostRequest(urlStr)
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-	return string(body)
+	return string(body), err
 }

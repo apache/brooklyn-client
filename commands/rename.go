@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Rename struct {
@@ -29,6 +30,9 @@ func (cmd *Rename) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Rename) Run(scope scope.Scope, c *cli.Context) {
-	rename := entities.Rename(cmd.network, scope.Application, scope.Entity, c.Args().First())
+	rename, err := entities.Rename(cmd.network, scope.Application, scope.Entity, c.Args().First())
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(rename)
 }

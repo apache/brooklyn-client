@@ -151,7 +151,7 @@ func Locations(network *net.Network) models.CatalogLocationSummary {
 
 func AddCatalog(network *net.Network, filePath string) string {
 	url := "/v1/catalog"
-	body, err := network.SendPostFileRequest(url, filePath)
+	body, err := network.SendPostFileRequest(url, filePath, "application/json")
 	if err != nil {
 		fmt.Println(err)
 	}
