@@ -8,6 +8,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"strings"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Effector struct {
@@ -31,7 +32,10 @@ func (cmd *Effector) Metadata() command_metadata.CommandMetadata {
 
 func (cmd *Effector) Run(scope scope.Scope, c *cli.Context) {
 
-	effectors := entity_effectors.EffectorList(cmd.network, scope.Application, scope.Entity)
+	effectors, err := entity_effectors.EffectorList(cmd.network, scope.Application, scope.Entity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Name", "Description", "Parameters"})
 	for _, effector := range effectors {
 		var parameters []string

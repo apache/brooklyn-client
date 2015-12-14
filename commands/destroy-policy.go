@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type DestroyPolicy struct {
@@ -29,6 +30,9 @@ func (cmd *DestroyPolicy) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *DestroyPolicy) Run(scope scope.Scope, c *cli.Context) {
-	spec := entity_policies.DestroyPolicy(cmd.network, scope.Application, scope.Entity, c.Args().First())
+	spec, err := entity_policies.DestroyPolicy(cmd.network, scope.Application, scope.Entity, c.Args().First())
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(spec)
 }

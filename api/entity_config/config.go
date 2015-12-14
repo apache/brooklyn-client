@@ -25,41 +25,30 @@ func ConfigValueAsBytes(network *net.Network, application, entity, config string
 	return body, nil
 }
 
-func SetConfig(network *net.Network, application, entity, config, value string) string {
+func SetConfig(network *net.Network, application, entity, config, value string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
 	val := []byte(value)
 	body, err := network.SendPostRequest(url, val)
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-	return string(body)
+	return string(body), err
 }
 
-func ConfigList(network *net.Network, application, entity string) []models.ConfigSummary {
+func ConfigList(network *net.Network, application, entity string) ([]models.ConfigSummary, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config", application, entity)
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var configList []models.ConfigSummary
+    body, err := network.SendGetRequest(url)
+    if err != nil {
+        return configList, err
+    }
 
-	var configList []models.ConfigSummary
 	err = json.Unmarshal(body, &configList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return configList
+	return configList, err
 }
 
-func PostConfig(network *net.Network, application, entity, config, value string) string {
+func PostConfig(network *net.Network, application, entity, config, value string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config", application, entity)
 	val := []byte(value)
 	body, err := network.SendPostRequest(url, val)
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-	return string(body)
+	return string(body), err
 }
 
 

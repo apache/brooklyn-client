@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Policies struct {
@@ -29,7 +30,10 @@ func (cmd *Policies) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Policies) Run(scope scope.Scope, c *cli.Context) {
-	policies := entity_policies.PolicyList(cmd.network, scope.Application, scope.Entity)
+	policies, err := entity_policies.PolicyList(cmd.network, scope.Application, scope.Entity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Name", "State"})
 	for _, policy := range policies {
 		table.Add(policy.Name, string(policy.State))
