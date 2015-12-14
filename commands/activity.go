@@ -11,6 +11,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/brooklyncentral/brooklyn-cli/api/entities"
 	"fmt"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Activity struct {
@@ -55,7 +56,10 @@ func (cmd *Activity) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *Activity) show(activityId string) {
-	activity := activities.Activity(cmd.network, activityId)
+	activity, err := activities.Activity(cmd.network, activityId)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	
 	table := terminal.NewTable([]string{"Id:", activity.Id})
 	table.Add("DisplayName:", activity.DisplayName)
@@ -96,7 +100,10 @@ func (cmd *Activity) list(application, entity string) {
 }
 
 func (cmd *Activity) listchildren(activity string) {
-	activityList := activities.ActivityChildren(cmd.network, activity)
+	activityList, err := activities.ActivityChildren(cmd.network, activity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Id", "Task", "Submitted", "Status"})
 	for _, activity := range activityList {
 		table.Add(activity.Id, truncate(activity.DisplayName),
