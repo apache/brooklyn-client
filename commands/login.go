@@ -81,6 +81,9 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.config.Map["target"] = cmd.network.BrooklynUrl
 	cmd.config.Write()
 	
-	loginversion := version.Version(cmd.network)
-	fmt.Printf("Connected to Brooklyn version %s at %s\n",loginversion,cmd.network.BrooklynUrl)
+	loginVersion, err := version.Version(cmd.network)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
+	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)
 }
