@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type ActivityStreamEnv struct {
@@ -86,21 +87,33 @@ func (cmd *ActivityStreamStdout) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *ActivityStreamEnv) Run(scope scope.Scope, c *cli.Context) {
-	activityStream := activities.ActivityStream(cmd.network, scope.Activity, "env")
+	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "env")
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(activityStream)
 }
 
 func (cmd *ActivityStreamStderr) Run(scope scope.Scope, c *cli.Context) {
-	activityStream := activities.ActivityStream(cmd.network, scope.Activity, "stderr")
+	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "stderr")
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(activityStream)
 }
 
 func (cmd *ActivityStreamStdin) Run(scope scope.Scope, c *cli.Context) {
-	activityStream := activities.ActivityStream(cmd.network, scope.Activity, "stdin")
+	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "stdin")
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(activityStream)
 }
 
 func (cmd *ActivityStreamStdout) Run(scope scope.Scope, c *cli.Context) {
-	activityStream := activities.ActivityStream(cmd.network, scope.Activity, "stdout")
+	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "stdout")
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(activityStream)
 }
