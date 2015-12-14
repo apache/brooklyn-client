@@ -1,15 +1,18 @@
 package version
 
 import (
-	"fmt"
 	"github.com/brooklyncentral/brooklyn-cli/net"
+    "github.com/brooklyncentral/brooklyn-cli/models"
+    "encoding/json"
 )
 
-func Version(network *net.Network) string {
-	url := "/v1/version"
+func Version(network *net.Network) (models.VersionSummary, error) {
+	url := "/v1/server/version"
+    var versionSummary models.VersionSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		fmt.Println(err)
+		return versionSummary, err
 	}
-	return string(body)
+    err = json.Unmarshal(body, &versionSummary)
+	return versionSummary, err
 }
