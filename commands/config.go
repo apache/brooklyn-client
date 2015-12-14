@@ -9,6 +9,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
     "os"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Config struct {
@@ -41,7 +42,10 @@ func (cmd *Config) Run(scope scope.Scope, c *cli.Context) {
         fmt.Println(config)
 
     } else {
-        config := entity_config.ConfigCurrentState(cmd.network, scope.Application, scope.Entity)
+        config, err := entity_config.ConfigCurrentState(cmd.network, scope.Application, scope.Entity)
+        if nil != err {
+            error_handler.ErrorExit(err)
+        }
         table := terminal.NewTable([]string{"Key", "Value"})
         for key, value := range config {
             table.Add(key, fmt.Sprintf("%v", value))

@@ -9,6 +9,8 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
     "os"
     "fmt"
+    "github.com/brooklyncentral/brooklyn-cli/api/entity_sensors"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Entity struct {
@@ -43,6 +45,7 @@ func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
 	}
 }
 
+const serviceStateSensor = "service.state"
 func (cmd *Entity) show(application, entity string) {
 	summary, err := entities.GetEntity(cmd.network, application, entity)
     if nil != err {
@@ -50,9 +53,16 @@ func (cmd *Entity) show(application, entity string) {
         os.Exit(1)
     }
 	table := terminal.NewTable([]string{"Id:", summary.Id})
-	table.Add("Name:", summary.Name)
-	table.Add("Type:", summary.Type)
-	table.Add("CatalogItemId:", summary.CatalogItemId)
+    table.Add("Name:", summary.Name)
+    table.Add("Type:", summary.Type)
+    table.Add("CatalogItemId:", summary.CatalogItemId)
+    configState, err := entity_sensors.CurrentState(cmd.network, application, entity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
+    if serviceState, ok := configState[serviceStateSensor]; ok {
+        table.Add("Status:", fmt.Sprintf("%v", serviceState))
+    }
 	table.Print()
 }
 
