@@ -7,7 +7,7 @@ type CatalogItemSummary struct {
 	Version      string                 `json:"version"`
 	PlanYaml     string                 `json:"planYaml"`
 	Description  string                 `json:"description"`
-	Deprecated   string                 `json:"deprecated"`
+	Deprecated   bool                   `json:"deprecated"`
 	Links        map[string]interface{} `json:"links"`
 	Id           string                 `json:"id"`
 	Type         string                 `json:"type"`
@@ -40,7 +40,7 @@ type CatalogEntitySummary struct {
     Config       []ConfigSummary        `json:"config"`
     Effectors    []EffectorSummary      `json:"effectors"`
     Sensors      []SensorSummary        `json:"sensors"`
-	Deprecated   string                 `json:"deprecated"`
+	Deprecated   bool                   `json:"deprecated"`
 	Links        map[string]interface{} `json:"links"`
 	Id           string                 `json:"id"`
 	Type         string                 `json:"type"`
