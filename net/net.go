@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -129,4 +130,18 @@ func (net *Network) SendPostFileRequest(url, filePath string, contentType string
 	req.Header.Set("Content-Type", contentType)
 	body, err := net.SendRequest(req)
 	return body, err
+}
+
+func VerifyLoginURL(network *Network) error {
+	url, err := url.Parse(network.BrooklynUrl)
+	if err != nil {
+		return err
+	}
+	if url.Scheme != "http" && url.Scheme != "https" {
+		return errors.New("Brooklyn URL must have a scheme of \"http\" or \"https\"")
+	}
+	if url.Host == "" {
+		return errors.New("Brooklyn URL must have a valid host")
+	}
+	return nil
 }
