@@ -73,7 +73,7 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if unsuccessful(resp.Status)  {
-		return body, makeError(resp, body)
+		return nil, errors.New(resp.Status)
 	}
 	return body, err
 }
