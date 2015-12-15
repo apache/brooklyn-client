@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Spec struct {
@@ -29,6 +30,9 @@ func (cmd *Spec) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Spec) Run(scope scope.Scope, c *cli.Context) {
-	spec := entities.Spec(cmd.network, scope.Application, scope.Entity)
+	spec, err := entities.Spec(cmd.network, scope.Application, scope.Entity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(spec)
 }

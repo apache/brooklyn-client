@@ -33,7 +33,10 @@ func GetEntityWithVersion(network *net.Network, entityId, version string) (model
 func DeleteEntityWithVersion(network *net.Network, entityId, version string) (string, error) {
 	url := fmt.Sprintf("/v1/catalog/entities/%s/%s", entityId, version)
 	body, err := network.SendDeleteRequest(url)
-	return string(body), err
+    if err != nil {
+        return "", err
+    }
+	return string(body), nil
 }
 
 func GetEntity(network *net.Network, entityId string) (models.CatalogEntitySummary, error) {
@@ -50,7 +53,10 @@ func GetEntity(network *net.Network, entityId string) (models.CatalogEntitySumma
 func DeleteEntity(network *net.Network, entityId string) (string, error) {
 	url := fmt.Sprintf("/v1/catalog/entities/%s", entityId)
 	body, err := network.SendDeleteRequest(url)
-	return string(body), err
+    if err != nil {
+        return "", err
+    }
+	return string(body), nil
 }
 
 func GetPolicy(network *net.Network, policyId string) (models.CatalogItemSummary, error) {
@@ -78,7 +84,10 @@ func GetPolicyWithVersion(network *net.Network, policyId, version string) (model
 func DeletePolicyWithVersion(network *net.Network, policyId, version string) (string, error) {
 	url := fmt.Sprintf("/v1/catalog/policies/%s/%s", policyId)
 	body, err := network.SendDeleteRequest(url)
-	return string(body), err
+    if err != nil {
+        return "", err
+    }
+	return string(body), nil
 }
 
 func GetApplication(network *net.Network, applicationId string) (models.CatalogEntitySummary, error) {
@@ -106,7 +115,10 @@ func GetApplicationWithVersion(network *net.Network, applicationId, version stri
 func DeleteApplicationWithVersion(network *net.Network, applicationId, version string) (string, error) {
 	url := fmt.Sprintf("/v1/catalog/applications/%s/%s", applicationId, version)
 	body, err := network.SendDeleteRequest(url)
-	return string(body), err
+    if err != nil {
+        return "", err
+    }
+	return string(body), nil
 }
 
 func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
@@ -133,14 +145,20 @@ func Locations(network *net.Network) (models.CatalogLocationSummary, error) {
 
 func AddCatalog(network *net.Network, filePath string) (string, error) {
 	url := "/v1/catalog"
-	body, err := network.SendPostFileRequest(url, filePath)
-	return string(body), err
+	body, err := network.SendPostFileRequest(url, filePath, "application/json")
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
 }
 
 func Reset(network *net.Network) (string, error) {
 	url := "/v1/catalog/reset"
 	body, err := network.SendEmptyPostRequest(url)
-	return string(body), err
+    if err != nil {
+        return "", err
+    }
+	return string(body), nil
 }
 
 func GetLocationWithVersion(network *net.Network, locationId, version string) (models.CatalogLocationSummary, error) {
@@ -157,7 +175,10 @@ func GetLocationWithVersion(network *net.Network, locationId, version string) (m
 func PostLocationWithVersion(network *net.Network, locationId, version string) (string, error)  {
 	url := fmt.Sprintf("/v1/catalog/locations/%s/%s", locationId, version)
 	body, err := network.SendEmptyPostRequest(url)
-	return string(body), err
+    if err != nil {
+        return "", err
+    }
+	return string(body), nil
 }
 
 func Entities(network *net.Network) ([]models.CatalogItemSummary, error) {

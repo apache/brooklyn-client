@@ -33,7 +33,7 @@ func Applications(network *net.Network) ([]models.ApplicationSummary, error) {
 func Create(network *net.Network, filePath string) (models.TaskSummary, error) {
 	url := "/v1/applications"
     var response models.TaskSummary
-    body, err := network.SendPostFileRequest(url, filePath)
+    body, err := network.SendPostFileRequest(url, filePath, "application/json")
     if err != nil {
         return response, err
     }

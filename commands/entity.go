@@ -81,8 +81,10 @@ func (cmd *Entity) show(application, entity string) {
 
 
 func (cmd *Entity) listapp(application string) {
-	entitiesList := entities.EntityList(cmd.network, application)
-	
+	entitiesList, err := entities.EntityList(cmd.network, application)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Id", "Name", "Type"})
 	for _, entityitem := range entitiesList {
 		table.Add(entityitem.Id, entityitem.Name, entityitem.Type)
@@ -91,7 +93,10 @@ func (cmd *Entity) listapp(application string) {
 }
 
 func (cmd *Entity) listentity(application string, entity string) {
-	entitiesList := entities.Children(cmd.network, application, entity)
+	entitiesList, err := entities.Children(cmd.network, application, entity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 
 	table := terminal.NewTable([]string{"Id", "Name", "Type"})
 	for _, entityitem := range entitiesList {

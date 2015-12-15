@@ -90,7 +90,10 @@ func (cmd *Activity) show(activityId string) {
 }
 
 func (cmd *Activity) list(application, entity string) {
-	activityList := entities.GetActivities(cmd.network, application, entity)
+	activityList, err := entities.GetActivities(cmd.network, application, entity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Id", "Task", "Submitted", "Status"})
 	for _, activity := range activityList {
 		table.Add(activity.Id, truncate(activity.DisplayName),
