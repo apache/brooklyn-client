@@ -1,14 +1,15 @@
 package commands
 
 import (
-	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/application"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+    "github.com/brooklyncentral/brooklyn-cli/models"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/brooklyncentral/brooklyn-cli/error_handler"
-	"io/ioutil"
+    "github.com/brooklyncentral/brooklyn-cli/terminal"
+    "io/ioutil"
 	"os"
 )
 
@@ -32,6 +33,8 @@ func (cmd *Deploy) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
+    var create models.TaskSummary
+    var err error
 	if c.Args().First() == "" {
 		error_handler.ErrorExit("A filename or '-' must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
 	}
@@ -40,16 +43,20 @@ func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
 		if err != nil {
 			error_handler.ErrorExit(err)
 		}
-		create, err := application.CreateFromBytes(cmd.network, blueprint)
+		create, err = application.CreateFromBytes(cmd.network, blueprint)
 		if nil != err {
 			error_handler.ErrorExit(err)
 		}
-		fmt.Println(create)
+//		fmt.Println(create)
 	} else {
-		create, err := application.Create(cmd.network, c.Args().First())
+		create, err = application.Create(cmd.network, c.Args().First())
 		if nil != err {
 			error_handler.ErrorExit(err)
 		}
-		fmt.Println(create)
+//		fmt.Println(create)
 	}
+    table := terminal.NewTable([]string{"Id:",create.EntityId})
+    table.Add("Name:", create.EntityDisplayName)
+    table.Add("Status:", create.CurrentStatus)
+    table.Print()
 }
