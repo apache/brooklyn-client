@@ -138,10 +138,10 @@ func VerifyLoginURL(network *Network) error {
 		return err
 	}
 	if url.Scheme != "http" && url.Scheme != "https" {
-		return errors.New("Brooklyn URL must have a scheme of \"http\" or \"https\"")
+		return errors.New("Use login command to set Brooklyn URL with a scheme of \"http\" or \"https\"")
 	}
 	if url.Host == "" {
-		return errors.New("Brooklyn URL must have a valid host")
+		return errors.New("Use login command to set Brooklyn URL with a valid host[:port]")
 	}
 	return nil
 }
