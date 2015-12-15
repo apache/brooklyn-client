@@ -2,7 +2,6 @@ package net
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -123,7 +122,7 @@ func (net *Network) SendPostRequest(urlStr string, data []byte) ([]byte, error) 
 func (net *Network) SendPostFileRequest(url, filePath string, contentType string) ([]byte, error) {
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 	defer file.Close()
 	req := net.NewPostRequest(url, file)

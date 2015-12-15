@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_runner"
 	"strings"
 	"os"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
@@ -33,7 +34,7 @@ func getCommand(baseName string, metadata command_metadata.CommandMetadata, runn
 		Action: func(context *cli.Context) {
 			err := runner.RunCmdByName(metadata.Name, context)
 			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
+				error_handler.ErrorExit(err)
 			}
 		},
 		Flags:           metadata.Flags,
