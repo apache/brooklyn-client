@@ -24,7 +24,7 @@ func (cmd *SetConfig) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "set",
 		Description: "Set config for an entity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] set VALUE",
+		Usage:       "BROOKLYN_NAME CONFIG-SCOPE set VALUE",
 		Flags:       []cli.Flag{},
 	}
 }

@@ -24,7 +24,7 @@ func (cmd *Policy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "policy",
 		Description: "Show the status of a policy for an application and entity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] policy POLICY",
+		Usage:       "BROOKLYN_NAME SCOPE policy POLICY",
 		Flags:       []cli.Flag{},
 	}
 }

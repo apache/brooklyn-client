@@ -52,7 +52,7 @@ func (cmd *List) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "list",
 		Description: "List details for a variety of operands",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] list (" + listCommandsUsage + ")",
+		Usage:       "BROOKLYN_NAME SCOPE list (" + listCommandsUsage + ")",
 		Flags:       []cli.Flag{},
 		Operands:    []command_metadata.CommandMetadata {
 			cmd.SubCommand(ListApplicationCommand).Metadata(),

@@ -24,7 +24,7 @@ func (cmd *Version) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "version",
 		Description: "Display the version of the connected Brooklyn",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] version",
+		Usage:       "BROOKLYN_NAME version",
 		Flags:       []cli.Flag{},
 	}
 }

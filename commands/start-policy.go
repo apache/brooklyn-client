@@ -24,7 +24,7 @@ func (cmd *StartPolicy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "start-policy",
 		Description: "Start or resume a policy",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] start-policy POLICY",
+		Usage:       "BROOKLYN_NAME SCOPE start-policy POLICY",
 		Flags:       []cli.Flag{},
 	}
 }

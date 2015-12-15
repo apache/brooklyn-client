@@ -23,8 +23,8 @@ func NewLocations(network *net.Network) (cmd *Locations) {
 func (cmd *Locations) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "locations",
-		Description: "List the available locations",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] locations",
+		Description: "* List the available locations",
+		Usage:       "BROOKLYN_NAME locations",
 		Flags:       []cli.Flag{},
 	}
 }

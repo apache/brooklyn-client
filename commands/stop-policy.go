@@ -24,7 +24,7 @@ func (cmd *StopPolicy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "stop-policy",
 		Description: "Suspends a policy",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] stop-policy POLICY",
+		Usage:       "BROOKLYN_NAME SCOPE stop-policy POLICY",
 		Flags:       []cli.Flag{},
 	}
 }

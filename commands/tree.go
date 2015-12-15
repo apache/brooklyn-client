@@ -24,8 +24,8 @@ func NewTree(network *net.Network) (cmd *Tree) {
 func (cmd *Tree) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "tree",
-		Description: "Show the tree of all applications",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] tree",
+		Description: "* Show the tree of all applications",
+		Usage:       "BROOKLYN_NAME tree",
 		Flags:       []cli.Flag{},
 	}
 }

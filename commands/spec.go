@@ -24,7 +24,7 @@ func (cmd *Spec) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "spec",
 		Description: "Get the YAML spec used to create the entity, if available",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] spec",
+		Usage:       "BROOKLYN_NAME SCOPE spec",
 		Flags:       []cli.Flag{},
 	}
 }

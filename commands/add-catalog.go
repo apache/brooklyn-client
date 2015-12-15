@@ -23,8 +23,8 @@ func NewAddCatalog(network *net.Network) (cmd *AddCatalog) {
 func (cmd *AddCatalog) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "add-catalog",
-		Description: "Add a new catalog item from the supplied YAML",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] add-catalog FILEPATH",
+		Description: "* Add a new catalog item from the supplied YAML",
+		Usage:       "BROOKLYN_NAME add-catalog FILEPATH",
 		Flags:       []cli.Flag{},
 	}
 }

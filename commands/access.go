@@ -24,7 +24,7 @@ func (cmd *Access) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "access",
 		Description: "Show access control",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] access",
+		Usage:       "BROOKLYN_NAME access",
 		Flags:       []cli.Flag{},
 	}
 }

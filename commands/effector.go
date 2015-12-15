@@ -25,7 +25,7 @@ func (cmd *Effector) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "effector",
 		Description: "Show the effectors for an application or entity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] effector [ NAME ]",
+		Usage:       "BROOKLYN_NAME SCOPE effector [ NAME ]",
 		Flags:       []cli.Flag{},
 	}
 }
