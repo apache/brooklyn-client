@@ -3,9 +3,9 @@
 ## Compiling
 
 1. Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly,
-   e.g. to some location where Go does its working, such as `~/gocode` .
+   to some location where Go does its work, such as `~/gocode` .
 2. Get and build the cli source code: `go get github.com/brooklyncentral/brooklyn-cli/br`
-3. Run it from `$GOPATH/bin/br`
+3. Run it from `$GOPATH/bin/br` (add `$GOPATH/bin/` to your PATH).
 4. Thereafter if you want to do code changes, 
    link the `$GOPATH/src/github.com/brooklyncentral/brooklyn-cli`
    with the directory where you want to keep your git repositories.
@@ -16,13 +16,13 @@
 
 First, log in to your Brooklyn instance with:
 
-    $ ./br login URL [USER PASSWORD]
+    $ br login URL [USER PASSWORD]
 
 See the help command for info on all commands:
 
-    $ ./br help
+    $ br help
 
 And for help on individual commands:
 
-    $ ./br help COMMAND
+    $ br help COMMAND
 

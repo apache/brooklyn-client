@@ -33,6 +33,9 @@ func ActivityChildren(network *net.Network, activity string) ([]models.TaskSumma
 
 func ActivityStream(network *net.Network, activity, streamId string) (string,  error) {
 	url := fmt.Sprintf("/v1/activities/%s/stream/%s", activity, streamId)
-	body, err := network.SendGetRequest(url)
-	return string(body), err
+    body, err := network.SendGetRequest(url)
+    if nil != err {
+        return "", err
+    }
+	return string(body), nil
 }

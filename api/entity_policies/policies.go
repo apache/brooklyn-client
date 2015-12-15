@@ -43,31 +43,46 @@ func PolicyList(network *net.Network, application, entity string) ([]models.Poli
 func PolicyStatus(network *net.Network, application, entity, policy string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s", application, entity, policy)
 	body, err := network.SendGetRequest(url)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func CurrentState(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/current-state", application, entity)
 	body, err := network.SendGetRequest(url)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func StartPolicy(network *net.Network, application, entity, policy string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/start", application, entity, policy)
 	body, err := network.SendEmptyPostRequest(url)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func StopPolicy(network *net.Network, application, entity, policy string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/stop", application, entity, policy)
 	body, err := network.SendEmptyPostRequest(url)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func DestroyPolicy(network *net.Network, application, entity, policy string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/policies/%s/destroy", application, entity, policy)
 	body, err := network.SendEmptyPostRequest(url)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 

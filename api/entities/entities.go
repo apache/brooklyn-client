@@ -13,7 +13,10 @@ func GetTask(network *net.Network, application, entity, task string) (string, er
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/activities/%s", application, entity, task)
 	body, err := network.SendGetRequest(url)
     // TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 //WIP
@@ -21,7 +24,10 @@ func GetIcon(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/icon", application, entity)
 	body, err := network.SendGetRequest(url)
     // TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func Children(network *net.Network, application, entity string) ([]models.EntitySummary, error) {
@@ -53,13 +59,19 @@ func GetLocations(network *net.Network, application, entity string) (string, err
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/locations", application, entity)
 	body, err := network.SendGetRequest(url)
     // TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func Spec(network *net.Network, application, entity string) (string, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/spec", application, entity)
 	body, err := network.SendGetRequest(urlStr)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 //WIP
@@ -67,7 +79,10 @@ func GetDescendants(network *net.Network, application, entity string) (string, e
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/descendants", application, entity)
 	body, err := network.SendGetRequest(url)
     // TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 //WIP
@@ -75,7 +90,10 @@ func GetDescendantsSensor(network *net.Network, application, entity, sensor stri
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/descendants/sensor/%s", application, entity, sensor)
 	body, err := network.SendGetRequest(url)
     // TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func GetActivities(network *net.Network, application, entity string) ([]models.TaskSummary, error) {
@@ -95,7 +113,10 @@ func GetTags(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/tags", application, entity)
 	body, err := network.SendGetRequest(url)
     // TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 //WIP
@@ -103,7 +124,10 @@ func Expunge(network *net.Network, application, entity string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/expunge", application, entity)
 	body, err := network.SendEmptyPostRequest(url)
     // TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 //WIP
@@ -134,5 +158,8 @@ func EntityList(network *net.Network, application string) ([]models.EntitySummar
 func Rename(network *net.Network, application, entity, newName string) (string, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/name?name=%s", application, entity, url.QueryEscape(newName))
 	body, err := network.SendEmptyPostRequest(urlStr)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
