@@ -12,7 +12,7 @@ func Fetch(network *net.Network) (string, error) {
 	url := "/v1/applications/fetch"
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		return string(body), err
+		return "", err
 	}
 	// TODO return model
 	return string(body), nil
@@ -58,7 +58,10 @@ func Descendants(network *net.Network, app string) (string, error) {
 	
 	body, err := network.SendGetRequest(url)
 	// TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+	return string(body), nil
 }
 
 // WIP
@@ -67,7 +70,10 @@ func DescendantsSensor(network *net.Network, app, sensor string) (string, error)
 	
 	body, err := network.SendGetRequest(url)
 	// TODO return model
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+	return string(body), nil
 }
 
 func Tree(network *net.Network) ([]models.Tree, error) {
@@ -112,10 +118,10 @@ func CreateLegacy(network *net.Network) (string, error) {
 	url := fmt.Sprintf("/v1/applications/createLegacy")
 	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
-		return string(body), err
+		return "", err
 	}
 	// TODO return model
-	return string(body), err
+	return string(body), nil
 }
 
 

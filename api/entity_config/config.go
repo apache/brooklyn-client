@@ -29,7 +29,10 @@ func SetConfig(network *net.Network, application, entity, config, value string) 
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
 	val := []byte(value)
 	body, err := network.SendPostRequest(url, val)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 func ConfigList(network *net.Network, application, entity string) ([]models.ConfigSummary, error) {
@@ -48,7 +51,10 @@ func PostConfig(network *net.Network, application, entity, config, value string)
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config", application, entity)
 	val := []byte(value)
 	body, err := network.SendPostRequest(url, val)
-	return string(body), err
+    if nil != err {
+        return "", err
+    }
+    return string(body), nil
 }
 
 
