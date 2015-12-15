@@ -9,25 +9,23 @@ import (
 
 
 
-func SensorValue(network *net.Network, application, entity, sensor string) string {
+func SensorValue(network *net.Network, application, entity, sensor string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return string(body)
+    if nil != err {
+        return "", err
+    }
+	return string(body), nil
 }
 
 // WIP
-func DeleteSensor(network *net.Network, application, entity, sensor string) string {
+func DeleteSensor(network *net.Network, application, entity, sensor string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
 	body, err := network.SendDeleteRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return string(body)
+    if nil != err {
+        return "", err
+    }
+	return string(body), nil
 }
 
 // WIP
@@ -52,19 +50,16 @@ func DeleteSensor(network *net.Network, application, entity, sensor string) stri
 //	return string(body)
 //}
 
-func SensorList(network *net.Network, application, entity string) []models.SensorSummary {
+func SensorList(network *net.Network, application, entity string) ([]models.SensorSummary, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors", application, entity)
 	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var sensorList []models.SensorSummary
+    if err != nil {
+        return sensorList, err
+    }
 
-	var sensorList []models.SensorSummary
 	err = json.Unmarshal(body, &sensorList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return sensorList
+	return sensorList, err
 }
 
 

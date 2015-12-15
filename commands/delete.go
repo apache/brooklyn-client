@@ -7,6 +7,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Delete struct {
@@ -29,6 +30,9 @@ func (cmd *Delete) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Delete) Run(scope scope.Scope, c *cli.Context) {
-	del := application.Delete(cmd.network, scope.Application)
+	del, err := application.Delete(cmd.network, scope.Application)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(del)
 }

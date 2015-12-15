@@ -8,6 +8,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
+    "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 type Sensor struct {
@@ -38,16 +39,25 @@ func (cmd *Sensor) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *Sensor) show(application, entity, sensor string) {
-	sensorValue := entity_sensors.SensorValue(cmd.network, application, entity, sensor)
+	sensorValue, err := entity_sensors.SensorValue(cmd.network, application, entity, sensor)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	fmt.Println(sensorValue)
 }
 
 
 func (cmd *Sensor) list(application, entity string) {
-	sensors := entity_sensors.SensorList(cmd.network, application, entity)
+	sensors, err := entity_sensors.SensorList(cmd.network, application, entity)
+    if nil != err {
+        error_handler.ErrorExit(err)
+    }
 	table := terminal.NewTable([]string{"Name", "Description", "Value"})
 	for _, sensor := range sensors {
-		value := entity_sensors.SensorValue(cmd.network, application, entity, sensor.Name)
+		value, err := entity_sensors.SensorValue(cmd.network, application, entity, sensor.Name)
+        if nil != err {
+            error_handler.ErrorExit(err)
+        }
 		table.Add(sensor.Name, sensor.Description, value)
 	}
 	table.Print()

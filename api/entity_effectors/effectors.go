@@ -12,19 +12,16 @@ import (
 	"strconv"
 )
 
-func EffectorList(network *net.Network, application, entity string) []models.EffectorSummary {
+func EffectorList(network *net.Network, application, entity string) ([]models.EffectorSummary, error) {
 	path := fmt.Sprintf("/v1/applications/%s/entities/%s/effectors", application, entity)
-	body, err := network.SendGetRequest(path)
-	if err != nil {
-		fmt.Println(err)
-	}
+    var effectorList []models.EffectorSummary
+    body, err := network.SendGetRequest(path)
+    if err != nil {
+        return effectorList, err
+    }
 
-	var effectorList []models.EffectorSummary
 	err = json.Unmarshal(body, &effectorList)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return effectorList
+	return effectorList, err
 }
 
 func TriggerEffector(network *net.Network, application, entity, effector string, params []string, args []string) (string, error) {

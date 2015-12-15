@@ -7,19 +7,17 @@ import(
 	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
-func Access(network *net.Network) models.AccessSummary {
+func Access(network *net.Network) (models.AccessSummary, error) {
 	url := fmt.Sprintf("/v1/access")
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-	var access models.AccessSummary
+    var access models.AccessSummary
+
+    body, err := network.SendGetRequest(url)
+    if err != nil {
+        return access, err
+    }
+
 	err = json.Unmarshal(body, &access)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return access
+	return access, err
 }
 
 // WIP

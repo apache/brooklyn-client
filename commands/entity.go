@@ -28,24 +28,34 @@ func (cmd *Entity) Metadata() command_metadata.CommandMetadata {
 		Name:        "entity",
 		Aliases:     []string{"entities","ent","ents"},
 		Description: "Show the entities of an application or entity",
-		Usage:       "BROOKLYN_NAME SCOPE entity",
-		Flags:       []cli.Flag{},
+		Usage:       "BROOKLYN_NAME SCOPE entity [ENTITYID]",
+		Flags:       []cli.Flag{
+			cli.StringSliceFlag{
+				Name: "children, c",
+				Usage: "List children of the entity",
+			},
+		},
 	}
 }
 
 func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
-	if c.Args().Present() {
-		cmd.show(scope.Application, c.Args().First())
+	if c.NumFlags() > 0 && c.FlagNames()[0] == "children" {
+		cmd.listentity(scope.Application, c.StringSlice("children")[0])
 	} else {
-		if scope.Entity == scope.Application {
-			cmd.listapp(scope.Application)
+		if c.Args().Present() {
+			cmd.show(scope.Application, c.Args().First())
 		} else {
-			cmd.listentity(scope.Application, scope.Entity)
+			if scope.Entity == scope.Application {
+				cmd.listapp(scope.Application)
+			} else {
+				cmd.listentity(scope.Application, scope.Entity)
+			}
 		}
 	}
 }
 
 const serviceStateSensor = "service.state"
+const serviceIsUp = "service.isUp"
 func (cmd *Entity) show(application, entity string) {
 	summary, err := entities.GetEntity(cmd.network, application, entity)
     if nil != err {
@@ -54,8 +64,6 @@ func (cmd *Entity) show(application, entity string) {
     }
 	table := terminal.NewTable([]string{"Id:", summary.Id})
     table.Add("Name:", summary.Name)
-    table.Add("Type:", summary.Type)
-    table.Add("CatalogItemId:", summary.CatalogItemId)
     configState, err := entity_sensors.CurrentState(cmd.network, application, entity)
     if nil != err {
         error_handler.ErrorExit(err)
@@ -63,6 +71,11 @@ func (cmd *Entity) show(application, entity string) {
     if serviceState, ok := configState[serviceStateSensor]; ok {
         table.Add("Status:", fmt.Sprintf("%v", serviceState))
     }
+	if serviceIsUp, ok := configState[serviceIsUp]; ok {
+		table.Add("ServiceUp:", fmt.Sprintf("%v", serviceIsUp))
+	}
+	table.Add("Type:", summary.Type)
+	table.Add("CatalogItemId:", summary.CatalogItemId)
 	table.Print()
 }
 
