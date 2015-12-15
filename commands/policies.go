@@ -30,6 +30,9 @@ func (cmd *Policies) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Policies) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	policies, err := entity_policies.PolicyList(cmd.network, scope.Application, scope.Entity)
     if nil != err {
         error_handler.ErrorExit(err)

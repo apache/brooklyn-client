@@ -30,6 +30,9 @@ func (cmd *Access) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Access) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	access, err := access_control.Access(cmd.network)
     if nil != err {
         error_handler.ErrorExit(err)

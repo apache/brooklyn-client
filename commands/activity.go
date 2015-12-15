@@ -40,6 +40,9 @@ func (cmd *Activity) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Activity) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	if c.NumFlags() > 0 && c.FlagNames()[0] == "children" {
 		cmd.listchildren(c.StringSlice("children")[0])
 	} else {

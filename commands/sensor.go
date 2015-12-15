@@ -31,6 +31,9 @@ func (cmd *Sensor) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Sensor) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	if c.Args().Present() {
 		cmd.show(scope.Application, scope.Entity, c.Args().First())
 	} else {
