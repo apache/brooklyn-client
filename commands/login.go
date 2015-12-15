@@ -43,6 +43,10 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.network.BrooklynUrl = c.Args().Get(0)
 	cmd.network.BrooklynUser = c.Args().Get(1)
 	cmd.network.BrooklynPass = c.Args().Get(2)
+
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	
 	// Strip off trailing '/' from URL if present.
 	if cmd.network.BrooklynUrl[len(cmd.network.BrooklynUrl)-1] == '/' {
