@@ -33,7 +33,7 @@ func DeleteSensor(network *net.Network, application, entity, sensor string) (str
 //	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
 //	body, err := network.SendPostRequest(url)
 //	if err != nil {
-//		fmt.Println(err)
+//		error_handler.ErrorExit(err)
 //	}
 
 //	return string(body)
@@ -44,7 +44,7 @@ func DeleteSensor(network *net.Network, application, entity, sensor string) (str
 //	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors", application, entity, sensor)
 //	body, err := network.SendPostRequest(url)
 //	if err != nil {
-//		fmt.Println(err)
+//		error_handler.ErrorExit(err)
 //	}
 
 //	return string(body)

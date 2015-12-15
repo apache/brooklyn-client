@@ -1,7 +1,6 @@
 package command_runner
 
 import (
-	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/command_factory"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
@@ -26,7 +25,6 @@ func NewRunner(scope scope.Scope, cmdFactory command_factory.Factory) (runner Co
 func (runner ConcreteRunner) RunCmdByName(cmdName string, c *cli.Context) error {
 	cmd, err := runner.cmdFactory.GetByCmdName(cmdName)
 	if nil != err {
-		fmt.Println(err)
 		return err
 	}
 
@@ -37,7 +35,6 @@ func (runner ConcreteRunner) RunCmdByName(cmdName string, c *cli.Context) error 
 func (runner ConcreteRunner) RunSubCmdByName(cmdName string, subCommand string, c *cli.Context) error {
 	cmd, err := runner.cmdFactory.GetBySubCmdName(cmdName, subCommand)
 	if nil != err {
-		fmt.Println(err)
 		return err
 	}
 

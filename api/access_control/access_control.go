@@ -25,6 +25,6 @@ func Access(network *net.Network) (models.AccessSummary, error) {
 //	url := fmt.Sprintf("/v1/access/locationProvisioningAllowed")
 //	body, err := network.SendPostRequest(url)
 //	if err != nil {
-//		fmt.Println(err)
+//		error_handler.ErrorExit(err)
 //	}
 //}
