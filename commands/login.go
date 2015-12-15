@@ -29,7 +29,7 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "login",
 		Description: "Login to brooklyn",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] login URL [USER [PASSWORD]]",
+		Usage:       "BROOKLYN_NAME login URL [USER [PASSWORD]]",
 		Flags:       []cli.Flag{},
 	}
 }

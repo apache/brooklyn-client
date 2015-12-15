@@ -23,8 +23,8 @@ func NewCatalog(network *net.Network) (cmd *Catalog) {
 func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "catalog",
-		Description: "List the available catalog applications",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] catalog",
+		Description: "* List the available catalog applications",
+		Usage:       "BROOKLYN_NAME catalog",
 		Flags:       []cli.Flag{},
 	}
 }

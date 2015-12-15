@@ -23,8 +23,8 @@ func NewRename(network *net.Network) (cmd *Rename) {
 func (cmd *Rename) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "rename",
-		Description: "Rename an entity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] rename NEW_NAME",
+		Description: "Rename an application or entity",
+		Usage:       "BROOKLYN_NAME SCOPE rename NEW_NAME",
 		Flags:       []cli.Flag{},
 	}
 }

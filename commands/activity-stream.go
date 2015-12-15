@@ -54,7 +54,7 @@ func (cmd *ActivityStreamEnv) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "env",
 		Description: "Show the ENV stream for a given activity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] env",
+		Usage:       "BROOKLYN_NAME ACTIVITY-SCOPE env",
 		Flags:       []cli.Flag{},
 	}
 }
@@ -63,7 +63,7 @@ func (cmd *ActivityStreamStderr) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "stderr",
 		Description: "Show the STDERR stream for a given activity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] stderr",
+		Usage:       "BROOKLYN_NAME ACTIVITY-SCOPE stderr",
 		Flags:       []cli.Flag{},
 	}
 }
@@ -72,7 +72,7 @@ func (cmd *ActivityStreamStdin) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "stdin",
 		Description: "Show the STDIN stream for a given activity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] stdin",
+		Usage:       "BROOKLYN_NAME ACTIVITY-SCOPE ] stdin",
 		Flags:       []cli.Flag{},
 	}
 }
@@ -81,7 +81,7 @@ func (cmd *ActivityStreamStdout) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "stdout",
 		Description: "Show the STDOUT stream for a given activity",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] stdout",
+		Usage:       "BROOKLYN_NAME ACTIVITY-SCOPE stdout",
 		Flags:       []cli.Flag{},
 	}
 }

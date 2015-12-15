@@ -24,7 +24,7 @@ func (cmd *DestroyPolicy) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "destroy-policy",
 		Description: "Destroy a policy",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] destroy-policy POLICY",
+		Usage:       "BROOKLYN_NAME SCOPE destroy-policy POLICY",
 		Flags:       []cli.Flag{},
 	}
 }

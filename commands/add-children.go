@@ -24,8 +24,8 @@ func NewAddChildren(network *net.Network) (cmd *AddChildren) {
 func (cmd *AddChildren) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "add-children",
-		Description: "Add a child or children to this entity from the supplied YAML",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] add-children FILEPATH",
+		Description: "* Add a child or children to this entity from the supplied YAML",
+		Usage:       "BROOKLYN_NAME SCOPE add-children FILEPATH",
 		Flags:       []cli.Flag{},
 	}
 }

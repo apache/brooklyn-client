@@ -23,8 +23,8 @@ func NewDelete(network *net.Network) (cmd *Delete) {
 func (cmd *Delete) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "delete",
-		Description: "Delete a brooklyn application",
-		Usage:       "BROOKLYN_NAME [ SCOPE ] delete",
+		Description: "* Delete (expunge) a brooklyn application",
+		Usage:       "BROOKLYN_NAME SCOPE delete",
 		Flags:       []cli.Flag{},
 	}
 }
