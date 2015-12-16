@@ -54,7 +54,11 @@ func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
 	} else {
 		create, err = application.Create(cmd.network, c.Args().First())
 		if nil != err {
-			error_handler.ErrorExit(err)
+            if httpErr, ok := err.(net.HttpError); ok {
+                error_handler.ErrorExit(httpErr.Body, httpErr.Code)
+            } else {
+                error_handler.ErrorExit(err)
+            }
 		}
 	}
     table := terminal.NewTable([]string{"Id:",create.EntityId})
