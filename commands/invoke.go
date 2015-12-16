@@ -97,24 +97,36 @@ func (cmd *Restart) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Invoke) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, scope.Effector, parms)
 }
 
 const stopEffector = "stop"
 func (cmd *Stop) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, stopEffector, parms)
 }
 
 const startEffector = "start"
 func (cmd *Start) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, startEffector, parms)
 }
 
 const restartEffector = "restart"
 func (cmd *Restart) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, restartEffector, parms)
 }

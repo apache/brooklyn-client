@@ -33,6 +33,10 @@ func (cmd *Deploy) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
+    
     var create models.TaskSummary
     var err error
 	if c.Args().First() == "" {
@@ -47,13 +51,11 @@ func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
 		if nil != err {
 			error_handler.ErrorExit(err)
 		}
-//		fmt.Println(create)
 	} else {
 		create, err = application.Create(cmd.network, c.Args().First())
 		if nil != err {
 			error_handler.ErrorExit(err)
 		}
-//		fmt.Println(create)
 	}
     table := terminal.NewTable([]string{"Id:",create.EntityId})
     table.Add("Name:", create.EntityDisplayName)

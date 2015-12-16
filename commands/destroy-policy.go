@@ -30,6 +30,9 @@ func (cmd *DestroyPolicy) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *DestroyPolicy) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	spec, err := entity_policies.DestroyPolicy(cmd.network, scope.Application, scope.Entity, c.Args().First())
     if nil != err {
         error_handler.ErrorExit(err)

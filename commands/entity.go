@@ -39,6 +39,9 @@ func (cmd *Entity) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	if c.NumFlags() > 0 && c.FlagNames()[0] == "children" {
 		cmd.listentity(scope.Application, c.StringSlice("children")[0])
 	} else {

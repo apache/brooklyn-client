@@ -30,6 +30,9 @@ func (cmd *Rename) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Rename) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	rename, err := entities.Rename(cmd.network, scope.Application, scope.Entity, c.Args().First())
     if nil != err {
         error_handler.ErrorExit(err)

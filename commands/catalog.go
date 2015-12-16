@@ -30,6 +30,9 @@ func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Catalog) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	catalog, err := catalog.Catalog(cmd.network)
     if nil != err {
         error_handler.ErrorExit(err)

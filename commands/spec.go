@@ -30,6 +30,9 @@ func (cmd *Spec) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Spec) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	spec, err := entities.Spec(cmd.network, scope.Application, scope.Entity)
     if nil != err {
         error_handler.ErrorExit(err)

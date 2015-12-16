@@ -87,6 +87,9 @@ func (cmd *ActivityStreamStdout) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *ActivityStreamEnv) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "env")
     if nil != err {
         error_handler.ErrorExit(err)
@@ -95,6 +98,9 @@ func (cmd *ActivityStreamEnv) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *ActivityStreamStderr) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "stderr")
     if nil != err {
         error_handler.ErrorExit(err)
@@ -103,6 +109,9 @@ func (cmd *ActivityStreamStderr) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *ActivityStreamStdin) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "stdin")
     if nil != err {
         error_handler.ErrorExit(err)
@@ -111,6 +120,9 @@ func (cmd *ActivityStreamStdin) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *ActivityStreamStdout) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	activityStream, err := activities.ActivityStream(cmd.network, scope.Activity, "stdout")
     if nil != err {
         error_handler.ErrorExit(err)

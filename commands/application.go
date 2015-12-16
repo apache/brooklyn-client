@@ -32,6 +32,9 @@ func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Application) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	if c.Args().Present() {
 		cmd.show(c.Args().First())
 	} else {

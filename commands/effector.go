@@ -31,7 +31,9 @@ func (cmd *Effector) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Effector) Run(scope scope.Scope, c *cli.Context) {
-
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	effectors, err := entity_effectors.EffectorList(cmd.network, scope.Application, scope.Entity)
     if nil != err {
         error_handler.ErrorExit(err)

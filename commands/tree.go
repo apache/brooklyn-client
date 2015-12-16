@@ -31,6 +31,9 @@ func (cmd *Tree) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Tree) Run(scope scope.Scope, c *cli.Context) {
+    if err := net.VerifyLoginURL(cmd.network); err != nil {
+        error_handler.ErrorExit(err)
+    }
 	trees, err := application.Tree(cmd.network)
     if nil != err {
         error_handler.ErrorExit(err)
