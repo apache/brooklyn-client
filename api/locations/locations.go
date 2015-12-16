@@ -16,13 +16,15 @@ func LocatedLocations(network *net.Network) (string, error) {
 	return string(body), nil
 }
 
-func GetLocation(network *net.Network, locationId string) (string, error) {
+func GetLocation(network *net.Network, locationId string) (models.LocationSummary, error) {
 	url := fmt.Sprintf("/v1/locations/%s", locationId)
+    var locationDetail models.LocationSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		return "", err
+		return locationDetail, err
 	}
-	return string(body), nil
+    err = json.Unmarshal(body, &locationDetail)
+	return locationDetail, err
 }
 
 func DeleteLocation(network *net.Network, locationId string) (string, error) {
