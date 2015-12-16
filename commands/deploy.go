@@ -11,6 +11,7 @@ import (
     "github.com/brooklyncentral/brooklyn-cli/terminal"
     "io/ioutil"
 	"os"
+    "strings"
 )
 
 type Deploy struct {
@@ -39,24 +40,26 @@ func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
     
     var create models.TaskSummary
     var err error
+    var blueprint []byte
 	if c.Args().First() == "" {
 		error_handler.ErrorExit("A filename or '-' must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
 	}
 	if c.Args().First() == "-" {
-		blueprint, err := ioutil.ReadAll(os.Stdin)
+		blueprint, err = ioutil.ReadAll(os.Stdin)
 		if err != nil {
 			error_handler.ErrorExit(err)
 		}
 		create, err = application.CreateFromBytes(cmd.network, blueprint)
-		if nil != err {
-			error_handler.ErrorExit(err)
-		}
 	} else {
 		create, err = application.Create(cmd.network, c.Args().First())
-		if nil != err {
-			error_handler.ErrorExit(err)
-		}
 	}
+    if nil != err {
+        if httpErr, ok := err.(net.HttpError); ok {
+            error_handler.ErrorExit(strings.Join([]string{httpErr.Status, httpErr.Body}, "\n"), httpErr.Code)
+        } else {
+            error_handler.ErrorExit(err)
+        }
+    }
     table := terminal.NewTable([]string{"Id:",create.EntityId})
     table.Add("Name:", create.EntityDisplayName)
     table.Add("Status:", create.CurrentStatus)

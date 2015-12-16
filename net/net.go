@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strings"
-	"strconv"
-	"encoding/json"
 	"errors"
+    "strings"
+    "strconv"
+    "encoding/json"
 )
 
 type Network struct {
@@ -46,22 +46,33 @@ func (net *Network) NewDeleteRequest(url string) *http.Request {
 	return net.NewRequest("DELETE", url, nil)
 }
 
-type httpError struct {
-	Status  string `json:"status"`
-	Headers http.Header `json:"headers"`
-	Body    string `json:"body"`
+type HttpError struct {
+    Code    int
+	Status  string
+	Headers http.Header
+	Body    string
 }
 
-func makeError (resp *http.Response, body []byte) error {
-	errorObject, err := json.Marshal(httpError{
-		Status: resp.Status,
-		Headers: resp.Header,
-		Body: string(body),
-	})
-	if nil != err {
-		return errors.New("Response status: " + resp.Status)
-	}
-	return errors.New(string(errorObject))
+func (err HttpError) Error() string {
+    return err.Status
+}
+
+
+func makeError (resp *http.Response, code int, body []byte) error {
+    theError := HttpError {
+        Code:    code,
+        Status:  resp.Status,
+        Headers: resp.Header,
+    }
+    details := make(map[string]string)
+    if err := json.Unmarshal(body, &details); nil == err {
+        if message, ok := details["message"]; ok {
+            theError.Body = message
+            return theError
+        }
+    }
+    theError.Body = string(body)
+	return theError
 }
 
 func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
@@ -72,8 +83,8 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	if unsuccessful(resp.Status)  {
-		return nil, errors.New(resp.Status)
+	if code, failed := unsuccessful(resp.Status) ; failed {
+		return nil, makeError(resp, code, body)
 	}
 	return body, err
 }
@@ -81,16 +92,16 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 
 const httpSuccessSeriesFrom = 200;
 const httpSuccessSeriesTo = 300;
-func unsuccessful(status string) bool {
+func unsuccessful(status string) (int, bool) {
 	tokens := strings.Split(status, " ")
 	if 0 == len(tokens) {
-		return false
+		return -1, false
 	}
 	code, err := strconv.Atoi(tokens[0])
 	if nil != err {
-		return false
+		return -1, false
 	}
-	return  code < httpSuccessSeriesFrom || httpSuccessSeriesTo <= code
+	return code, code < httpSuccessSeriesFrom || httpSuccessSeriesTo <= code
 }
 
 func (net *Network) SendGetRequest(url string) ([]byte, error) {
