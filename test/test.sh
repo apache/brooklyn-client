@@ -141,25 +141,40 @@ function shouldStartEntity() {
     waitForCommand isEntityStatus "${appname}" "${entityname}" RUNNING || fail; return
 }
 
+function usage() {
+cat <<EOU
+Usage: $0 [-h] [-a <application_filename> ] <brooklyn_url> [ <user> <password> ]
+-h  show this help
+-a  deploy the file named <application_filename> instead of the default test_app.yaml
+EOU
+exit 0
+}
+
+
 
 function main() {
 
     local application_yaml=test_app.yaml
     local appname=$(grep name: ${application_yaml} | sed 's/.*: *//')
 
-    while getopts "a:" opt; do
+    while getopts "ha:" opt; do
       case $opt in
+        h)
+          usage
+          ;;
         a)
           application_yaml=$OPTARG
-          shift; shift;
           ;;
         \?)
           echo "Invalid option: -$OPTARG" >&2
           ;;
       esac
     done
+    shift $((OPTIND-1))
 
-    local brooklyn_url=${1:-localhost}
+    [ $1 ] || usage
+
+    local brooklyn_url=${1}
     local user=${2}
     local password=${3}
 

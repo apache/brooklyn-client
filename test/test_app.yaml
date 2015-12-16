@@ -1,5 +1,5 @@
 name: Test Tomcat
 location:
-  replaceMeWithYourLocationSpec
+  vagrantbyon
 services:
   - type: org.apache.brooklyn.entity.webapp.tomcat.TomcatServer
