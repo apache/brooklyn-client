@@ -9,10 +9,32 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
     "github.com/brooklyncentral/brooklyn-cli/error_handler"
+"github.com/brooklyncentral/brooklyn-cli/models"
+    "sort"
 )
 
 type Sensor struct {
 	network *net.Network
+}
+
+type sensorList []models.SensorSummary
+
+// Len is the number of elements in the collection.
+func (sensors sensorList) Len() int {
+    return len(sensors)
+}
+
+// Less reports whether the element with
+// index i should sort before the element with index j.
+func (sensors sensorList) Less(i, j int) bool {
+    return sensors[i].Name < sensors[j].Name
+}
+
+// Swap swaps the elements with indexes i and j.
+func (sensors sensorList) Swap(i, j int) {
+    temp := sensors[i]
+    sensors[i] = sensors[j]
+    sensors[j] = temp
 }
 
 func NewSensor(network *net.Network) (cmd *Sensor) {
@@ -55,8 +77,12 @@ func (cmd *Sensor) list(application, entity string) {
     if nil != err {
         error_handler.ErrorExit(err)
     }
+    var theSensors sensorList = sensors
 	table := terminal.NewTable([]string{"Name", "Description", "Value"})
-	for _, sensor := range sensors {
+
+    sort.Sort(theSensors)
+
+	for _, sensor := range theSensors {
 		value, err := entity_sensors.SensorValue(cmd.network, application, entity, sensor.Name)
         if nil != err {
             error_handler.ErrorExit(err)
