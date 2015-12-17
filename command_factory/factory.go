@@ -53,7 +53,6 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
     //	factory.superCommand(commands.NewList(network))
 	factory.simpleCommand(commands.NewLocations(network))
 	factory.simpleCommand(commands.NewLogin(network, config))
-	factory.simpleCommand(commands.NewPolicies(network))
 	factory.simpleCommand(commands.NewPolicy(network))
 	factory.simpleCommand(commands.NewRename(network))
 	factory.simpleCommand(commands.NewSensor(network))
