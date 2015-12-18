@@ -39,16 +39,15 @@
 
     Run as one of:
 
-    mvn clean install                     build for local platform
-    mvn -Dall clean install               build for all supported platforms
-    mvn -Dos=OS -Darch=ARCH clean all     build for platform with operating system OS and architecture ARCH
+    mvn clean install                        build for local platform
+    mvn -Dall clean install                  build for all supported platforms
+    mvn -Dos=OS -Darch=ARCH clean install    build for platform with operating system OS and architecture ARCH
 
     -->
 
     <properties>
         <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
-        <main.dir>${basedir}/br</main.dir>
-        <build.script>${main.dir}/build.sh</build.script>
+        <build.script>${basedir}/release/build.sh</build.script>
         <os/>
         <arch/>
     </properties>
@@ -64,7 +63,7 @@
                         <phase>compile</phase>
                         <configuration>
                             <target if="all">
-                                <exec dir="${main.dir}" executable="${build.script}">
+                                <exec executable="${build.script}">
                                     <arg value="-A"/>
                                     <arg value="-t"/>
                                     <arg value="-l"/>
@@ -83,7 +82,7 @@
                         <phase>compile</phase>
                         <configuration>
                             <target unless="all">
-                                <exec dir="${main.dir}" executable="${build.script}">
+                                <exec executable="${build.script}">
                                     <arg value="-t"/>
                                     <arg value="-l"/>
                                     <arg value="${project.version}"/>
