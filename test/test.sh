@@ -2,6 +2,20 @@
 
 declare -a FAILS
 
+export BRCLI_HOME=/tmp
+trap cleanup EXIT
+
+
+function usage() {
+    echo 'Usage: $0 <brooklyn_url> [ <user> <password> ]'
+    exit 0
+}
+
+
+function cleanup() {
+    rm -f $BRCLI_HOME/.brooklyn_cli
+}
+
 function title() {
     echo "*************************************************************************"
     echo "                 ${FUNCNAME[1]}"
@@ -31,7 +45,7 @@ function report() {
 function isAppStatus() {
     local appname=$1
     local status=$2
-    br apps | grep ${appname} | grep ${status} > /dev/null
+    br apps | grep "${appname}" | grep ${status} > /dev/null
 }
 
 function isEntityStatus() {
@@ -56,10 +70,14 @@ function waitForCommand() {
 
 
 
-function shouldHaveBr() {
-    title
-    type br > /dev/null 2>&1 || fail No br
+function brIsDefined() {
+    type br > /dev/null 2>&1
 }
+
+
+#
+# TESTS
+#
 
 function shouldLogin() {
     title
@@ -70,12 +88,10 @@ function shouldLogin() {
 
 function shouldDeployTomcat() {
     title
-    local filename=$1
-    local appname=$2
 
-    br deploy $1
+    br deploy test_app.yaml
 
-    waitForCommand isAppStatus "${appname}" RUNNING || fail
+    waitForCommand isAppStatus "Test Tomcat" RUNNING || fail
 }
 
 function shouldRenameApp() {
@@ -141,47 +157,16 @@ function shouldStartEntity() {
     waitForCommand isEntityStatus "${appname}" "${entityname}" RUNNING || fail; return
 }
 
-function usage() {
-cat <<EOU
-Usage: $0 [-h] [-a <application_filename> ] <brooklyn_url> [ <user> <password> ]
--h  show this help
--a  deploy the file named <application_filename> instead of the default test_app.yaml
-EOU
-exit 0
-}
 
-
-
-function main() {
-
-    local application_yaml=test_app.yaml
-    local appname=$(grep name: ${application_yaml} | sed 's/.*: *//')
-
-    while getopts "ha:" opt; do
-      case $opt in
-        h)
-          usage
-          ;;
-        a)
-          application_yaml=$OPTARG
-          ;;
-        \?)
-          echo "Invalid option: -$OPTARG" >&2
-          ;;
-      esac
-    done
-    shift $((OPTIND-1))
-
-    [ $1 ] || usage
+function runAllTests() {
 
     local brooklyn_url=${1}
     local user=${2}
     local password=${3}
 
-    shouldHaveBr
     shouldLogin ${brooklyn_url} ${user} ${password}
-    shouldDeployTomcat ${application_yaml} ${appname}
-    shouldRenameApp "${appname}" mytest
+    shouldDeployTomcat
+    shouldRenameApp "Test Tomcat" mytest
     shouldGetAppConfig mytest
     shouldGetTomcatServerEntity mytest
     shouldRenameTomcatServerEntity mytest myserver
@@ -191,6 +176,25 @@ function main() {
 
 
     #... TODO add more tests here
+}
+
+#
+# main function
+#
+function main() {
+
+    [ $1 ] || usage
+
+    local brooklyn_url=${1}
+    local user=${2}
+    local password=${3}
+
+    brIsDefined || {
+        >&2 echo br is not defined
+        exit 1
+    }
+
+    runAllTests ${brooklyn_url} ${user} ${password}
 
     # If there are test failures we leave the application running, in case it helps determine what failed.
     if [ 0 -eq ${#FAILS[*]} ] ; then
