@@ -7,7 +7,7 @@ trap cleanup EXIT
 
 
 function usage() {
-    echo 'Usage: $0 <brooklyn_url> [ <user> <password> ]'
+    echo "Usage: $0 <brooklyn_url> [ <user> <password> ]"
     exit 0
 }
 
