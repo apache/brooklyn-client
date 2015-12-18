@@ -17,9 +17,29 @@ BRNAME="br"
 BRFILE="brooklyn.go"
 BRDIR="brooklyn-cli/br"
 
+GOBIN=go
+GODEP=godep
+
+#
+# Test if go and godep are available
+#
+command -v $GOBIN >/dev/null 2>&1 || { echo "Command for compiling Go not found: $GOBIN" 1>&2 ; exit 1; }
+
+if [ -z "$GOPATH" -o ! -d "$GOPATH" ]; then
+	echo "Environment variable GOPATH must be set to a valid directory"
+	exit 1
+fi
+
+if [ ! -x "$GOPATH/bin/$GODEP" ]; then
+	echo "Command for resolving dependencies ($GODEP) not found in GOPATH: $GOPATH"
+	exit 1
+fi
+
 #
 # Compile options
 #
+
+# Disable use of C code modules (causes problems with cross-compiling)
 export CGO_ENABLED=0
 
 #
@@ -28,12 +48,24 @@ export CGO_ENABLED=0
 os=""
 arch=""
 all=""
+dir="."
+label=""
+timestamp=""
 
 show_help() {
-	echo "Usage:	$0"
-	echo "	$0 (-o | --os) <OS> (-a | --arch) <ARCH>"
-	echo "	$0 --all"
-	echo "	$0 (-h | --help)"
+# 
+# -A  Build for all OS/ARCH combinations
+# -a  Set ARCH to build for
+# -d  Set output directory
+# -h  Show help
+# -l  Set label text for including in filename
+# -o  Set OS to build for
+# -t  Set timestamp for including in filename
+#
+	echo "Usage:	$0 [-d <DIRECTORY>] [-l <LABEL>] [-t]"
+	echo "	$0 -o <OS> -a <ARCH> [-d <DIRECTORY>] [-l <LABEL>] [-t]"
+	echo "	$0 -A [-d <DIRECTORY>] [-l <LABEL>] [-t]"
+	echo "	$0 -h"
 	echo $OSVALUES | awk 'BEGIN{printf("OS:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
 	echo $ARCHVALUES | awk 'BEGIN{printf("ARCH:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
 	echo
@@ -41,11 +73,20 @@ show_help() {
 
 while [ $# -gt 0 ]; do
 	case $1 in 
-	-h|--help|help)
+	-h|help)
 		show_help
 		exit 0
 		;;
-	-o|--os)
+	-d)
+		if [ $# -lt 2 ]; then
+			show_help
+			echo "Value for DIRECTORY must be provided"
+			exit 1
+		fi
+		dir="$2"
+		shift 2
+		;;
+	-o)
 		if [ $# -lt 2 ]; then
 			show_help
 			echo "Value for OS must be provided"
@@ -54,7 +95,7 @@ while [ $# -gt 0 ]; do
 		os="$2"
 		shift 2
 		;;
-	-a|--arch)
+	-a)
 		if [ $# -lt 2 ]; then
 			show_help
 			echo "Value for ARCH must be provided"
@@ -63,9 +104,22 @@ while [ $# -gt 0 ]; do
 		arch="$2"
 		shift 2
 		;;
-	--all)
+	-A)
 		all="all"
 		shift 1
+		;;
+	-l)
+		if [ $# -lt 2 ]; then
+			show_help
+			echo "Value for LABEL must be provided"
+			exit 1
+		fi
+		label=".$2"
+		shift 2
+		;;
+	-t)
+		timestamp=`date +.%Y%m%d-%H%M%S`
+		shift
 		;;
 	*)
 		show_help
@@ -74,6 +128,12 @@ while [ $# -gt 0 ]; do
 		;;
 	esac
 done
+
+if [ -n "$dir" -a ! -d "$dir" ]; then
+	show_help
+	echo "No such directory: $dir"
+	exit 1
+fi
 
 if [ -n "$all" -a \( -n "$os" -o -n "$arch" \) ]; then
 	show_help
@@ -99,8 +159,8 @@ if [ ! -f "$BRFILE" ]; then
 fi
 
 if [ -z "$os" -a -z "$all" ]; then
-	echo "Building $NAME for native OS/ARCH"
-	go build
+	echo "Building $BRNAME for native OS/ARCH"
+	$GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}"
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -114,21 +174,17 @@ elif [ -z "$all" ]; then
 		echo "Unrecognised ARCH: $arch"
 		exit 1
 	fi
-	export GOOS="$os"
-	export GOARCH="$arch"
-	echo "Building $NAME for $os/$arch"
-	go build -o "$BRNAME.$os.$arch"
+	echo "Building $BRNAME for $os/$arch"
+	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}.$os.$arch"
 else
-	echo "Building $NAME for common OS/ARCH:"
+	echo "Building $BRNAME for common OS/ARCH:"
 	os="$OSVALUES"
 	arch="$ARCHVALUES"
 	for j in $arch; do
 		printf "  "
 		for i in $os; do
-			export GOOS="$i"
-			export GOARCH="$j"
 			printf "$i/$j "
-			go build -o "$BRNAME.$i.$j"
+			GOOS="$i" GOARCH="$j" $GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}.$i.$j"
 		done
 		printf "\n"
 	done

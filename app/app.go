@@ -21,7 +21,7 @@ var appConfig = configDefaults{
     Name:         os.Args[0],
     HelpName:     os.Args[0],
     Usage:        "A Brooklyn command line client application",
-    Version:      "0.0.0",
+    Version:      "0.9.0",
 }
 
 func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
