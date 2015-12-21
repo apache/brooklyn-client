@@ -32,13 +32,13 @@ This will build the "br" executable into $GOPATH/bin
 Either:
 - Use the build script in the "release" folder directly (see its usage for details), or
 - Invoke the build script via Maven with one of 
-  - mvn clean install                        build for local platform
-  - mvn -Dall clean install                  build for all supported platforms
-  - mvn -Dos=OS -Darch=ARCH clean install    build for platform with operating system OS and architecture ARCH
+  - ```mvn clean install```                                     build for all supported platforms
+  - ```mvn -Dtarget=native clean install```                     build for the current platform
+  - ```mvn -Dtarget=cross -Dos=OS -Darch=ARCH clean install```  build for platform with operating system OS and architecture ARCH
 
 This builds the requested binaries into the "target" directory, each with a file name that includes the version,
-timestamp, and architecture details, e.g. br.0.9.0.20151218-195906.linux.amd64.  To run any of these as "br" of 
-course you will need to create an alias or soft link.
+timestamp, and architecture details, e.g. br.0.9.0.20151218-195906.linux.amd64, and installs a zip file containing them
+all as a maven artifact.  To run any of these as "br" of course you will need to create an alias or soft link.
 
 ## Running
 

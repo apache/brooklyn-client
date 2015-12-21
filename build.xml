@@ -1,0 +1,38 @@
+<project name="CLI" >
+    <property name="build.script" location="${basedir}/release/build.sh"/>
+
+    <target name="all" >
+        <exec executable="${build.script}">
+            <arg value="-A"/>
+            <arg value="-t"/>
+            <arg value="-l"/>
+            <arg value="${project.version}"/>
+            <arg value="-d"/>
+            <arg value="${project.build.directory}"/>
+        </exec>
+    </target>
+
+    <target name="cross">
+        <exec executable="${build.script}">
+            <arg value="-t"/>
+            <arg value="-l"/>
+            <arg value="${project.version}"/>
+            <arg value="-a"/>
+            <arg value="${arch}"/>
+            <arg value="-o"/>
+            <arg value="${os}"/>
+            <arg value="-d"/>
+            <arg value="${project.build.directory}"/>
+        </exec>
+    </target>
+
+    <target name="native">
+        <exec executable="${build.script}">
+            <arg value="-l"/>
+            <arg value="${project.version}"/>
+            <arg value="-d"/>
+            <arg value="${project.build.directory}"/>
+        </exec>
+    </target>
+
+</project>
