@@ -156,7 +156,7 @@ fi
 
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
-	$GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}" $GOPACKAGE
+	$GODEP $GOBIN build -ldflags "-s" -o "${dir}/${BRNAME}${label}${timestamp}" $GOPACKAGE
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -171,7 +171,7 @@ elif [ -z "$all" ]; then
 		exit 1
 	fi
 	echo "Building $BRNAME for $os/$arch"
-	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}.$os.$arch" $GOPACKAGE
+	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${dir}/${BRNAME}${label}${timestamp}.$os.$arch" $GOPACKAGE
 else
 	echo "Building $BRNAME for all OS/ARCH:"
 	os="$OSVALUES"
@@ -179,7 +179,7 @@ else
 	for j in $arch; do
 		for i in $os; do
 			printf "    $i/$j \n"
-			GOOS="$i" GOARCH="$j" $GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}.$i.$j" $GOPACKAGE
+			GOOS="$i" GOARCH="$j" $GODEP $GOBIN build -ldflags "-s" -o "${dir}/${BRNAME}${label}${timestamp}.$i.$j" $GOPACKAGE
 		done
 		printf "\n"
 	done
