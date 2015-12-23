@@ -178,10 +178,9 @@ else
 	arch="$ARCHVALUES"
 	for j in $arch; do
 		for i in $os; do
-			printf "    $i/$j \n"
+			echo "    $i/$j"
 			GOOS="$i" GOARCH="$j" $GODEP $GOBIN build -ldflags "-s" -o "${dir}/${BRNAME}${label}${timestamp}.$i.$j" $GOPACKAGE
 		done
-		printf "\n"
 	done
 fi
 

@@ -3,7 +3,7 @@
 ## Toolchain
 
 You will need the following tools to build the CLI:
-- Go (min version 1.5.1), with full cross-compiler support (see https://golang.org/doc/install/source).
+- Go (min version 1.5.1), with full cross-compiler support (see https://golang.org/dl).
   On Mac, if using Homebrew, use "brew install go --with-cc-all"
 - godep (see https://github.com/tools/godep)
 
@@ -15,17 +15,45 @@ Optional:
 
 - Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly 
   to a suitable location for your Go code.
-- git clone the CLI code into $GOPATH/src/github.com/brooklyncentral/brooklyn-cli
+- Install Brooklyn CLI and dependencies (note the "-d" parameter, which instructs Go to download the files but not
+  build the code).  
+`go get -d github.com/brooklyncentral/brooklyn-cli/br`  
+    
+    
+## A note on dependency management
+
+The CLI has a small number of dependencies, notably on codegansta/cli.  To manage the version of dependencies, the CLI
+code currently uses godep.  When contributing to the CLI it is important to be aware of the distinction.  To avoid
+potentially bringing in new versions of dependencies, use "godep go" to build the code using the dependencies
+saved in br/Godeps.  Alternatively, to bring in the latest versions of the dependencies, build with "go get", but in
+that case remember to update the dependencies of the project using "godep save" along with your commit.
 
 ## Compiling the code with Go for development purposes
 
-As Go dependendencies for godep are held in the main package directory ("br"), you need to build from that directory.
 
-- Use 
+### Using saved dependencies
+As Go dependendencies for godep are held in the main package directory ("br"), you need to build from that directory,
+using godep:
+
 ```bash
-godep go install
+cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+godep go install 
 ```
 This will build the "br" executable into $GOPATH/bin
+
+### Updating the dependencies
+
+To use the latest published versions of the dependencies simply use 
+```bash
+go get github.com/brooklyncentral/brooklyn-cli/br
+```
+
+When the code is ready to be committed, first update the saved dependencies with
+```bash
+cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+godep save
+```
+
 
 ## Building the code for release
 
