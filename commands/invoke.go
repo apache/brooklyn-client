@@ -10,6 +10,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"strings"
 	"errors"
+	"io/ioutil"
 )
 
 type Invoke struct {
@@ -146,13 +147,35 @@ func invoke(network *net.Network, application, entity, effector string, parms []
 func extractParams(parms []string) ([]string, []string, error) {
 	names := make([]string, len(parms))
 	vals := make([]string, len(parms))
+	var err error
 	for i, parm := range parms {
 		index := strings.Index(parm, "=")
 		if index < 0 {
 			return names, vals, errors.New("Parameter value not provided: " + parm)
 		}
 		names[i] = parm[0:index]
-		vals[i] = parm[index+1:]
+		vals[i], err = extractParamValue(parm[index+1:])
 	}
-	return names, vals, nil
+	return names, vals, err
+}
+
+const paramDataPrefix string = "@"
+func extractParamValue(rawParam string) (string, error) {
+	var err error
+	var val string
+	if strings.HasPrefix(rawParam, paramDataPrefix) {
+		// strip the data prefix from the filename before reading
+		val, err = readParamFromFile(rawParam[len(paramDataPrefix):])
+	} else {
+		val = rawParam
+		err = nil
+	}
+	return val, err
+}
+
+// returning a string rather than byte array, assuming non-binary
+// TODO - if necessary support binary data sending to effector
+func readParamFromFile(filename string) (string, error) {
+	dat, err := ioutil.ReadFile(filename)
+	return string(dat), err
 }
