@@ -1,5 +1,7 @@
 # Brooklyn CLI
 
+A command line client for [Apache Brooklyn](https://brooklyn.apache.org).
+
 ## Toolchain
 
 You will need the following tools to build the CLI:
