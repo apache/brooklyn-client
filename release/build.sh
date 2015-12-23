@@ -14,9 +14,8 @@
 OSVALUES="darwin freebsd linux netbsd openbsd windows"
 ARCHVALUES="386 amd64"
 BRNAME="br"
-BRFILE="brooklyn.go"
-BRDIR="brooklyn-cli/br"
-
+GOPACKAGE="github.com/brooklyncentral/brooklyn-cli/${BRNAME}"
+EXECUTABLE_DIR="$GOPATH/src/$GOPACKAGE"
 GOBIN=go
 GODEP=godep
 
@@ -147,20 +146,17 @@ if [ \( -n "$os" -a -z "$arch" \) -o \( -z "$os" -a -n "$arch" \) ]; then
 	exit 1
 fi
 
-thisdir=`pwd`
-validdir=`expr "$thisdir" : ".*${BRDIR}\$"`
-if [ "$validdir" -eq 0 ]; then
-	echo "Must be in CLI directory: $BRDIR"
-	exit 2
-fi
-if [ ! -f "$BRFILE" ]; then
-	echo "Directory must contain CLI file: $BRFILE"
+
+if [ -d ${EXECUTABLE_DIR} ]; then
+    cd ${EXECUTABLE_DIR}
+else
+	echo "Directory not found: ${EXECUTABLE_DIR}"
 	exit 2
 fi
 
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
-	$GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}"
+	$GODEP $GOBIN build -ldflags "-s" -o "${dir}/${BRNAME}${label}${timestamp}" $GOPACKAGE
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -175,18 +171,16 @@ elif [ -z "$all" ]; then
 		exit 1
 	fi
 	echo "Building $BRNAME for $os/$arch"
-	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}.$os.$arch"
+	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${dir}/${BRNAME}${label}${timestamp}.$os.$arch" $GOPACKAGE
 else
-	echo "Building $BRNAME for common OS/ARCH:"
+	echo "Building $BRNAME for all OS/ARCH:"
 	os="$OSVALUES"
 	arch="$ARCHVALUES"
 	for j in $arch; do
-		printf "  "
 		for i in $os; do
-			printf "$i/$j "
-			GOOS="$i" GOARCH="$j" $GODEP $GOBIN build -o "${dir}/${BRNAME}${label}${timestamp}.$i.$j"
+			echo "    $i/$j"
+			GOOS="$i" GOARCH="$j" $GODEP $GOBIN build -ldflags "-s" -o "${dir}/${BRNAME}${label}${timestamp}.$i.$j" $GOPACKAGE
 		done
-		printf "\n"
 	done
 fi
 

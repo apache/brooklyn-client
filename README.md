@@ -1,18 +1,78 @@
 # Brooklyn CLI
 
-## Compiling
+A command line client for [Apache Brooklyn](https://brooklyn.apache.org).
 
-1. Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly,
-   to some location where Go does its work, such as `~/gocode` .
-2. Get and build the cli source code: `go get github.com/brooklyncentral/brooklyn-cli/br`
-3. Run it from `$GOPATH/bin/br` (add `$GOPATH/bin/` to your PATH).
-4. Thereafter if you want to do code changes, 
-   link the `$GOPATH/src/github.com/brooklyncentral/brooklyn-cli`
-   with the directory where you want to keep your git repositories.
-   (TODO: clarify best practice for this, including how to combine
-   it with a Brooklyn all-projects build)
+## Toolchain
+
+You will need the following tools to build the CLI:
+- Go (min version 1.5.1), with full cross-compiler support (see https://golang.org/dl).
+  On Mac, if using Homebrew, use "brew install go --with-cc-all"
+- godep (see https://github.com/tools/godep)
+
+Optional:
+- Maven (used by the Brooklyn build process)
+
+
+## Build Pre-Requisites
+
+- Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly 
+  to a suitable location for your Go code.
+- Install Brooklyn CLI and dependencies (note the "-d" parameter, which instructs Go to download the files but not
+  build the code).  
+`go get -d github.com/brooklyncentral/brooklyn-cli/br`  
+    
+    
+## A note on dependency management
+
+The CLI has a small number of dependencies, notably on codegansta/cli.  To manage the version of dependencies, the CLI
+code currently uses godep.  When contributing to the CLI it is important to be aware of the distinction.  To avoid
+potentially bringing in new versions of dependencies, use "godep go" to build the code using the dependencies
+saved in br/Godeps.  Alternatively, to bring in the latest versions of the dependencies, build with "go get", but in
+that case remember to update the dependencies of the project using "godep save" along with your commit.
+
+## Compiling the code with Go for development purposes
+
+
+### Using saved dependencies
+As Go dependendencies for godep are held in the main package directory ("br"), you need to build from that directory,
+using godep:
+
+```bash
+cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+godep go install 
+```
+This will build the "br" executable into $GOPATH/bin
+
+### Updating the dependencies
+
+To use the latest published versions of the dependencies simply use 
+```bash
+go get github.com/brooklyncentral/brooklyn-cli/br
+```
+
+When the code is ready to be committed, first update the saved dependencies with
+```bash
+cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+godep save
+```
+
+
+## Building the code for release
+
+Either:
+- Use the build script in the "release" folder directly (see its usage for details), or
+- Invoke the build script via Maven with one of 
+  - ```mvn clean install```                                     build for all supported platforms
+  - ```mvn -Dtarget=native clean install```                     build for the current platform
+  - ```mvn -Dtarget=cross -Dos=OS -Darch=ARCH clean install```  build for platform with operating system OS and architecture ARCH
+
+This builds the requested binaries into the "target" directory, each with a file name that includes the version,
+timestamp, and architecture details, e.g. br.0.9.0.20151218-195906.linux.amd64, and installs a zip file containing them
+all as a maven artifact.  To run any of these as "br" of course you will need to create an alias or soft link.
 
 ## Running
+
+Ensure your path contains $GOPATH/bin.
 
 First, log in to your Brooklyn instance with:
 
@@ -42,7 +102,7 @@ And for help on individual commands:
      Selects an activity of an entity e.g. "br a myapp e myserver act iHG7sq1"
 
 
-# Commands
+## Commands
 
    Commands whose description begins with a "*" character are particularly experimental and likely to change in upcoming
    releases.  If not otherwise specified, "SCOPE" below means application or entity scope.  If an entity scope is not
