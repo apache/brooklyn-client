@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
 func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, string, string){
@@ -38,5 +39,7 @@ func main() {
 	cmdRunner := command_runner.NewRunner(scope, cmdFactory)
 	metaDatas := cmdFactory.CommandMetadatas()
 	theApp := app.NewApp(filepath.Base(args[0]), cmdRunner, metaDatas...)
-	theApp.Run(args)
+	if err := theApp.Run(args); nil != err {
+		error_handler.ErrorExit(err)
+	}
 }
