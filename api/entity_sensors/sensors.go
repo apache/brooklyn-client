@@ -11,7 +11,9 @@ import (
 
 func SensorValue(network *net.Network, application, entity, sensor string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
-	body, err := network.SendGetRequest(url)
+	headers := make(map[string]string)
+	headers["Accept"] = "text/plain"
+	body, err := network.SendGetRequestWithHeaders(url, headers)
     if nil != err {
         return "", err
     }
