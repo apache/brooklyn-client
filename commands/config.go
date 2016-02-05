@@ -8,7 +8,6 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
-    "os"
     "github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
@@ -36,12 +35,16 @@ func (cmd *Config) Run(scope scope.Scope, c *cli.Context) {
         error_handler.ErrorExit(err)
     }
     if c.Args().Present() {
-        config, err := entity_config.ConfigValue(cmd.network, scope.Application, scope.Entity, c.Args().First())
+        configValue, err := entity_config.ConfigValue(cmd.network, scope.Application, scope.Entity, c.Args().First())
+
         if nil != err {
-            fmt.Fprintln(os.Stderr, err)
-            os.Exit(1)
+			error_handler.ErrorExit(err)
         }
-        fmt.Println(config)
+		displayValue, err := stringRepresentation(configValue)
+		if nil != err {
+			error_handler.ErrorExit(err)
+		}
+        fmt.Println(displayValue)
 
     } else {
         config, err := entity_config.ConfigCurrentState(cmd.network, scope.Application, scope.Entity)
