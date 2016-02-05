@@ -111,7 +111,6 @@ func (net *Network) SendGetRequest(url string) ([]byte, error) {
 	return body, err
 }
 
-
 func (net *Network) SendDeleteRequest(url string) ([]byte, error) {
 	req := net.NewDeleteRequest(url)
 	body, err := net.SendRequest(req)

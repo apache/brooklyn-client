@@ -9,7 +9,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
     "github.com/brooklyncentral/brooklyn-cli/error_handler"
-"github.com/brooklyncentral/brooklyn-cli/models"
+    "github.com/brooklyncentral/brooklyn-cli/models"
     "sort"
 )
 
@@ -65,10 +65,14 @@ func (cmd *Sensor) Run(scope scope.Scope, c *cli.Context) {
 
 func (cmd *Sensor) show(application, entity, sensor string) {
 	sensorValue, err := entity_sensors.SensorValue(cmd.network, application, entity, sensor)
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
-	fmt.Println(sensorValue)
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
+	displayValue, err := stringRepresentation(sensorValue)
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
+	fmt.Println(displayValue)
 }
 
 
@@ -87,7 +91,11 @@ func (cmd *Sensor) list(application, entity string) {
         if nil != err {
             error_handler.ErrorExit(err)
         }
-		table.Add(sensor.Name, sensor.Description, value)
+		displayValue, err := stringRepresentation(value)
+		if nil != err {
+			error_handler.ErrorExit(err)
+		}
+		table.Add(sensor.Name, sensor.Description, displayValue)
 	}
 	table.Print()
 }

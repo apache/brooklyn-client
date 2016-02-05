@@ -7,12 +7,19 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/net"
 )
 
-func ConfigValue(network *net.Network, application, entity, config string) (string, error) {
+func ConfigValue(network *net.Network, application, entity, config string) (interface{}, error) {
 	bytes, err := ConfigValueAsBytes(network, application, entity, config)
-	if nil != err {
-		return "", err
+	if nil != err || 0 == len(bytes) {
+		return nil, err
 	}
-	return string(bytes), nil
+
+	var value interface{};
+	err = json.Unmarshal(bytes, &value)
+	if nil != err {
+		return nil, err
+	}
+
+	return value, nil;
 }
 
 func ConfigValueAsBytes(network *net.Network, application, entity, config string) ([]byte, error) {

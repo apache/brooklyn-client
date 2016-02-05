@@ -9,13 +9,20 @@ import (
 
 
 
-func SensorValue(network *net.Network, application, entity, sensor string) (string, error) {
+func SensorValue(network *net.Network, application, entity, sensor string) (interface{}, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
 	body, err := network.SendGetRequest(url)
-    if nil != err {
-        return "", err
+    if nil != err || 0 == len(body) {
+        return nil, err
     }
-	return string(body), nil
+
+	var value interface{};
+	err = json.Unmarshal(body, &value)
+	if nil != err {
+		return nil, err
+	}
+
+	return value, nil;
 }
 
 // WIP
