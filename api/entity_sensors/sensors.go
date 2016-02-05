@@ -11,12 +11,15 @@ import (
 
 func SensorValue(network *net.Network, application, entity, sensor string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
-	headers := make(map[string]string)
-	headers["Accept"] = "text/plain"
-	body, err := network.SendGetRequestWithHeaders(url, headers)
+	body, err := network.SendGetRequest(url)
     if nil != err {
         return "", err
     }
+	var value string;
+	err = json.Unmarshal(body, &value)
+	if nil == err {
+		return value, err
+	}
 	return string(body), nil
 }
 

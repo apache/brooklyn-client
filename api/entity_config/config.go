@@ -12,6 +12,12 @@ func ConfigValue(network *net.Network, application, entity, config string) (stri
 	if nil != err {
 		return "", err
 	}
+
+	var value string;
+	err = json.Unmarshal(bytes, &value)
+	if nil == err {
+		return value, nil
+	}
 	return string(bytes), nil
 }
 

@@ -111,16 +111,6 @@ func (net *Network) SendGetRequest(url string) ([]byte, error) {
 	return body, err
 }
 
-func (net *Network) SendGetRequestWithHeaders(url string, headers map[string]string) ([]byte, error) {
-	req := net.NewGetRequest(url)
-	for header, value := range headers {
-		req.Header.Set(header, value)
-	}
-	body, err := net.SendRequest(req)
-	return body, err
-}
-
-
 func (net *Network) SendDeleteRequest(url string) ([]byte, error) {
 	req := net.NewDeleteRequest(url)
 	body, err := net.SendRequest(req)
