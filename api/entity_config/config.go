@@ -9,16 +9,22 @@ import (
 
 func ConfigValue(network *net.Network, application, entity, config string) (string, error) {
 	bytes, err := ConfigValueAsBytes(network, application, entity, config)
+	if nil != err || 0 == len(bytes) {
+		return "", err
+	}
+
+	var value interface{};
+	err = json.Unmarshal(bytes, &value)
 	if nil != err {
 		return "", err
 	}
 
-	var value string;
-	err = json.Unmarshal(bytes, &value)
-	if nil == err {
-		return value, nil
+	switch value.(type) {
+	case string:
+		return value.(string), nil
+	default:
+		return string(bytes), nil
 	}
-	return string(bytes), nil
 }
 
 func ConfigValueAsBytes(network *net.Network, application, entity, config string) ([]byte, error) {

@@ -9,7 +9,7 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
     "github.com/brooklyncentral/brooklyn-cli/error_handler"
-"github.com/brooklyncentral/brooklyn-cli/models"
+    "github.com/brooklyncentral/brooklyn-cli/models"
     "sort"
 )
 

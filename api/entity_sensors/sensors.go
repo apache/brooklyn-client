@@ -12,15 +12,22 @@ import (
 func SensorValue(network *net.Network, application, entity, sensor string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
 	body, err := network.SendGetRequest(url)
-    if nil != err {
+    if nil != err || 0 == len(body) {
         return "", err
     }
-	var value string;
+
+	var value interface{};
 	err = json.Unmarshal(body, &value)
-	if nil == err {
-		return value, err
+	if nil != err {
+		return "", err
 	}
-	return string(body), nil
+
+	switch value.(type) {
+	case string:
+		return value.(string), nil
+	default:
+		return string(body), nil
+	}
 }
 
 // WIP
