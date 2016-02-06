@@ -4,15 +4,15 @@ import (
 	"github.com/brooklyncentral/brooklyn-cli/app"
 	"github.com/brooklyncentral/brooklyn-cli/command_factory"
 	"github.com/brooklyncentral/brooklyn-cli/command_runner"
-	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"github.com/brooklyncentral/brooklyn-cli/io"
+	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"os"
 	"path/filepath"
-	"github.com/brooklyncentral/brooklyn-cli/scope"
-	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 )
 
-func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, string, string){
+func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, string, string) {
 	var target, username, password string
 	target, found := yamlMap["target"].(string)
 	if found {
@@ -30,7 +30,7 @@ func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, st
 
 func main() {
 	config := io.GetConfig()
-	target, username, password := getNetworkCredentialsFromConfig(config.Map) 
+	target, username, password := getNetworkCredentialsFromConfig(config.Map)
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
 	network := net.NewNetwork(target, username, password)
 	cmdFactory := command_factory.NewFactory(network, config)

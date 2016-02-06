@@ -1,6 +1,6 @@
 package access_control
 
-import(
+import (
 	"encoding/json"
 	"fmt"
 	"github.com/brooklyncentral/brooklyn-cli/models"
@@ -9,12 +9,12 @@ import(
 
 func Access(network *net.Network) (models.AccessSummary, error) {
 	url := fmt.Sprintf("/v1/access")
-    var access models.AccessSummary
+	var access models.AccessSummary
 
-    body, err := network.SendGetRequest(url)
-    if err != nil {
-        return access, err
-    }
+	body, err := network.SendGetRequest(url)
+	if err != nil {
+		return access, err
+	}
 
 	err = json.Unmarshal(body, &access)
 	return access, err

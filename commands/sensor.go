@@ -2,15 +2,15 @@ package commands
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/entity_sensors"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/brooklyncentral/brooklyn-cli/models"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
 	"github.com/brooklyncentral/brooklyn-cli/terminal"
-    "github.com/brooklyncentral/brooklyn-cli/error_handler"
-    "github.com/brooklyncentral/brooklyn-cli/models"
-    "sort"
+	"github.com/codegangsta/cli"
+	"sort"
 )
 
 type Sensor struct {
@@ -21,20 +21,20 @@ type sensorList []models.SensorSummary
 
 // Len is the number of elements in the collection.
 func (sensors sensorList) Len() int {
-    return len(sensors)
+	return len(sensors)
 }
 
 // Less reports whether the element with
 // index i should sort before the element with index j.
 func (sensors sensorList) Less(i, j int) bool {
-    return sensors[i].Name < sensors[j].Name
+	return sensors[i].Name < sensors[j].Name
 }
 
 // Swap swaps the elements with indexes i and j.
 func (sensors sensorList) Swap(i, j int) {
-    temp := sensors[i]
-    sensors[i] = sensors[j]
-    sensors[j] = temp
+	temp := sensors[i]
+	sensors[i] = sensors[j]
+	sensors[j] = temp
 }
 
 func NewSensor(network *net.Network) (cmd *Sensor) {
@@ -53,13 +53,13 @@ func (cmd *Sensor) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Sensor) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	if c.Args().Present() {
 		cmd.show(scope.Application, scope.Entity, c.Args().First())
 	} else {
-		cmd.list(scope.Application, scope.Entity, )
+		cmd.list(scope.Application, scope.Entity)
 	}
 }
 
@@ -75,22 +75,21 @@ func (cmd *Sensor) show(application, entity, sensor string) {
 	fmt.Println(displayValue)
 }
 
-
 func (cmd *Sensor) list(application, entity string) {
 	sensors, err := entity_sensors.SensorList(cmd.network, application, entity)
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
-    var theSensors sensorList = sensors
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
+	var theSensors sensorList = sensors
 	table := terminal.NewTable([]string{"Name", "Description", "Value"})
 
-    sort.Sort(theSensors)
+	sort.Sort(theSensors)
 
 	for _, sensor := range theSensors {
 		value, err := entity_sensors.SensorValue(cmd.network, application, entity, sensor.Name)
-        if nil != err {
-            error_handler.ErrorExit(err)
-        }
+		if nil != err {
+			error_handler.ErrorExit(err)
+		}
 		displayValue, err := stringRepresentation(value)
 		if nil != err {
 			error_handler.ErrorExit(err)

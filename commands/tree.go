@@ -2,13 +2,13 @@ package commands
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/application"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"github.com/brooklyncentral/brooklyn-cli/models"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
-    "github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/codegangsta/cli"
 )
 
 type Tree struct {
@@ -31,13 +31,13 @@ func (cmd *Tree) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Tree) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	trees, err := application.Tree(cmd.network)
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
 	cmd.printTrees(trees, "")
 }
 

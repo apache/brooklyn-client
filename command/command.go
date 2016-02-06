@@ -1,9 +1,9 @@
 package command
 
 import (
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+	"github.com/codegangsta/cli"
 )
 
 type Command interface {

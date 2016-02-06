@@ -9,8 +9,8 @@ const CLIUsageErrorExitCode int = 1
 const CliGenericErrorExitCode int = 2
 const CLITrapErrorCode int = 3
 
-func ErrorExit(errorvalue interface{}, errorcode ...int) () {
-	switch errorvalue.(type){
+func ErrorExit(errorvalue interface{}, errorcode ...int) {
+	switch errorvalue.(type) {
 	case error:
 		fmt.Fprintln(os.Stderr, errorvalue)
 	case string:

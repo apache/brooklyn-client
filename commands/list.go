@@ -1,29 +1,29 @@
 package commands
 
 import (
-	"github.com/brooklyncentral/brooklyn-cli/net"
-	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
-	"github.com/codegangsta/cli"
 	"fmt"
-	"strings"
 	"github.com/brooklyncentral/brooklyn-cli/command"
+	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
-    "github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/codegangsta/cli"
+	"strings"
 )
 
 type List struct {
-	network *net.Network
-    listCommands map[string]command.Command
+	network      *net.Network
+	listCommands map[string]command.Command
 }
 
 func NewList(network *net.Network) (cmd *List) {
 	cmd = new(List)
 	cmd.network = network
 	cmd.listCommands = map[string]command.Command{
-//		ListApplicationCommand: NewApplications(cmd.network),
-//		ListEntityCommand: NewEntities(cmd.network),
-//		ListSensorCommand: NewSensors(cmd.network),
-//		ListEffectorCommand: NewEffector(cmd.network),
+	//		ListApplicationCommand: NewApplications(cmd.network),
+	//		ListEntityCommand: NewEntities(cmd.network),
+	//		ListSensorCommand: NewSensors(cmd.network),
+	//		ListEffectorCommand: NewEffector(cmd.network),
 	}
 	return
 }
@@ -33,7 +33,7 @@ const ListEntityCommand = "entities"
 const ListSensorCommand = "sensors"
 const ListEffectorCommand = "effectors"
 
-var listCommands = []string {
+var listCommands = []string{
 	ListApplicationCommand,
 	ListEntityCommand,
 	ListSensorCommand,
@@ -41,7 +41,7 @@ var listCommands = []string {
 }
 var listCommandsUsage = strings.Join(listCommands, " | ")
 
-func (cmd *List) SubCommandNames() ([]string) {
+func (cmd *List) SubCommandNames() []string {
 	return listCommands
 }
 
@@ -55,7 +55,7 @@ func (cmd *List) Metadata() command_metadata.CommandMetadata {
 		Description: "List details for a variety of operands",
 		Usage:       "BROOKLYN_NAME SCOPE list (" + listCommandsUsage + ")",
 		Flags:       []cli.Flag{},
-		Operands:    []command_metadata.CommandMetadata {
+		Operands: []command_metadata.CommandMetadata{
 			cmd.SubCommand(ListApplicationCommand).Metadata(),
 			cmd.SubCommand(ListEntityCommand).Metadata(),
 			cmd.SubCommand(ListSensorCommand).Metadata(),
@@ -65,8 +65,8 @@ func (cmd *List) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *List) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
-	fmt.Printf( "Unrecognised item for list, please use one of (%s)\n", listCommandsUsage)
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
+	fmt.Printf("Unrecognised item for list, please use one of (%s)\n", listCommandsUsage)
 }

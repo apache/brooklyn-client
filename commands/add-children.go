@@ -1,14 +1,14 @@
 package commands
 
 import (
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/entities"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"github.com/brooklyncentral/brooklyn-cli/net"
-	"github.com/brooklyncentral/brooklyn-cli/terminal"
-	"time"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
-    "github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/brooklyncentral/brooklyn-cli/terminal"
+	"github.com/codegangsta/cli"
+	"time"
 )
 
 type AddChildren struct {
@@ -31,13 +31,13 @@ func (cmd *AddChildren) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *AddChildren) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	activity, err := entities.AddChildren(cmd.network, scope.Application, scope.Entity, c.Args().First())
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
 	table := terminal.NewTable([]string{"Id", "Task", "Submitted", "Status"})
 	table.Add(activity.Id, activity.DisplayName, time.Unix(activity.SubmitTimeUtc/1000, 0).Format(time.UnixDate), activity.CurrentStatus)
 

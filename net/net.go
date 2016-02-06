@@ -2,16 +2,16 @@ package net
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
-	"errors"
-    "strings"
-    "strconv"
-    "encoding/json"
+	"strconv"
+	"strings"
 )
 
 type Network struct {
@@ -47,31 +47,30 @@ func (net *Network) NewDeleteRequest(url string) *http.Request {
 }
 
 type HttpError struct {
-    Code    int
+	Code    int
 	Status  string
 	Headers http.Header
 	Body    string
 }
 
 func (err HttpError) Error() string {
-    return err.Status
+	return err.Status
 }
 
-
-func makeError (resp *http.Response, code int, body []byte) error {
-    theError := HttpError {
-        Code:    code,
-        Status:  resp.Status,
-        Headers: resp.Header,
-    }
-    details := make(map[string]string)
-    if err := json.Unmarshal(body, &details); nil == err {
-        if message, ok := details["message"]; ok {
-            theError.Body = message
-            return theError
-        }
-    }
-    theError.Body = string(body)
+func makeError(resp *http.Response, code int, body []byte) error {
+	theError := HttpError{
+		Code:    code,
+		Status:  resp.Status,
+		Headers: resp.Header,
+	}
+	details := make(map[string]string)
+	if err := json.Unmarshal(body, &details); nil == err {
+		if message, ok := details["message"]; ok {
+			theError.Body = message
+			return theError
+		}
+	}
+	theError.Body = string(body)
 	return theError
 }
 
@@ -83,15 +82,15 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	if code, failed := unsuccessful(resp.Status) ; failed {
+	if code, failed := unsuccessful(resp.Status); failed {
 		return nil, makeError(resp, code, body)
 	}
 	return body, err
 }
 
+const httpSuccessSeriesFrom = 200
+const httpSuccessSeriesTo = 300
 
-const httpSuccessSeriesFrom = 200;
-const httpSuccessSeriesTo = 300;
 func unsuccessful(status string) (int, bool) {
 	tokens := strings.Split(status, " ")
 	if 0 == len(tokens) {

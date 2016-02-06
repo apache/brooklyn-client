@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/application"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
-    "github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/codegangsta/cli"
 )
 
 type Delete struct {
@@ -30,12 +30,12 @@ func (cmd *Delete) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Delete) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	del, err := application.Delete(cmd.network, scope.Application)
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
 	fmt.Println(del)
 }

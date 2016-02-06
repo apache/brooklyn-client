@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/version"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+	"github.com/codegangsta/cli"
 )
 
 type Version struct {
@@ -30,12 +30,12 @@ func (cmd *Version) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Version) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
-    version, err := version.Version(cmd.network)
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
-    fmt.Println(version.Version)
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
+	version, err := version.Version(cmd.network)
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
+	fmt.Println(version.Version)
 }

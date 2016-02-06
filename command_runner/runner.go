@@ -1,9 +1,9 @@
 package command_runner
 
 import (
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/command_factory"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
+	"github.com/codegangsta/cli"
 )
 
 type Runner interface {
@@ -13,7 +13,7 @@ type Runner interface {
 
 type ConcreteRunner struct {
 	cmdFactory command_factory.Factory
-	scope scope.Scope
+	scope      scope.Scope
 }
 
 func NewRunner(scope scope.Scope, cmdFactory command_factory.Factory) (runner ConcreteRunner) {
