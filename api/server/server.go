@@ -34,7 +34,7 @@ func GetConfig(network *net.Network, configKey string) (string, error) {
 	return string(body), nil
 }
 
-func Reload(network *net.Network)(string, error) {
+func Reload(network *net.Network) (string, error) {
 	url := "/v1/server/properties/reload"
 	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {

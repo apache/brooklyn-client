@@ -18,12 +18,12 @@ func LocatedLocations(network *net.Network) (string, error) {
 
 func GetLocation(network *net.Network, locationId string) (models.LocationSummary, error) {
 	url := fmt.Sprintf("/v1/locations/%s", locationId)
-    var locationDetail models.LocationSummary
+	var locationDetail models.LocationSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
 		return locationDetail, err
 	}
-    err = json.Unmarshal(body, &locationDetail)
+	err = json.Unmarshal(body, &locationDetail)
 	return locationDetail, err
 }
 
@@ -48,11 +48,11 @@ func CreateLocation(network *net.Network, locationId string) (string, error) {
 
 func LocationList(network *net.Network) ([]models.LocationSummary, error) {
 	url := "/v1/locations"
-    var locationList []models.LocationSummary
-    body, err := network.SendGetRequest(url)
-    if err != nil {
-        return locationList, err
-    }
+	var locationList []models.LocationSummary
+	body, err := network.SendGetRequest(url)
+	if err != nil {
+		return locationList, err
+	}
 
 	err = json.Unmarshal(body, &locationList)
 	return locationList, err

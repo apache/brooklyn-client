@@ -1,23 +1,24 @@
 package scope
+
 import (
 	"strings"
 )
 
 type Scope struct {
 	Application string
-	Entity string
-	Effector string
-	Config string
-	Activity string
+	Entity      string
+	Effector    string
+	Config      string
+	Activity    string
 }
 
 func (scope Scope) String() string {
 	return strings.Join([]string{
 		"{Application: ", scope.Application,
-		", Entity: ",scope.Entity,
-		", Effector: ",  scope.Effector,
+		", Entity: ", scope.Entity,
+		", Effector: ", scope.Effector,
 		", Config: ", scope.Config,
-		", Activity: ",  scope.Activity,
+		", Activity: ", scope.Activity,
 		"}",
 	}, "")
 }
@@ -42,25 +43,24 @@ func activity(scope *Scope, id string) {
 	scope.Activity = id
 }
 
-var scopeSpecifier  = map[string] func(scope *Scope, id string) {
-	"application" : application,
-	"app" : application,
-	"a" : application,
-	"entity" : entity,
-	"ent" : entity,
-	"e" : entity,
-	"effector" : effector,
-	"eff" : effector,
-	"f" : effector,
-	"config" : config,
-	"conf" : config,
-	"con" : config,
-	"c" : config,
-	"activity" : activity,
-	"act" : activity,
-	"v" : activity,
+var scopeSpecifier = map[string]func(scope *Scope, id string){
+	"application": application,
+	"app":         application,
+	"a":           application,
+	"entity":      entity,
+	"ent":         entity,
+	"e":           entity,
+	"effector":    effector,
+	"eff":         effector,
+	"f":           effector,
+	"config":      config,
+	"conf":        config,
+	"con":         config,
+	"c":           config,
+	"activity":    activity,
+	"act":         activity,
+	"v":           activity,
 }
-
 
 // Scopes the arguments.
 // Assumes the arguments are a copy of the program args, including the first member that defines the program name.
@@ -86,33 +86,33 @@ func ScopeArguments(args []string) ([]string, Scope) {
 	return args, scope
 }
 
-func defineScope(args []string, scope *Scope) ([]string) {
+func defineScope(args []string, scope *Scope) []string {
 
-    allScopesFound := false
-    for !allScopesFound && len(args) > 2 && args[1][0] != '-' {
-        if setAppropriateScope, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
-            setAppropriateScope(scope, args[1])
-            args = args[2:]
-        } else {
-            allScopesFound = true
-        }
-    }
+	allScopesFound := false
+	for !allScopesFound && len(args) > 2 && args[1][0] != '-' {
+		if setAppropriateScope, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
+			setAppropriateScope(scope, args[1])
+			args = args[2:]
+		} else {
+			allScopesFound = true
+		}
+	}
 
-    setDefaultEntityIfRequired(scope)
+	setDefaultEntityIfRequired(scope)
 
-    return args
+	return args
 }
 
 func setDefaultEntityIfRequired(scope *Scope) {
-    if "" == scope.Entity {
-        scope.Entity = scope.Application
-    }
+	if "" == scope.Entity {
+		scope.Entity = scope.Application
+	}
 }
 
-func prepend(v string, args[]string) []string {
-	result := make([]string, len(args) + 1)
+func prepend(v string, args []string) []string {
+	result := make([]string, len(args)+1)
 	result[0] = v
-	for i, a := range(args) {
+	for i, a := range args {
 		result[i+1] = a
 	}
 	return result

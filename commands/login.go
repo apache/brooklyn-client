@@ -36,7 +36,7 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 
 func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	if !c.Args().Present() {
-		error_handler.ErrorExit("A URL must be provided as the first argument",error_handler.CLIUsageErrorExitCode)
+		error_handler.ErrorExit("A URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
 	}
 
 	// If an argument was not supplied, it is set to empty string
@@ -47,15 +47,15 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
-	
+
 	// Strip off trailing '/' from URL if present.
 	if cmd.network.BrooklynUrl[len(cmd.network.BrooklynUrl)-1] == '/' {
 		if len(cmd.network.BrooklynUrl) == 1 {
 			error_handler.ErrorExit("URL must not be a single \"/\" character", error_handler.CLIUsageErrorExitCode)
 		}
-		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0:len(cmd.network.BrooklynUrl)-1]
+		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0 : len(cmd.network.BrooklynUrl)-1]
 	}
-	
+
 	// Prompt for password if not supplied (password is not echoed to screen
 	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
 		fmt.Print("Enter Password: ")
@@ -84,10 +84,10 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 
 	cmd.config.Map["target"] = cmd.network.BrooklynUrl
 	cmd.config.Write()
-	
+
 	loginVersion, err := version.Version(cmd.network)
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
 	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)
 }

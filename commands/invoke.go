@@ -1,16 +1,16 @@
 package commands
 
 import (
-	"github.com/codegangsta/cli"
+	"errors"
+	"fmt"
 	"github.com/brooklyncentral/brooklyn-cli/api/entity_effectors"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
-	"fmt"
-	"github.com/brooklyncentral/brooklyn-cli/error_handler"
-	"strings"
-	"errors"
+	"github.com/codegangsta/cli"
 	"io/ioutil"
+	"strings"
 )
 
 type Invoke struct {
@@ -18,17 +18,16 @@ type Invoke struct {
 }
 
 type Stop struct {
-    Invoke
+	Invoke
 }
 
 type Start struct {
-    Invoke
+	Invoke
 }
 
 type Restart struct {
-    Invoke
+	Invoke
 }
-
 
 func NewInvoke(network *net.Network) (cmd *Invoke) {
 	cmd = new(Invoke)
@@ -54,11 +53,11 @@ func NewInvokeRestart(network *net.Network) (cmd *Restart) {
 	return
 }
 
-var paramFlags = []cli.Flag {
-    cli.StringSliceFlag{
-        Name: "param, P",
-        Usage: "Parameter and value separated by '=', e.g. -P x=y",
-    },
+var paramFlags = []cli.Flag{
+	cli.StringSliceFlag{
+		Name:  "param, P",
+		Usage: "Parameter and value separated by '=', e.g. -P x=y",
+	},
 }
 
 func (cmd *Invoke) Metadata() command_metadata.CommandMetadata {
@@ -98,50 +97,53 @@ func (cmd *Restart) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Invoke) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, scope.Effector, parms)
 }
 
 const stopEffector = "stop"
+
 func (cmd *Stop) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, stopEffector, parms)
 }
 
 const startEffector = "start"
+
 func (cmd *Start) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, startEffector, parms)
 }
 
 const restartEffector = "restart"
+
 func (cmd *Restart) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	parms := c.StringSlice("param")
 	invoke(cmd.network, scope.Application, scope.Entity, restartEffector, parms)
 }
 
 func invoke(network *net.Network, application, entity, effector string, parms []string) {
-    names, vals, err := extractParams(parms)
-    result, err := entity_effectors.TriggerEffector(network, application, entity, effector, names, vals)
-    if nil != err  {
-        error_handler.ErrorExit(err)
-    } else {
-        if "" != result {
-            fmt.Println(result)
-        }
-    }
+	names, vals, err := extractParams(parms)
+	result, err := entity_effectors.TriggerEffector(network, application, entity, effector, names, vals)
+	if nil != err {
+		error_handler.ErrorExit(err)
+	} else {
+		if "" != result {
+			fmt.Println(result)
+		}
+	}
 }
 
 func extractParams(parms []string) ([]string, []string, error) {
@@ -160,6 +162,7 @@ func extractParams(parms []string) ([]string, []string, error) {
 }
 
 const paramDataPrefix string = "@"
+
 func extractParamValue(rawParam string) (string, error) {
 	var err error
 	var val string

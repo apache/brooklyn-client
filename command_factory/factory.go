@@ -2,12 +2,12 @@ package command_factory
 
 import (
 	"errors"
-	"sort"
 	"github.com/brooklyncentral/brooklyn-cli/command"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
 	"github.com/brooklyncentral/brooklyn-cli/commands"
-	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/io"
+	"github.com/brooklyncentral/brooklyn-cli/net"
+	"sort"
 	"strings"
 )
 
@@ -18,10 +18,9 @@ type Factory interface {
 }
 
 type concreteFactory struct {
-	cmdsByName map[string]command.Command
+	cmdsByName  map[string]command.Command
 	subCommands map[string]map[string]command.Command
 }
-
 
 func NewFactory(network *net.Network, config *io.Config) (factory concreteFactory) {
 	factory.cmdsByName = make(map[string]command.Command)
@@ -39,18 +38,18 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	factory.simpleCommand(commands.NewApplication(network))
 	//factory.simpleCommand(commands.NewApplications(network))
 	factory.simpleCommand(commands.NewCatalog(network))
-    factory.simpleCommand(commands.NewConfig(network))
-    factory.simpleCommand(commands.NewDeploy(network))
-    factory.simpleCommand(commands.NewDelete(network))
-    factory.simpleCommand(commands.NewDestroyPolicy(network))
-    factory.simpleCommand(commands.NewEffector(network))
-    factory.simpleCommand(commands.NewEntity(network))
+	factory.simpleCommand(commands.NewConfig(network))
+	factory.simpleCommand(commands.NewDeploy(network))
+	factory.simpleCommand(commands.NewDelete(network))
+	factory.simpleCommand(commands.NewDestroyPolicy(network))
+	factory.simpleCommand(commands.NewEffector(network))
+	factory.simpleCommand(commands.NewEntity(network))
 	factory.simpleCommand(commands.NewInvoke(network))
-    factory.simpleCommand(commands.NewInvokeRestart(network))
-    factory.simpleCommand(commands.NewInvokeStart(network))
-    factory.simpleCommand(commands.NewInvokeStop(network))
-    // NewList below is not used but we retain the code as an example of how to do a super command.
-    //	factory.superCommand(commands.NewList(network))
+	factory.simpleCommand(commands.NewInvokeRestart(network))
+	factory.simpleCommand(commands.NewInvokeStart(network))
+	factory.simpleCommand(commands.NewInvokeStop(network))
+	// NewList below is not used but we retain the code as an example of how to do a super command.
+	//	factory.superCommand(commands.NewList(network))
 	factory.simpleCommand(commands.NewLocations(network))
 	factory.simpleCommand(commands.NewLogin(network, config))
 	factory.simpleCommand(commands.NewPolicy(network))
@@ -66,14 +65,13 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	return factory
 }
 
-
 func (factory *concreteFactory) simpleCommand(cmd command.Command) {
 	factory.cmdsByName[cmd.Metadata().Name] = cmd
 }
 
-func (factory *concreteFactory) superCommand(cmd command.SuperCommand)  {
+func (factory *concreteFactory) superCommand(cmd command.SuperCommand) {
 
-    factory.simpleCommand(cmd)
+	factory.simpleCommand(cmd)
 
 	if nil == factory.subCommands[cmd.Metadata().Name] {
 		factory.subCommands[cmd.Metadata().Name] = make(map[string]command.Command)
@@ -112,11 +110,11 @@ func (f concreteFactory) GetBySubCmdName(cmdName string, subCmdName string) (cmd
 
 func (factory concreteFactory) CommandMetadatas() (commands []command_metadata.CommandMetadata) {
 	keys := make([]string, 0, len(factory.cmdsByName))
-    for key := range factory.cmdsByName {
-        keys = append(keys, key)
-    }
-    sort.Strings(keys)
-	
+	for key := range factory.cmdsByName {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+
 	for _, key := range keys {
 		command := factory.cmdsByName[key]
 		commands = append(commands, command.Metadata())

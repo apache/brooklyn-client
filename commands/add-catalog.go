@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"github.com/brooklyncentral/brooklyn-cli/api/catalog"
 	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
+	"github.com/brooklyncentral/brooklyn-cli/error_handler"
 	"github.com/brooklyncentral/brooklyn-cli/net"
 	"github.com/brooklyncentral/brooklyn-cli/scope"
-    "github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/codegangsta/cli"
 )
 
 type AddCatalog struct {
@@ -30,12 +30,12 @@ func (cmd *AddCatalog) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *AddCatalog) Run(scope scope.Scope, c *cli.Context) {
-    if err := net.VerifyLoginURL(cmd.network); err != nil {
-        error_handler.ErrorExit(err)
-    }
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
 	create, err := catalog.AddCatalog(cmd.network, c.Args().First())
-    if nil != err {
-        error_handler.ErrorExit(err)
-    }
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
 	fmt.Println(create)
 }
