@@ -1,4 +1,7 @@
-# Brooklyn CLI
+
+# [![**Brooklyn**](https://brooklyn.apache.org/style/img/apache-brooklyn-logo-244px-wide.png)](http://brooklyn.apache.org/)
+
+### Apache Brooklyn Client CLI Sub-Project
 
 A command line client for [Apache Brooklyn](https://brooklyn.apache.org).
 
@@ -141,3 +144,5 @@ And for help on individual commands:
    - *tree*           * Show the tree of all applications
    - *version*        Display the version of the connected Brooklyn
    - *help*    
+
+
