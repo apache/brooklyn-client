@@ -77,7 +77,7 @@ func DescendantsSensor(network *net.Network, app, sensor string) (string, error)
 }
 
 func Tree(network *net.Network) ([]models.Tree, error) {
-	url := "/v1/applications/tree"
+	url := "/v1/applications/fetch"
 	var tree []models.Tree
 	body, err := network.SendGetRequest(url)
 	if err != nil {
