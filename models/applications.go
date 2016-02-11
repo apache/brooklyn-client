@@ -1,12 +1,14 @@
 package models
 
 type Tree struct {
-	Name         string `json:"name"`
-	Id           string `json:"id"`
-	Type         string `json:"type"`
-	ServiceUp    bool   `json:"serviceUp"`
-	ServiceState string `json:"serviceState"`
-	Children     []Tree `json:"children"`
+	Id            string   `json:"id"`
+	ParentId      string   `json:"parentId"`
+	Name          string   `json:"name"`
+	Type          string   `json:"type"`
+	CatalogItemId string   `json:"catalogItemId"`
+	Children      []Tree   `json:"children"`
+	GroupIds      []string `json:"groupIds"`
+	Members       []string `json:"members"`
 }
 
 type TaskSummary struct {
