@@ -22,7 +22,7 @@ Optional:
   to a suitable location for your Go code.
 - Install Brooklyn CLI and dependencies (note the "-d" parameter, which instructs Go to download the files but not
   build the code).  
-`go get -d github.com/brooklyncentral/brooklyn-cli/br`  
+`go get -d github.com/apache/brooklyn-client/br`  
     
     
 ## A note on dependency management
@@ -41,7 +41,7 @@ As Go dependendencies for godep are held in the main package directory ("br"), y
 using godep:
 
 ```bash
-cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+cd $GOPATH/src/github.com/apache/brooklyn-client/br
 godep go install 
 ```
 This will build the "br" executable into $GOPATH/bin
@@ -50,12 +50,12 @@ This will build the "br" executable into $GOPATH/bin
 
 To use the latest published versions of the dependencies simply use 
 ```bash
-go get github.com/brooklyncentral/brooklyn-cli/br
+go get github.com/apache/brooklyn-client/br
 ```
 
 When the code is ready to be committed, first update the saved dependencies with
 ```bash
-cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+cd $GOPATH/src/github.com/apache/brooklyn-client/br
 godep save
 ```
 

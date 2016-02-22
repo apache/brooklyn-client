@@ -14,7 +14,7 @@
 OSVALUES="darwin freebsd linux netbsd openbsd windows"
 ARCHVALUES="386 amd64"
 BRNAME="br"
-GOPACKAGE="github.com/brooklyncentral/brooklyn-cli/${BRNAME}"
+GOPACKAGE="github.com/apache/brooklyn-client/${BRNAME}"
 EXECUTABLE_DIR="$GOPATH/src/$GOPACKAGE"
 GOBIN=go
 GODEP=godep

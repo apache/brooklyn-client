@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/brooklyncentral/brooklyn-cli/app"
-	"github.com/brooklyncentral/brooklyn-cli/command_factory"
-	"github.com/brooklyncentral/brooklyn-cli/command_runner"
-	"github.com/brooklyncentral/brooklyn-cli/error_handler"
-	"github.com/brooklyncentral/brooklyn-cli/io"
-	"github.com/brooklyncentral/brooklyn-cli/net"
-	"github.com/brooklyncentral/brooklyn-cli/scope"
+	"github.com/apache/brooklyn-client/app"
+	"github.com/apache/brooklyn-client/command_factory"
+	"github.com/apache/brooklyn-client/command_runner"
+	"github.com/apache/brooklyn-client/error_handler"
+	"github.com/apache/brooklyn-client/io"
+	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/scope"
 	"os"
 	"path/filepath"
 )

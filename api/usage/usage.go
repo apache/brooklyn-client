@@ -3,8 +3,8 @@ package usage
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/brooklyncentral/brooklyn-cli/models"
-	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/apache/brooklyn-client/models"
+	"github.com/apache/brooklyn-client/net"
 )
 
 func Application(network *net.Network, application string) (string, error) {

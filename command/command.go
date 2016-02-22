@@ -1,8 +1,8 @@
 package command
 
 import (
-	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
-	"github.com/brooklyncentral/brooklyn-cli/scope"
+	"github.com/apache/brooklyn-client/command_metadata"
+	"github.com/apache/brooklyn-client/scope"
 	"github.com/codegangsta/cli"
 )
 
