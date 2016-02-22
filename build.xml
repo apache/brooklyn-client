@@ -9,6 +9,8 @@
             <arg value="${project.version}"/>
             <arg value="-d"/>
             <arg value="${project.build.directory}"/>
+            <arg value="-s"/>
+            <arg value="${basedir}"/>
         </exec>
     </target>
 
@@ -23,6 +25,8 @@
             <arg value="${os}"/>
             <arg value="-d"/>
             <arg value="${project.build.directory}"/>
+            <arg value="-s"/>
+            <arg value="${basedir}"/>
         </exec>
     </target>
 
@@ -32,6 +36,8 @@
             <arg value="${project.version}"/>
             <arg value="-d"/>
             <arg value="${project.build.directory}"/>
+            <arg value="-s"/>
+            <arg value="${basedir}"/>
         </exec>
     </target>
 
