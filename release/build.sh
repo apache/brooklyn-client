@@ -140,7 +140,7 @@ fi
 # Set GOPATH to $outdir and link source
 export GOPATH=${outdir}
 mkdir -p ${GOPATH}/src/${PROJECT%/*}
-ln -s ${sourcedir} ${GOPATH}/src/${PROJECT}
+[ -e ${GOPATH}/src/${PROJECT} ] || ln -s ${sourcedir} ${GOPATH}/src/${PROJECT}
 
 
 command -v $GODEP >/dev/null 2>&1 || {
@@ -189,15 +189,17 @@ elif [ -z "$all" ]; then
 		exit 1
 	fi
 	echo "Building $BRNAME for $os/$arch"
-	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${outdir}/${BRNAME}${label}${timestamp}.$os.$arch" $CLI_PACKAGE
+	mkdir -p ${outdir}/$os.$arch
+	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${outdir}/$os.$arch/${BRNAME}${label}" $CLI_PACKAGE
 else
 	echo "Building $BRNAME for all OS/ARCH:"
 	os="$OSVALUES"
 	arch="$ARCHVALUES"
-	for j in $arch; do
-		for i in $os; do
-			echo "    $i/$j"
-			GOOS="$i" GOARCH="$j" $GODEP $GOBIN build -ldflags "-s" -o "${outdir}/${BRNAME}${label}${timestamp}.$i.$j" $CLI_PACKAGE
+	for archv in $arch; do
+		for osv in $os; do
+			echo "    $osv/$archv"
+			mkdir -p ${outdir}/$osv.$archv
+			GOOS="$osv" GOARCH="$archv" $GODEP $GOBIN build -ldflags "-s" -o "${outdir}/$osv.$archv/${BRNAME}${label}" $CLI_PACKAGE
 		done
 	done
 fi

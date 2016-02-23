@@ -1,41 +1,39 @@
 <project name="CLI" >
     <property name="build.script" location="${basedir}/release/build.sh"/>
 
-    <target name="all" >
+    <target name="makebin">
+        <mkdir dir="${project.build.directory}/bin" />
+    </target>
+
+    <target name="all" depends="makebin" >
         <exec executable="${build.script}">
             <arg value="-A"/>
             <arg value="-t"/>
-            <arg value="-l"/>
-            <arg value="${project.version}"/>
             <arg value="-d"/>
-            <arg value="${project.build.directory}"/>
+            <arg value="${project.build.directory}/bin"/>
             <arg value="-s"/>
             <arg value="${basedir}"/>
         </exec>
     </target>
 
-    <target name="cross">
+    <target name="cross" depends="makebin" >
         <exec executable="${build.script}">
             <arg value="-t"/>
-            <arg value="-l"/>
-            <arg value="${project.version}"/>
             <arg value="-a"/>
             <arg value="${arch}"/>
             <arg value="-o"/>
             <arg value="${os}"/>
             <arg value="-d"/>
-            <arg value="${project.build.directory}"/>
+            <arg value="${project.build.directory}/bin"/>
             <arg value="-s"/>
             <arg value="${basedir}"/>
         </exec>
     </target>
 
-    <target name="native">
+    <target name="native" depends="makebin" >
         <exec executable="${build.script}">
-            <arg value="-l"/>
-            <arg value="${project.version}"/>
             <arg value="-d"/>
-            <arg value="${project.build.directory}"/>
+            <arg value="${project.build.directory}/bin"/>
             <arg value="-s"/>
             <arg value="${basedir}"/>
         </exec>
