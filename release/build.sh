@@ -16,7 +16,6 @@ ARCHVALUES="386 amd64"
 BRNAME="br"
 PROJECT="github.com/apache/brooklyn-client"
 CLI_PACKAGE="${PROJECT}/${BRNAME}"
-EXECUTABLE_DIR="$GOPATH/src/$CLI_PACKAGE"
 GOBIN=go
 GODEP=godep
 
@@ -137,14 +136,14 @@ if [ -n "$outdir" -a ! -d "$outdir" ]; then
 	exit 1
 fi
 
-# Set GOPATH to $outdir and link source
+# Set GOPATH to $outdir and link to source code.
 export GOPATH=${outdir}
 mkdir -p ${GOPATH}/src/${PROJECT%/*}
 [ -e ${GOPATH}/src/${PROJECT} ] || ln -s ${sourcedir} ${GOPATH}/src/${PROJECT}
-
+PATH=${GOPATH}/bin:${PATH}
 
 command -v $GODEP >/dev/null 2>&1 || {
-	go get github.com/tools/godep
+	go get github.com/tools/godep || { echo failed installing dodep ; exit 1; }
 }
 
 command -v $GODEP >/dev/null 2>&1 || {
@@ -164,7 +163,7 @@ if [ \( -n "$os" -a -z "$arch" \) -o \( -z "$os" -a -n "$arch" \) ]; then
 	exit 1
 fi
 
-
+EXECUTABLE_DIR="$GOPATH/src/$CLI_PACKAGE"
 if [ -d ${EXECUTABLE_DIR} ]; then
     cd ${EXECUTABLE_DIR}
 else
@@ -172,9 +171,11 @@ else
 	exit 2
 fi
 
+mkdir -p ${GOPATH}/bin
+
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
-	$GODEP $GOBIN build -ldflags "-s" -o "${outdir}/${BRNAME}${label}${timestamp}" $CLI_PACKAGE
+	$GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/${BRNAME}${label}${timestamp}" $CLI_PACKAGE
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -189,8 +190,8 @@ elif [ -z "$all" ]; then
 		exit 1
 	fi
 	echo "Building $BRNAME for $os/$arch"
-	mkdir -p ${outdir}/$os.$arch
-	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${outdir}/$os.$arch/${BRNAME}${label}" $CLI_PACKAGE
+	mkdir -p ${GOPATH}/bin/$os.$arch
+	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$os.$arch/${BRNAME}${label}" $CLI_PACKAGE
 else
 	echo "Building $BRNAME for all OS/ARCH:"
 	os="$OSVALUES"
@@ -198,8 +199,8 @@ else
 	for archv in $arch; do
 		for osv in $os; do
 			echo "    $osv/$archv"
-			mkdir -p ${outdir}/$osv.$archv
-			GOOS="$osv" GOARCH="$archv" $GODEP $GOBIN build -ldflags "-s" -o "${outdir}/$osv.$archv/${BRNAME}${label}" $CLI_PACKAGE
+			mkdir -p ${GOPATH}/bin/$osv.$archv
+			GOOS="$osv" GOARCH="$archv" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$osv.$archv/${BRNAME}${label}" $CLI_PACKAGE
 		done
 	done
 fi
