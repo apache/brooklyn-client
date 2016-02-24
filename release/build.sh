@@ -175,7 +175,7 @@ mkdir -p ${GOPATH}/bin
 
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
-	$GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/${BRNAME}${label}${timestamp}" $CLI_PACKAGE
+	$GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/${BRNAME}${label}${timestamp}" $CLI_PACKAGE || exit $?
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -191,7 +191,7 @@ elif [ -z "$all" ]; then
 	fi
 	echo "Building $BRNAME for $os/$arch"
 	mkdir -p ${GOPATH}/bin/$os.$arch
-	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$os.$arch/${BRNAME}${label}" $CLI_PACKAGE
+	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$os.$arch/${BRNAME}${label}" $CLI_PACKAGE || exit $?
 else
 	echo "Building $BRNAME for all OS/ARCH:"
 	os="$OSVALUES"
@@ -200,7 +200,7 @@ else
 		for osv in $os; do
 			echo "    $osv/$archv"
 			mkdir -p ${GOPATH}/bin/$osv.$archv
-			GOOS="$osv" GOARCH="$archv" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$osv.$archv/${BRNAME}${label}" $CLI_PACKAGE
+			GOOS="$osv" GOARCH="$archv" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$osv.$archv/${BRNAME}${label}" $CLI_PACKAGE || exit $?
 		done
 	done
 fi
