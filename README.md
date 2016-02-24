@@ -78,7 +78,6 @@ where the username and password need only be supplied if Brooklyn requires them:
 
 ```bash
     $ sh test.sh  http://your-brooklyn-host:8081 myuser mypassword
-    exit 0
 ```
 
 Note, the tests are not yet comprehensive, and contributions are welcome.
@@ -94,6 +93,13 @@ Invoke the build script via Maven with one of
   - ```mvn clean install```                                     build for all supported platforms
   - ```mvn -Dtarget=native clean install```                     build for the current platform
   - ```mvn -Dtarget=cross -Dos=OS -Darch=ARCH clean install```  build for platform with operating system OS and architecture ARCH
+
+*NOTE* This does *not* build the code into your usual GOPATH. To allow the project to be checked out along with the 
+other Brooklyn submodules and built using Maven, without any special treatment to install it into a separate GOPATH
+location, the Maven build makes no assumption about the location of the project root directory. Instead, the Maven
+`target` directory is used as the GOPATH, and a soft link is created as `target/src/github.com/apache/brooklyn-cli` to 
+the code in the root directory. If godep is already installed in the PATH, it is used, otherwise Go is used to fetch
+godep and install it.  The CLI dependencies need not be fetched as they are used from the Godeps directory by godep. 
 
 This builds the requested binaries into the "target" directory, each in its own subdirectory with a name that includes 
 the platform/architecture details, e.g. bin/linux.386/br.  The build installs a maven artifact to the maven repository,
