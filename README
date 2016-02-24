@@ -4,7 +4,7 @@
 What is it?
 -----------
 
-A command line client for Apache Brooklyn (https://brooklyn.apache.org).
+A command line client, "br", for Apache Brooklyn (https://brooklyn.apache.org).
 
 With this tool you can deploy and manage applications on a running Brooklyn server.
 
@@ -18,6 +18,30 @@ Licensing
 ---------
 
 Please see the file called LICENSE.
+
+Getting the right binary
+------------------------
+
+The release for the tool includes binaries built for a number of platforms and architectures. These binaries are
+provided in subdirectories alongside this README, named for the platform and architecture:
+
+darwin.386/br
+darwin.amd64/br
+freebsd.386/br
+freebsd.amd64/br
+linux.386/br
+linux.amd64/br
+netbsd.386/br
+netbsd.amd64/br
+openbsd.386/br
+openbsd.amd64/br
+windows.386/br
+windows.amd64/br
+
+To use the tool, add the appropriate subdirectory to your PATH, for example, when br is obtained by extracting the
+main Apache Brooklyn release into your home directory under "apache-brooklyn", then the command would be like
+
+$ PATH=$PATH:$HOME/apache-brooklyn/bin/brooklyn-client-cli-0.9.0/linux.amd64
 
 
 Running
