@@ -1,0 +1,111 @@
+{
+	"ImportPath": "github.com/apache/brooklyn-client/br",
+	"GoVersion": "go1.5",
+	"Deps": [
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/access_control",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/activities",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/application",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/catalog",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entities",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_config",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_effectors",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_policies",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_policy_config",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_sensors",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/locations",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/version",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/app",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command_factory",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command_metadata",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command_runner",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/commands",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/error_handler",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/io",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/models",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/net",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/scope",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/terminal",
+			"Rev": "81853355650fd3efe724686a0828ee1e70cd11f4"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-217-g5db7419",
+			"Rev": "5db74198dee1cfe60cf06a611d03a420361baad6"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "1f22c0103821b9390939b6776727195525381532"
+		}
+	]
+}
