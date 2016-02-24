@@ -143,6 +143,7 @@ mkdir -p ${GOPATH}/src/${PROJECT%/*}
 PATH=${GOPATH}/bin:${PATH}
 
 command -v $GODEP >/dev/null 2>&1 || {
+	echo installing $GODEP
 	go get github.com/tools/godep || { echo failed installing dodep ; exit 1; }
 }
 
