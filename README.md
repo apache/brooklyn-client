@@ -1,7 +1,7 @@
 
 # [![**Brooklyn**](https://brooklyn.apache.org/style/img/apache-brooklyn-logo-244px-wide.png)](http://brooklyn.apache.org/)
 
-### Apache Brooklyn Client CLI Sub-Project
+### Apache Brooklyn Client CLI
 
 A command line client for [Apache Brooklyn](https://brooklyn.apache.org).
 
@@ -22,7 +22,7 @@ Optional:
   to a suitable location for your Go code.
 - Install Brooklyn CLI and dependencies (note the "-d" parameter, which instructs Go to download the files but not
   build the code).  
-`go get -d github.com/brooklyncentral/brooklyn-cli/br`  
+`go get -d github.com/apache/brooklyn-client/br`  
     
     
 ## A note on dependency management
@@ -41,7 +41,7 @@ As Go dependendencies for godep are held in the main package directory ("br"), y
 using godep:
 
 ```bash
-cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+cd $GOPATH/src/github.com/apache/brooklyn-client/br
 godep go install 
 ```
 This will build the "br" executable into $GOPATH/bin
@@ -50,12 +50,12 @@ This will build the "br" executable into $GOPATH/bin
 
 To use the latest published versions of the dependencies simply use 
 ```bash
-go get github.com/brooklyncentral/brooklyn-cli/br
+go get github.com/apache/brooklyn-client/br
 ```
 
 When the code is ready to be committed, first update the saved dependencies with
 ```bash
-cd $GOPATH/src/github.com/brooklyncentral/brooklyn-cli/br
+cd $GOPATH/src/github.com/apache/brooklyn-client/br
 godep save
 ```
 
@@ -146,3 +146,20 @@ And for help on individual commands:
    - *help*    
 
 
+----
+Licensed to the Apache Software Foundation (ASF) under one 
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY 
+KIND, either express or implied.  See the License for the 
+specific language governing permissions and limitations
+under the License.
