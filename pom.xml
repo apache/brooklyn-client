@@ -72,6 +72,7 @@
 
                 </executions>
             </plugin>
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven.assembly.plugin.version}</version>
@@ -88,8 +89,25 @@
                     </goals>
                 </execution>
             </executions>
-
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.11</version>
+                <configuration>
+                    <excludes combine.children="append">
+                        <!--
+                            The maven archetype are files "without any degree of creativity". They are intended
+                            purely as a template to generate a new project for a user, where upon the user can
+                            write their code within this new project.
+                            The exclusions seem to need to include code that is auto-generated during a test run.
+                        -->
+                        <exclude>**/br/Godeps/**/*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
         </plugins>
 
     </build>
