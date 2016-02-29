@@ -19,7 +19,7 @@
 package commands
 
 import (
-	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/apache/brooklyn-client/net"
 )
 
 type DeleteCatalogApplication struct {

@@ -19,8 +19,8 @@
 package command_runner
 
 import (
-	"github.com/brooklyncentral/brooklyn-cli/command_factory"
-	"github.com/brooklyncentral/brooklyn-cli/scope"
+	"github.com/apache/brooklyn-client/command_factory"
+	"github.com/apache/brooklyn-client/scope"
 	"github.com/codegangsta/cli"
 )
 

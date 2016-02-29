@@ -20,7 +20,7 @@ package io
 
 import (
 	"encoding/json"
-	"github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/apache/brooklyn-client/error_handler"
 	"os"
 	"path/filepath"
 )

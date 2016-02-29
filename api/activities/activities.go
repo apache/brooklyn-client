@@ -21,8 +21,8 @@ package activities
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/brooklyncentral/brooklyn-cli/models"
-	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/apache/brooklyn-client/models"
+	"github.com/apache/brooklyn-client/net"
 )
 
 func Activity(network *net.Network, activity string) (models.TaskSummary, error) {

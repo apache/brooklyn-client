@@ -20,9 +20,9 @@ package app
 
 import (
 	"fmt"
-	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
-	"github.com/brooklyncentral/brooklyn-cli/command_runner"
-	"github.com/brooklyncentral/brooklyn-cli/error_handler"
+	"github.com/apache/brooklyn-client/command_metadata"
+	"github.com/apache/brooklyn-client/command_runner"
+	"github.com/apache/brooklyn-client/error_handler"
 	"github.com/codegangsta/cli"
 	"os"
 	"strings"

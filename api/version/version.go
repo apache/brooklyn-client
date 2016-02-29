@@ -20,8 +20,8 @@ package version
 
 import (
 	"encoding/json"
-	"github.com/brooklyncentral/brooklyn-cli/models"
-	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/apache/brooklyn-client/models"
+	"github.com/apache/brooklyn-client/net"
 )
 
 func Version(network *net.Network) (models.VersionSummary, error) {

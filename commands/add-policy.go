@@ -20,10 +20,10 @@ package commands
 
 import (
 	"github.com/codegangsta/cli"
-	//"github.com/brooklyncentral/brooklyn-cli/api/entity_policies"
-	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
-	"github.com/brooklyncentral/brooklyn-cli/net"
-	"github.com/brooklyncentral/brooklyn-cli/scope"
+	//"github.com/apache/brooklyn-client/api/entity_policies"
+	"github.com/apache/brooklyn-client/command_metadata"
+	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/scope"
 )
 
 type AddPolicy struct {

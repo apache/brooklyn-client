@@ -21,8 +21,8 @@ package access_control
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/brooklyncentral/brooklyn-cli/models"
-	"github.com/brooklyncentral/brooklyn-cli/net"
+	"github.com/apache/brooklyn-client/models"
+	"github.com/apache/brooklyn-client/net"
 )
 
 func Access(network *net.Network) (models.AccessSummary, error) {

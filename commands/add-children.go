@@ -19,12 +19,12 @@
 package commands
 
 import (
-	"github.com/brooklyncentral/brooklyn-cli/api/entities"
-	"github.com/brooklyncentral/brooklyn-cli/command_metadata"
-	"github.com/brooklyncentral/brooklyn-cli/error_handler"
-	"github.com/brooklyncentral/brooklyn-cli/net"
-	"github.com/brooklyncentral/brooklyn-cli/scope"
-	"github.com/brooklyncentral/brooklyn-cli/terminal"
+	"github.com/apache/brooklyn-client/api/entities"
+	"github.com/apache/brooklyn-client/command_metadata"
+	"github.com/apache/brooklyn-client/error_handler"
+	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/scope"
+	"github.com/apache/brooklyn-client/terminal"
 	"github.com/codegangsta/cli"
 	"time"
 )
