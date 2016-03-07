@@ -30,12 +30,7 @@ CLI_PACKAGE="${PROJECT}/${BRNAME}"
 GOBIN=go
 GODEP=godep
 
-#
-# Compile options
-#
 
-# Disable use of C code modules (causes problems with cross-compiling)
-export CGO_ENABLED=0
 
 #
 # Globals
@@ -155,7 +150,7 @@ PATH=${GOPATH}/bin:${PATH}
 
 command -v $GODEP >/dev/null 2>&1 || {
 	echo installing $GODEP
-	go get github.com/tools/godep || { echo failed installing dodep ; exit 1; }
+	go get github.com/tools/godep || { echo failed installing $GODEP ; exit 1; }
 }
 
 command -v $GODEP >/dev/null 2>&1 || {
@@ -185,6 +180,10 @@ fi
 
 mkdir -p ${GOPATH}/bin
 
+# Disable use of C code modules (causes problems with cross-compiling)
+export CGO_ENABLED=0
+
+# Build as instructed
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
 	$GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/${BRNAME}${label}${timestamp}" $CLI_PACKAGE || exit $?
