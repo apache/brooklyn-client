@@ -1,0 +1,135 @@
+{
+	"ImportPath": "github.com/apache/brooklyn-client/br",
+	"GoVersion": "go1.5",
+	"Deps": [
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/access_control",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/activities",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/application",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/catalog",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entities",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_config",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_effectors",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_policies",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_policy_config",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/entity_sensors",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/locations",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/api/version",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/app",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command_factory",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command_metadata",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/command_runner",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/commands",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/error_handler",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/io",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/models",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/net",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/scope",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/apache/brooklyn-client/terminal",
+			"Comment": "warning: tag '0.9.0-snapshot.20151217-172952' is really 'v0.9.0-snapshot.20151217-172952' here\n0.9.0-snapshot.20151217-172952-28-ga14edae",
+			"Rev": "a14edae091eb5e5d35dda9c73c3215792d9e2434"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-217-g5db7419",
+			"Rev": "5db74198dee1cfe60cf06a611d03a420361baad6"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "1f22c0103821b9390939b6776727195525381532"
+		}
+	]
+}
