@@ -149,7 +149,8 @@ fi
 
 GO_VERSION=`go version | awk '{print $3}'`
 GO_V=`echo $GO_VERSION | sed 's/^go1\.\([0-9][0-9]*\).*/\1/'`
-if ! (( "$GO_V" > 4 )) ; then
+# test if not okay so error shows if regex above not matched
+if ! (( "$GO_V" >= 6 )) ; then
   cat 1>&2 << \
 --MARKER--
 
