@@ -25,16 +25,12 @@
     </formats>
     <fileSets>
         <fileSet>
-            <directory>src/main/license/files</directory>
+            <directory>release/files</directory>
             <outputDirectory><!-- leave blank, meaning 'root of archive' --></outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>${project.basedir}</directory>
-            <includes>
-                <include>README</include>
-                <include>LICENSE*</include>
-                <include>NOTICE*</include>
-            </includes>
+            <directory>release/license/files</directory>
+            <outputDirectory><!-- leave blank, meaning 'root of archive' --></outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}/bin</directory>

@@ -1,0 +1,42 @@
+
+Apache Brooklyn Command Line Client
+===================================
+
+What is it?
+-----------
+
+A command line client, "br", for **[Apache Brooklyn](https://brooklyn.apache.org)**.
+
+With this tool you can deploy and manage applications on a running Brooklyn server.
+
+This file gives a brief summary of how to use the Brooklyn CLI client tool.
+More complete documentation is available **[on the Apache Brooklyn website](https://brooklyn.apache.org/v/latest/ops/cli/cli-ref-guide.html).
+
+
+License
+-------
+
+Please see the file [LICENSE](LICENSE).
+
+
+Getting Started
+---------------
+
+Find the binary which is right for your platform. 
+You'll typically find it in a sub-directory here.
+(Note that "Darwin" is a technical name for "Mac OS X".)
+
+Add it to your path or alias it with `br`.
+
+Then log in to your Brooklyn instance with:
+
+    $ br login URL [USER PASSWORD]
+
+See the help command for info on all commands:
+
+    $ br help
+
+For help on individual commands:
+
+    $ br help COMMAND
+

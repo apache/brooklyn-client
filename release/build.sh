@@ -141,7 +141,7 @@ if ! command -v $GOBIN >/dev/null 2>&1 ; then
 ERROR: Go language binaries not found (running "$GOBIN")
 
 The binaries for go v1.6 must be installed to build the brooklyn-client CLI.
-See golang.org for more information, or run maven with '-Pno-go-client' to skip.
+See golang.org for more information, or run maven with '-Dno-go-client' to skip.
 
 --MARKER--
   exit 1
@@ -157,7 +157,7 @@ if ! (( "$GO_V" >= 6 )) ; then
 ERROR: Incompatible Go language version: $GO_VERSION
 
 Go version 1.6 or higher is required to build the brooklyn-client CLI.
-See golang.org for more information, or run maven with '-Pno-go-client' to skip.
+See golang.org for more information, or run maven with '-Dno-go-client' to skip.
 
 --MARKER--
   exit 1

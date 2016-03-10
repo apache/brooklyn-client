@@ -77,17 +77,18 @@
                 <version>${maven.assembly.plugin.version}</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/bin.xml</descriptor>
+                        <descriptor>release/assembly.xml</descriptor>
                     </descriptors>
-                </configuration><executions>
-                <execution>
-                    <id>make-assembly</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>single</goal>
-                    </goals>
-                </execution>
-            </executions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -104,4 +105,5 @@
         </plugins>
 
     </build>
+
 </project>
