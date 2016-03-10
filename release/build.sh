@@ -30,7 +30,7 @@ CLI_PACKAGE="${PROJECT}/${BRNAME}"
 GOBIN=go
 GODEP=godep
 
-
+START_TIME=$(date +%s)
 
 #
 # Globals
@@ -129,11 +129,39 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
+echo "Starting build.sh (brooklyn-client go build script)"
 
 #
 # Test if go is available
 #
-command -v $GOBIN >/dev/null 2>&1 || { echo "Command for compiling Go not found: $GOBIN" 1>&2 ; exit 1; }
+if ! command -v $GOBIN >/dev/null 2>&1 ; then
+  cat 1>&2 << \
+--MARKER--
+
+ERROR: Go language binaries not found (running "$GOBIN")
+
+The binaries for go v1.6 must be installed to build the brooklyn-client CLI.
+See golang.org for more information, or run maven with '-Pno-go-client' to skip.
+
+--MARKER--
+  exit 1
+fi
+
+GO_VERSION=`go version | awk '{print $3}'`
+GO_V=`echo $GO_VERSION | sed 's/^go1\.\([0-9][0-9]*\).*/\1/'`
+# test if not okay so error shows if regex above not matched
+if ! (( "$GO_V" >= 6 )) ; then
+  cat 1>&2 << \
+--MARKER--
+
+ERROR: Incompatible Go language version: $GO_VERSION
+
+Go version 1.6 or higher is required to build the brooklyn-client CLI.
+See golang.org for more information, or run maven with '-Pno-go-client' to skip.
+
+--MARKER--
+  exit 1
+fi
 
 
 if [ -n "$outdir" -a ! -d "$outdir" ]; then
@@ -149,7 +177,7 @@ mkdir -p ${GOPATH}/src/${PROJECT%/*}
 PATH=${GOPATH}/bin:${PATH}
 
 command -v $GODEP >/dev/null 2>&1 || {
-	echo installing $GODEP
+	echo Installing $GODEP
 	go get github.com/tools/godep || { echo failed installing $GODEP ; exit 1; }
 }
 
@@ -215,5 +243,14 @@ else
 		done
 	done
 fi
+
+echo
+echo Successfully built the following binaries:
+echo
+ls -al ${GO_PATH}/bin/
+echo
+
+END_TIME=$(date +%s)
+echo "Completed build.sh (brooklyn-client go build script) in $(( $END_TIME - START_TIME ))s"
 
 exit 0
