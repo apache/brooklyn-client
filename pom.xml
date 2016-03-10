@@ -50,58 +50,75 @@
         <target>all</target>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>process-build-all</id>
-                        <phase>compile</phase>
+
+    <profiles>
+
+        <profile>
+            <id>no-go-client</id>
+        </profile>
+
+        <profile>
+            <id>go-client</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>process-build-all</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <ant target="${target}"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>${maven.assembly.plugin.version}</version>
                         <configuration>
-                            <target>
-                                <ant target="${target}"/>
-                            </target>
+                            <descriptors>
+                                <descriptor>src/main/assembly/bin.xml</descriptor>
+                            </descriptors>
                         </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-                </executions>
-            </plugin>
+                    <plugin>
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <version>0.11</version>
+                        <configuration>
+                            <excludes combine.children="append">
+                                <exclude>**/br/Godeps/**/*</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven.assembly.plugin.version}</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/bin.xml</descriptor>
-                    </descriptors>
-                </configuration><executions>
-                <execution>
-                    <id>make-assembly</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>single</goal>
-                    </goals>
-                </execution>
-            </executions>
-            </plugin>
+                </plugins>
 
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <version>0.11</version>
-                <configuration>
-                    <excludes combine.children="append">
-                        <exclude>**/br/Godeps/**/*</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+            </build>
 
-        </plugins>
-
-    </build>
+        </profile>
+    </profiles>
 </project>
