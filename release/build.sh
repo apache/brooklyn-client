@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -247,7 +247,7 @@ fi
 echo
 echo Successfully built the following binaries:
 echo
-ls -al ${GO_PATH}/bin/
+ls -alR ${GOPATH}/bin/
 echo
 
 END_TIME=$(date +%s)
