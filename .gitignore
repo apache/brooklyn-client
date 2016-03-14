@@ -3,3 +3,9 @@ brooklyn-cli
 *.iml
 temp_test
 target
+
+
+.project
+.classpath
+.settings/
+.metadata/
