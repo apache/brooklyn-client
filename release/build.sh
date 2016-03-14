@@ -247,7 +247,7 @@ fi
 echo
 echo Successfully built the following binaries:
 echo
-ls -al ${GO_PATH}/bin/
+ls -al ${GOPATH}/bin/
 echo
 
 END_TIME=$(date +%s)
