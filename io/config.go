@@ -20,9 +20,10 @@ package io
 
 import (
 	"encoding/json"
-	"github.com/apache/brooklyn-client/error_handler"
 	"os"
 	"path/filepath"
+
+	"github.com/apache/brooklyn-client/error_handler"
 )
 
 type Config struct {
@@ -48,12 +49,12 @@ func GetConfig() (config *Config) {
 }
 
 func (config *Config) Write() {
-
 	// Create file as read/write by user (but does not change perms of existing file)
 	fileToWrite, err := os.OpenFile(config.FilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		error_handler.ErrorExit(err)
 	}
+	defer fileToWrite.Close()
 
 	enc := json.NewEncoder(fileToWrite)
 	enc.Encode(config.Map)
@@ -64,6 +65,8 @@ func (config *Config) Read() {
 	if err != nil {
 		error_handler.ErrorExit(err)
 	}
+	defer fileToRead.Close()
+
 	dec := json.NewDecoder(fileToRead)
 	dec.Decode(&config.Map)
 }
