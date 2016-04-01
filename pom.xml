@@ -55,6 +55,23 @@
         <target>all</target>
     </properties>
 
+    <repositories>
+        <!--
+            Same as in the parent apache pom. Repeated here in case
+            direct parent's pom not found at relativePath. Can't fetch
+            the parent from remote repos for snapshot versions - no
+            snapshot repos enabled by default.
+        -->
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
