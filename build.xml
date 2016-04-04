@@ -17,9 +17,12 @@
     under the License.
 -->
 <project name="CLI" >
-    <property name="build.script" location="${basedir}/release/build.sh"/>
+    <condition property="platform.extension" value=".bat" else=".sh">
+        <os family="windows" />
+    </condition>
+    <property name="build.script" location="${basedir}/release/build${platform.extension}"/>
 
-      <target name="all" >
+    <target name="all" >
         <exec executable="${build.script}" failonerror="true">
             <arg value="-A"/>
             <arg value="-t"/>
