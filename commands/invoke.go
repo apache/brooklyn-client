@@ -74,7 +74,8 @@ func NewInvokeRestart(network *net.Network) (cmd *Restart) {
 var paramFlags = []cli.Flag{
 	cli.StringSliceFlag{
 		Name:  "param, P",
-		Usage: "Parameter and value separated by '=', e.g. -P x=y",
+		Usage: "Parameter and value separated by '=', e.g. -P x=y. If the parameter value is complex or multi-" +
+		       "lined it may be provided in a file and referenced as: '@<file>', e.g. -P x=@/path/to/file.",
 	},
 }
 
