@@ -20,7 +20,7 @@
 #
 # Constants
 #
-OSVALUES="darwin freebsd linux netbsd openbsd windows"
+OSVALUES="darwin linux windows"
 ARCHVALUES="386 amd64"
 BRNAME="br"
 GOPACKAGE="github.com/apache/brooklyn-client/${BRNAME}"
@@ -41,6 +41,18 @@ outdir="."
 sourcedir="."
 label=""
 timestamp=""
+
+declare -a builds
+function add_build () {
+  builds[${#builds[@]}]=$1
+}
+
+add_build darwin/amd64
+add_build linux/386
+add_build linux/amd64
+add_build windows/386
+add_build windows/amd64
+
 
 show_help() {
 # 
@@ -210,10 +222,28 @@ mkdir -p ${GOPATH}/bin
 # Disable use of C code modules (causes problems with cross-compiling)
 export CGO_ENABLED=0
 
+# build requested file
+function build_cli () {
+    local filepath=$1
+    mkdir -p ${filepath%/*}
+    $GODEP $GOBIN build -ldflags "-s" -o $filepath $CLI_PACKAGE || return $?
+}
+
+# Do a build for one platorm, usage like: build_for_platform darwin/amd64
+function build_for_platform () {
+    local os=${1%/*}
+    local arch=${1#*/}
+    local BINARY=${BRNAME}
+    if [ "windows" = $os ] ; then
+        BINARY=${BINARY}.exe
+    fi
+    GOOS="$os" GOARCH="$arch" build_cli "${GOPATH}/bin/$os.$arch/${BINARY}${label}" || return $?
+}
+
 # Build as instructed
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
-	$GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/${BRNAME}${label}${timestamp}" $CLI_PACKAGE || exit $?
+	build_cli "${GOPATH}/bin/${BRNAME}${label}${timestamp}" || exit $?
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -227,19 +257,13 @@ elif [ -z "$all" ]; then
 		echo "Unrecognised ARCH: $arch"
 		exit 1
 	fi
-	echo "Building $BRNAME for $os/$arch"
-	mkdir -p ${GOPATH}/bin/$os.$arch
-	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$os.$arch/${BRNAME}${label}" $CLI_PACKAGE || exit $?
+	echo "Building $BRNAME for $os/$arch:"
+	build_for_platform $os/$arch || exit $?
 else
 	echo "Building $BRNAME for all OS/ARCH:"
-	os="$OSVALUES"
-	arch="$ARCHVALUES"
-	for archv in $arch; do
-		for osv in $os; do
-			echo "    $osv/$archv"
-			mkdir -p ${GOPATH}/bin/$osv.$archv
-			GOOS="$osv" GOARCH="$archv" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$osv.$archv/${BRNAME}${label}" $CLI_PACKAGE || exit $?
-		done
+	for build in ${builds[@]}; do
+		echo "    $build"
+		build_for_platform $build || exit $?
 	done
 fi
 
