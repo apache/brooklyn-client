@@ -36,7 +36,7 @@
             <directory>${project.build.directory}/bin</directory>
             <outputDirectory><!-- leave blank, meaning 'root of archive' --></outputDirectory>
             <includes>
-                <include>**/br</include>
+                <include>**/br*</include>
             </includes>
         </fileSet>
     </fileSets>

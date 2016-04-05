@@ -42,23 +42,36 @@ sourcedir="."
 label=""
 timestamp=""
 
+builds=(
+  darwin/amd64
+  linux/386
+  windows/386
+)
+
 show_help() {
-# 
-# -A  Build for all OS/ARCH combinations
-# -a  Set ARCH to build for
-# -d  Set output directory
-# -h  Show help
-# -l  Set label text for including in filename
-# -o  Set OS to build for
-# -t  Set timestamp for including in filename
-# -s  Source directory
 	echo "Usage:	$0 [-d <OUTPUTDIR>] [-l <LABEL>] [-t] -s <SOURCEDIR>"
 	echo "	$0 -o <OS> -a <ARCH> [-d <DIRECTORY>] [-l <LABEL>] [-t] -s <SOURCEDIR>"
 	echo "	$0 -A [-d <OUTPUTDIR>] [-l <LABEL>] [-t] -s <SOURCEDIR>"
 	echo "	$0 -h"
-	echo $OSVALUES | awk 'BEGIN{printf("OS:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
-	echo $ARCHVALUES | awk 'BEGIN{printf("ARCH:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
 	echo
+		cat <<-EOH
+	 -A  Build for default OS/ARCH combinations
+	 -a  Set ARCH to build for
+	 -d  Set output directory
+	 -h  Show help
+	 -l  Set label text for including in filename
+	 -o  Set OS to build for
+	 -t  Set timestamp for including in filename
+	 -s  Source directory
+
+EOH
+
+	echo $OSVALUES | awk 'BEGIN{printf("Supported OS:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
+	echo $ARCHVALUES | awk 'BEGIN{printf("Supported ARCH:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
+	echo Default build:
+	for build in ${builds[@]} ; do
+	    printf "\t%s\n" $build
+	done
 }
 
 while [ $# -gt 0 ]; do
@@ -210,10 +223,28 @@ mkdir -p ${GOPATH}/bin
 # Disable use of C code modules (causes problems with cross-compiling)
 export CGO_ENABLED=0
 
+# build requested file
+function build_cli () {
+    local filepath=$1
+    mkdir -p ${filepath%/*}
+    $GODEP $GOBIN build -ldflags "-s" -o $filepath $CLI_PACKAGE || return $?
+}
+
+# Do a build for one platorm, usage like: build_for_platform darwin/amd64
+function build_for_platform () {
+    local os=${1%/*}
+    local arch=${1#*/}
+    local BINARY=${BRNAME}
+    if [ "windows" = $os ] ; then
+        BINARY=${BINARY}.exe
+    fi
+    GOOS="$os" GOARCH="$arch" build_cli "${GOPATH}/bin/$os.$arch/${BINARY}${label}" || return $?
+}
+
 # Build as instructed
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
-	$GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/${BRNAME}${label}${timestamp}" $CLI_PACKAGE || exit $?
+	build_cli "${GOPATH}/bin/${BRNAME}${label}${timestamp}" || exit $?
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -227,26 +258,20 @@ elif [ -z "$all" ]; then
 		echo "Unrecognised ARCH: $arch"
 		exit 1
 	fi
-	echo "Building $BRNAME for $os/$arch"
-	mkdir -p ${GOPATH}/bin/$os.$arch
-	GOOS="$os" GOARCH="$arch" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$os.$arch/${BRNAME}${label}" $CLI_PACKAGE || exit $?
+	echo "Building $BRNAME for $os/$arch:"
+	build_for_platform $os/$arch || exit $?
 else
-	echo "Building $BRNAME for all OS/ARCH:"
-	os="$OSVALUES"
-	arch="$ARCHVALUES"
-	for archv in $arch; do
-		for osv in $os; do
-			echo "    $osv/$archv"
-			mkdir -p ${GOPATH}/bin/$osv.$archv
-			GOOS="$osv" GOARCH="$archv" $GODEP $GOBIN build -ldflags "-s" -o "${GOPATH}/bin/$osv.$archv/${BRNAME}${label}" $CLI_PACKAGE || exit $?
-		done
+	echo "Building $BRNAME for default OS/ARCH:"
+	for build in ${builds[@]}; do
+		echo "    $build"
+		build_for_platform $build || exit $?
 	done
 fi
 
 echo
 echo Successfully built the following binaries:
 echo
-ls -alR ${GOPATH}/bin/
+ls -lR ${GOPATH}/bin
 echo
 
 END_TIME=$(date +%s)
