@@ -20,7 +20,7 @@
 #
 # Constants
 #
-OSVALUES="darwin linux windows"
+OSVALUES="darwin freebsd linux netbsd openbsd windows"
 ARCHVALUES="386 amd64"
 BRNAME="br"
 GOPACKAGE="github.com/apache/brooklyn-client/${BRNAME}"
@@ -42,35 +42,36 @@ sourcedir="."
 label=""
 timestamp=""
 
-declare -a builds
-function add_build () {
-  builds[${#builds[@]}]=$1
-}
-
-add_build darwin/amd64
-add_build linux/386
-add_build linux/amd64
-add_build windows/386
-add_build windows/amd64
-
+builds=(
+  darwin/amd64
+  linux/386
+  windows/386
+)
 
 show_help() {
-# 
-# -A  Build for all OS/ARCH combinations
-# -a  Set ARCH to build for
-# -d  Set output directory
-# -h  Show help
-# -l  Set label text for including in filename
-# -o  Set OS to build for
-# -t  Set timestamp for including in filename
-# -s  Source directory
 	echo "Usage:	$0 [-d <OUTPUTDIR>] [-l <LABEL>] [-t] -s <SOURCEDIR>"
 	echo "	$0 -o <OS> -a <ARCH> [-d <DIRECTORY>] [-l <LABEL>] [-t] -s <SOURCEDIR>"
 	echo "	$0 -A [-d <OUTPUTDIR>] [-l <LABEL>] [-t] -s <SOURCEDIR>"
 	echo "	$0 -h"
-	echo $OSVALUES | awk 'BEGIN{printf("OS:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
-	echo $ARCHVALUES | awk 'BEGIN{printf("ARCH:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
 	echo
+		cat <<-EOH
+	 -A  Build for default OS/ARCH combinations
+	 -a  Set ARCH to build for
+	 -d  Set output directory
+	 -h  Show help
+	 -l  Set label text for including in filename
+	 -o  Set OS to build for
+	 -t  Set timestamp for including in filename
+	 -s  Source directory
+
+EOH
+
+	echo $OSVALUES | awk 'BEGIN{printf("Supported OS:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
+	echo $ARCHVALUES | awk 'BEGIN{printf("Supported ARCH:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
+	echo Default build:
+	for build in ${builds[@]} ; do
+	    printf "\t%s\n" $build
+	done
 }
 
 while [ $# -gt 0 ]; do
@@ -260,7 +261,7 @@ elif [ -z "$all" ]; then
 	echo "Building $BRNAME for $os/$arch:"
 	build_for_platform $os/$arch || exit $?
 else
-	echo "Building $BRNAME for all OS/ARCH:"
+	echo "Building $BRNAME for default OS/ARCH:"
 	for build in ${builds[@]}; do
 		echo "    $build"
 		build_for_platform $build || exit $?
@@ -270,7 +271,7 @@ fi
 echo
 echo Successfully built the following binaries:
 echo
-ls -alR ${GOPATH}/bin/
+ls -lR ${GOPATH}/bin
 echo
 
 END_TIME=$(date +%s)
