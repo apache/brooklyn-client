@@ -119,7 +119,7 @@
                 <version>0.11</version>
                 <configuration>
                     <excludes combine.children="append">
-                        <exclude>**/br/Godeps/**/*</exclude>
+                        <exclude>vendor/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

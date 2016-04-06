@@ -4,8 +4,6 @@ brooklyn-cli
 temp_test
 target
 
-br/Godeps/_workspace/src/github.com/apache/brooklyn-client
-
 .project
 .classpath
 .settings/
