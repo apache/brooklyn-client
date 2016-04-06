@@ -12,7 +12,6 @@ You will need the following tools to build it:
 
 - Go (min version 1.6), with full cross-compiler support (see https://golang.org/dl).
   On Mac, if using Homebrew, use "brew install go --with-cc-all"
-- godep (see https://github.com/tools/godep)
 
 Optional:
 - Maven (used by the Brooklyn build process)
@@ -38,37 +37,13 @@ own fork as a remote.
 ## A note on dependency management
 
 The CLI has a small number of dependencies, notably on codegansta/cli.  To manage the version of dependencies, the CLI
-code currently uses [godep](https://github.com/tools/godep).  
-When contributing to the CLI it is important to be aware of the distinction.  To avoid potentially bringing in new 
-versions of dependencies, use "godep go" to build the code using the dependencies saved in br/Godeps. 
-Alternatively, to bring in the latest versions of the dependencies, build with "go get", but in
-that case remember to update the dependencies of the project using "godep save" along with your commit.
+code currently uses Go vendoring. The dependencies are held in the top level 'vendor' directory.
+
 
 ## Compiling the code with Go for development purposes
 
+Just use the regular Go build commands.
 
-### Using saved dependencies
-As Go dependendencies for godep are held in the main package directory ("br"), you need to build from that directory,
-using godep:
-
-```bash
-cd $GOPATH/src/github.com/apache/brooklyn-client/br
-godep go install 
-```
-This will build the "br" executable into $GOPATH/bin
-
-### Updating the dependencies
-
-To use the latest published versions of the dependencies simply use 
-```bash
-go get github.com/apache/brooklyn-client/br
-```
-
-When the code is ready to be committed, first update the saved dependencies with
-```bash
-cd $GOPATH/src/github.com/apache/brooklyn-client/br
-godep save
-```
 
 ## Testing 
 
@@ -99,8 +74,7 @@ Invoke the build script via Maven with one of
 other Brooklyn submodules and built using Maven, without any special treatment to install it into a separate GOPATH
 location, the Maven build makes no assumption about the location of the project root directory. Instead, the Maven
 `target` directory is used as the GOPATH, and a soft link is created as `target/src/github.com/apache/brooklyn-cli` to 
-the code in the root directory. If godep is already installed in the PATH, it is used, otherwise Go is used to fetch
-godep and install it.  The CLI dependencies need not be fetched as they are used from the Godeps directory by godep. 
+the code in the root directory. 
 
 This builds the requested binaries into the "target" directory, each in its own subdirectory with a name that includes 
 the platform/architecture details, e.g. bin/linux.386/br.  The build installs a maven artifact to the maven repository,

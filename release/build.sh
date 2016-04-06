@@ -27,7 +27,6 @@ GOPACKAGE="github.com/apache/brooklyn-client/${BRNAME}"
 PROJECT="github.com/apache/brooklyn-client"
 CLI_PACKAGE="${PROJECT}/${BRNAME}"
 GOBIN=go
-GODEP=godep
 
 START_TIME=$(date +%s)
 
@@ -188,16 +187,6 @@ mkdir -p ${GOPATH}/src/${PROJECT%/*}
 [ -e ${GOPATH}/src/${PROJECT} ] || ln -s ${sourcedir} ${GOPATH}/src/${PROJECT}
 PATH=${GOPATH}/bin:${PATH}
 
-command -v $GODEP >/dev/null 2>&1 || {
-	echo Installing $GODEP
-	go get github.com/tools/godep || { echo failed installing $GODEP ; exit 1; }
-}
-
-command -v $GODEP >/dev/null 2>&1 || {
-	echo "Command for resolving dependencies ($GODEP) not found and could not be installed in $GOPATH"
-	exit 1
-}
-
 if [ -n "$all" -a \( -n "$os" -o -n "$arch" \) ]; then
 	show_help
 	echo "OS and ARCH must not be combined with ALL"
@@ -227,7 +216,7 @@ export CGO_ENABLED=0
 function build_cli () {
     local filepath=$1
     mkdir -p ${filepath%/*}
-    $GODEP $GOBIN build -ldflags "-s" -o $filepath $CLI_PACKAGE || return $?
+    $GOBIN build -ldflags "-s" -o $filepath $CLI_PACKAGE || return $?
 }
 
 # Do a build for one platorm, usage like: build_for_platform darwin/amd64
