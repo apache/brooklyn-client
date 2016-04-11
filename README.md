@@ -28,10 +28,9 @@ own fork as a remote.
 
 - Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly 
   to a suitable location for your Go code, for example, simply $HOME/go.
-- Get the Brooklyn CLI and dependencies. Note the "-d" parameter, which instructs Go to download the files but not
-  build the code, see why in the note below on dependency management.
+- Get the Brooklyn CLI and dependencies. 
 
-`go get -d github.com/apache/brooklyn-client/br`  
+`go get github.com/apache/brooklyn-client/br`  
 
     
 ## A note on dependency management
