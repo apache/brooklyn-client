@@ -10,7 +10,7 @@ A command line client for [Apache Brooklyn](https://brooklyn.apache.org).
 The CLI tool is written in Go and should be obtained and built as a standard Go project. 
 You will need the following tools to build it:
 
-- Go (min version 1.6), with full cross-compiler support (see https://golang.org/dl).
+- Go (version 1.6.1 or higher), with full cross-compiler support (see https://golang.org/dl).
   On Mac, if using Homebrew, use "brew install go --with-cc-all"
 
 Optional:
