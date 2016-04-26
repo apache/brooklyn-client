@@ -62,6 +62,7 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	factory.simpleCommand(commands.NewDestroyPolicy(network))
 	factory.simpleCommand(commands.NewEffector(network))
 	factory.simpleCommand(commands.NewEntity(network))
+	factory.simpleCommand(commands.NewInstallPlugin(config))
 	factory.simpleCommand(commands.NewInvoke(network))
 	factory.simpleCommand(commands.NewInvokeRestart(network))
 	factory.simpleCommand(commands.NewInvokeStart(network))

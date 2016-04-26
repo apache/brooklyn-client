@@ -55,5 +55,5 @@ func (cmd *Delete) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(del)
+	fmt.Fprintln(c.App.Writer, del)
 }

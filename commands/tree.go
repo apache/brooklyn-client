@@ -31,6 +31,7 @@ import (
 
 type Tree struct {
 	network *net.Network
+	c       *cli.Context
 }
 
 func NewTree(network *net.Network) (cmd *Tree) {
@@ -49,6 +50,7 @@ func (cmd *Tree) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Tree) Run(scope scope.Scope, c *cli.Context) {
+	cmd.c = c
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
@@ -66,8 +68,8 @@ func (cmd *Tree) printTrees(trees []models.Tree, indent string) {
 }
 
 func (cmd *Tree) printTree(tree models.Tree, indent string, last bool) {
-	fmt.Println(indent+"|-", tree.Name)
-	fmt.Println(indent+"+-", tree.Type)
+	fmt.Fprintln(cmd.c.App.Writer, indent+"|-", tree.Name)
+	fmt.Fprintln(cmd.c.App.Writer, indent+"+-", tree.Type)
 
 	if last {
 		indent = indent + "  "

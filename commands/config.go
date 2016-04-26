@@ -62,14 +62,14 @@ func (cmd *Config) Run(scope scope.Scope, c *cli.Context) {
 		if nil != err {
 			error_handler.ErrorExit(err)
 		}
-		fmt.Println(displayValue)
+		fmt.Fprintln(c.App.Writer, displayValue)
 
 	} else {
 		config, err := entity_config.ConfigCurrentState(cmd.network, scope.Application, scope.Entity)
 		if nil != err {
 			error_handler.ErrorExit(err)
 		}
-		table := terminal.NewTable([]string{"Key", "Value"})
+		table := terminal.NewTable(c, []string{"Key", "Value"})
 		for key, value := range config {
 			table.Add(key, fmt.Sprintf("%v", value))
 		}

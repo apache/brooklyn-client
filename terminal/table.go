@@ -20,6 +20,7 @@ package terminal
 
 import (
 	"fmt"
+	"github.com/codegangsta/cli"
 	"strings"
 	"unicode/utf8"
 )
@@ -34,12 +35,14 @@ type PrintableTable struct {
 	headerPrinted bool
 	maxSizes      []int
 	rows          [][]string
+	c             *cli.Context
 }
 
-func NewTable(headers []string) Table {
+func NewTable(c *cli.Context, headers []string) Table {
 	return &PrintableTable{
 		headers:  headers,
 		maxSizes: make([]int, len(headers)),
+		c:        c,
 	}
 }
 
@@ -78,7 +81,7 @@ func (t *PrintableTable) printHeader() {
 	for col, value := range t.headers {
 		output = output + t.cellValue(col, value)
 	}
-	fmt.Println(output)
+	fmt.Fprintln(t.c.App.Writer, output)
 }
 
 func (t *PrintableTable) printRow(row []string) {
@@ -90,7 +93,7 @@ func (t *PrintableTable) printRow(row []string) {
 
 		output = output + t.cellValue(columnIndex, value)
 	}
-	fmt.Printf("%s\n", output)
+	fmt.Fprintf(t.c.App.Writer, "%s\n", output)
 }
 
 func (t *PrintableTable) cellValue(col int, value string) string {

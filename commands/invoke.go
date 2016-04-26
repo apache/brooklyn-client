@@ -73,9 +73,9 @@ func NewInvokeRestart(network *net.Network) (cmd *Restart) {
 
 var paramFlags = []cli.Flag{
 	cli.StringSliceFlag{
-		Name:  "param, P",
+		Name: "param, P",
 		Usage: "Parameter and value separated by '=', e.g. -P x=y. If the parameter value is complex or multi-" +
-		       "lined it may be provided in a file and referenced as: '@<file>', e.g. -P x=@/path/to/file.",
+			"lined it may be provided in a file and referenced as: '@<file>', e.g. -P x=@/path/to/file.",
 	},
 }
 
@@ -120,7 +120,7 @@ func (cmd *Invoke) Run(scope scope.Scope, c *cli.Context) {
 		error_handler.ErrorExit(err)
 	}
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, scope.Effector, parms)
+	invoke(c, cmd.network, scope.Application, scope.Entity, scope.Effector, parms)
 }
 
 const stopEffector = "stop"
@@ -130,7 +130,7 @@ func (cmd *Stop) Run(scope scope.Scope, c *cli.Context) {
 		error_handler.ErrorExit(err)
 	}
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, stopEffector, parms)
+	invoke(c, cmd.network, scope.Application, scope.Entity, stopEffector, parms)
 }
 
 const startEffector = "start"
@@ -140,7 +140,7 @@ func (cmd *Start) Run(scope scope.Scope, c *cli.Context) {
 		error_handler.ErrorExit(err)
 	}
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, startEffector, parms)
+	invoke(c, cmd.network, scope.Application, scope.Entity, startEffector, parms)
 }
 
 const restartEffector = "restart"
@@ -150,17 +150,17 @@ func (cmd *Restart) Run(scope scope.Scope, c *cli.Context) {
 		error_handler.ErrorExit(err)
 	}
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, restartEffector, parms)
+	invoke(c, cmd.network, scope.Application, scope.Entity, restartEffector, parms)
 }
 
-func invoke(network *net.Network, application, entity, effector string, parms []string) {
+func invoke(c *cli.Context, network *net.Network, application, entity, effector string, parms []string) {
 	names, vals, err := extractParams(parms)
 	result, err := entity_effectors.TriggerEffector(network, application, entity, effector, names, vals)
 	if nil != err {
 		error_handler.ErrorExit(err)
 	} else {
 		if "" != result {
-			fmt.Println(result)
+			fmt.Fprintln(c.App.Writer, result)
 		}
 	}
 }

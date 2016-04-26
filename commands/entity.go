@@ -33,6 +33,7 @@ import (
 
 type Entity struct {
 	network *net.Network
+	c       *cli.Context
 }
 
 func NewEntity(network *net.Network) (cmd *Entity) {
@@ -57,6 +58,7 @@ func (cmd *Entity) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Entity) Run(scope scope.Scope, c *cli.Context) {
+	cmd.c = c
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
@@ -84,7 +86,7 @@ func (cmd *Entity) show(application, entity string) {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		os.Exit(1)
 	}
-	table := terminal.NewTable([]string{"Id:", summary.Id})
+	table := terminal.NewTable(cmd.c, []string{"Id:", summary.Id})
 	table.Add("Name:", summary.Name)
 	configState, err := entity_sensors.CurrentState(cmd.network, application, entity)
 	if nil != err {
@@ -106,7 +108,7 @@ func (cmd *Entity) listapp(application string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Name", "Type"})
+	table := terminal.NewTable(cmd.c, []string{"Id", "Name", "Type"})
 	for _, entityitem := range entitiesList {
 		table.Add(entityitem.Id, entityitem.Name, entityitem.Type)
 	}
@@ -119,7 +121,7 @@ func (cmd *Entity) listentity(application string, entity string) {
 		error_handler.ErrorExit(err)
 	}
 
-	table := terminal.NewTable([]string{"Id", "Name", "Type"})
+	table := terminal.NewTable(cmd.c, []string{"Id", "Name", "Type"})
 	for _, entityitem := range entitiesList {
 		table.Add(entityitem.Id, entityitem.Name, entityitem.Type)
 	}

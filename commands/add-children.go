@@ -56,7 +56,7 @@ func (cmd *AddChildren) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Task", "Submitted", "Status"})
+	table := terminal.NewTable(c, []string{"Id", "Task", "Submitted", "Status"})
 	table.Add(activity.Id, activity.DisplayName, time.Unix(activity.SubmitTimeUtc/1000, 0).Format(time.UnixDate), activity.CurrentStatus)
 
 	table.Print()

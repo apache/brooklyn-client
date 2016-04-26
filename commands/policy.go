@@ -33,6 +33,7 @@ import (
 
 type Policy struct {
 	network *net.Network
+	c       *cli.Context
 }
 
 type policyConfigList []models.PolicyConfigList
@@ -87,7 +88,7 @@ func (cmd *Policy) show(application, entity, policy string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Name", "Value", "Description"})
+	table := terminal.NewTable(cmd.c, []string{"Name", "Value", "Description"})
 	var theConfigs policyConfigList = configs
 	sort.Sort(theConfigs)
 
@@ -106,7 +107,7 @@ func (cmd *Policy) list(application, entity string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Name", "State"})
+	table := terminal.NewTable(cmd.c, []string{"Id", "Name", "State"})
 	for _, policy := range policies {
 		table.Add(policy.Id, policy.Name, string(policy.State))
 	}

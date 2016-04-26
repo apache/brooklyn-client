@@ -33,6 +33,7 @@ import (
 
 type Sensor struct {
 	network *net.Network
+	c       *cli.Context
 }
 
 type sensorList []models.SensorSummary
@@ -90,7 +91,7 @@ func (cmd *Sensor) show(application, entity, sensor string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(displayValue)
+	fmt.Fprintln(cmd.c.App.Writer, displayValue)
 }
 
 func (cmd *Sensor) list(application, entity string) {
@@ -99,7 +100,7 @@ func (cmd *Sensor) list(application, entity string) {
 		error_handler.ErrorExit(err)
 	}
 	var theSensors sensorList = sensors
-	table := terminal.NewTable([]string{"Name", "Description", "Value"})
+	table := terminal.NewTable(cmd.c, []string{"Name", "Description", "Value"})
 
 	sort.Sort(theSensors)
 

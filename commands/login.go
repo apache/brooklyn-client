@@ -85,22 +85,15 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.network.BrooklynPass = string(bytePassword)
 	}
 
-	if cmd.config.Map == nil {
-		cmd.config.Map = make(map[string]interface{})
+	if cmd.config.Model.Auth == nil {
+		cmd.config.Model.Auth = make(map[string]io.Credentials)
 	}
-	// now persist these credentials to the yaml file
-	auth, ok := cmd.config.Map["auth"].(map[string]interface{})
-	if !ok {
-		auth = make(map[string]interface{})
-		cmd.config.Map["auth"] = auth
+	cmd.config.Model.Auth[cmd.network.BrooklynUrl] = io.Credentials{
+		Username: cmd.network.BrooklynUser,
+		Password: cmd.network.BrooklynPass,
 	}
 
-	auth[cmd.network.BrooklynUrl] = map[string]string{
-		"username": cmd.network.BrooklynUser,
-		"password": cmd.network.BrooklynPass,
-	}
-
-	cmd.config.Map["target"] = cmd.network.BrooklynUrl
+	cmd.config.Model.Target = cmd.network.BrooklynUrl
 	cmd.config.Write()
 
 	loginVersion, err := version.Version(cmd.network)
