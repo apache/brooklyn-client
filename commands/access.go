@@ -55,5 +55,5 @@ func (cmd *Access) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println("Location Provisioning Allowed:", access.LocationProvisioningAllowed)
+	fmt.Fprintln(c.App.Writer, "Location Provisioning Allowed:", access.LocationProvisioningAllowed)
 }

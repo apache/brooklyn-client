@@ -21,12 +21,16 @@ package app
 import (
 	"fmt"
 	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/command_runner"
 	"github.com/apache/brooklyn-client/error_handler"
 	"github.com/codegangsta/cli"
 	"os"
 	"strings"
 )
+
+type Runner interface {
+	RunCmdByName(cmdName string, c *cli.Context) (err error)
+	RunSubCmdByName(cmdName string, subCommand string, c *cli.Context) (err error)
+}
 
 type configDefaults struct {
 	Name     string
@@ -42,7 +46,7 @@ var appConfig = configDefaults{
 	Version:  "0.9.0",
 }
 
-func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
+func NewApp(baseName string, cmdRunner Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
 
 	cli.AppHelpTemplate = appHelpTemplate()
 	cli.CommandHelpTemplate = commandHelpTemplate()
@@ -61,7 +65,7 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 	return
 }
 
-func getCommand(baseName string, metadata command_metadata.CommandMetadata, runner command_runner.Runner) cli.Command {
+func getCommand(baseName string, metadata command_metadata.CommandMetadata, runner Runner) cli.Command {
 	command := cli.Command{
 		Name:        metadata.Name,
 		Aliases:     metadata.Aliases,
@@ -100,7 +104,7 @@ func getCommand(baseName string, metadata command_metadata.CommandMetadata, runn
 	return command
 }
 
-func subCommandAction(command string, operand string, runner command_runner.Runner) func(context *cli.Context) {
+func subCommandAction(command string, operand string, runner Runner) func(context *cli.Context) {
 	return func(context *cli.Context) {
 		err := runner.RunSubCmdByName(command, operand, context)
 		if err != nil {

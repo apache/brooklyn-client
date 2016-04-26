@@ -37,6 +37,7 @@ import (
 
 type Activity struct {
 	network *net.Network
+	c       *cli.Context
 }
 
 func NewActivity(network *net.Network) (cmd *Activity) {
@@ -61,6 +62,7 @@ func (cmd *Activity) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Activity) Run(scope scope.Scope, c *cli.Context) {
+	cmd.c = c
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
@@ -85,7 +87,7 @@ func (cmd *Activity) show(activityId string) {
 		error_handler.ErrorExit(err)
 	}
 
-	table := terminal.NewTable([]string{"Id:", activity.Id})
+	table := terminal.NewTable(cmd.c, []string{"Id:", activity.Id})
 	table.Add("DisplayName:", activity.DisplayName)
 	table.Add("Description:", activity.Description)
 	table.Add("EntityId:", activity.EntityId)
@@ -118,7 +120,7 @@ func (cmd *Activity) list(application, entity string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Task", "Submitted", "Status", "Streams"})
+	table := terminal.NewTable(cmd.c, []string{"Id", "Task", "Submitted", "Status", "Streams"})
 	for _, activity := range activityList {
 		table.Add(activity.Id,
 			truncate(activity.DisplayName),
@@ -133,7 +135,7 @@ func (cmd *Activity) listchildren(activity string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Task", "Submitted", "Status", "Streams"})
+	table := terminal.NewTable(cmd.c, []string{"Id", "Task", "Submitted", "Status", "Streams"})
 	for _, activity := range activityList {
 		table.Add(activity.Id,
 			truncate(activity.DisplayName),

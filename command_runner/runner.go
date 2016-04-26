@@ -19,7 +19,8 @@
 package command_runner
 
 import (
-	"github.com/apache/brooklyn-client/command_factory"
+	"github.com/apache/brooklyn-client/command"
+	"github.com/apache/brooklyn-client/command_metadata"
 	"github.com/apache/brooklyn-client/scope"
 	"github.com/codegangsta/cli"
 )
@@ -29,14 +30,22 @@ type Runner interface {
 	RunSubCmdByName(cmdName string, subCommand string, c *cli.Context) (err error)
 }
 
+type Factory interface {
+	GetByCmdName(cmdName string) (cmd command.Command, err error)
+	GetBySubCmdName(cmdName string, subCmdName string) (cmd command.Command, err error)
+	CommandMetadatas() []command_metadata.CommandMetadata
+}
+
 type ConcreteRunner struct {
-	cmdFactory command_factory.Factory
+	cmdFactory Factory
 	scope      scope.Scope
 }
 
-func NewRunner(scope scope.Scope, cmdFactory command_factory.Factory) (runner ConcreteRunner) {
-	runner.cmdFactory = cmdFactory
-	runner.scope = scope
+func NewRunner(scope scope.Scope, cmdFactory Factory) (runner Runner) {
+	runner = &ConcreteRunner{
+		cmdFactory: cmdFactory,
+		scope:      scope,
+	}
 	return
 }
 

@@ -19,45 +19,73 @@
 package main
 
 import (
+	"fmt"
 	"github.com/apache/brooklyn-client/app"
 	"github.com/apache/brooklyn-client/command_factory"
 	"github.com/apache/brooklyn-client/command_runner"
 	"github.com/apache/brooklyn-client/error_handler"
 	"github.com/apache/brooklyn-client/io"
 	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/plugin"
 	"github.com/apache/brooklyn-client/scope"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
-func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, string, string) {
-	var target, username, password string
-	target, found := yamlMap["target"].(string)
-	if found {
-		auth, found := yamlMap["auth"].(map[string]interface{})
-		if found {
-			creds := auth[target].(map[string]interface{})
-			username, found = creds["username"].(string)
-			if found {
-				password, found = creds["password"].(string)
-			}
-		}
-	}
-	return target, username, password
-}
-
 func main() {
 	config := io.GetConfig()
-	target, username, password := getNetworkCredentialsFromConfig(config.Map)
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
+	target := config.Model.Target
+	username := config.Model.Auth[target].Username
+	password := config.Model.Auth[target].Password
 	network := net.NewNetwork(target, username, password)
 	cmdFactory := command_factory.NewFactory(network, config)
 
 	args, scope := scope.ScopeArguments(os.Args)
 	cmdRunner := command_runner.NewRunner(scope, cmdFactory)
-	metaDatas := cmdFactory.CommandMetadatas()
-	theApp := app.NewApp(filepath.Base(args[0]), cmdRunner, metaDatas...)
-	if err := theApp.Run(args); nil != err {
+	metadatas := cmdFactory.CommandMetadatas()
+	theApp := app.NewApp(filepath.Base(args[0]), cmdRunner, metadatas...)
+
+	// try looking for a plugin
+	rpcServer, err := plugin.NewRpcServer(cmdFactory)
+	if err != nil {
 		error_handler.ErrorExit(err)
 	}
+	if !runPluginIfExists(rpcServer, os.Args[1:], config.Model.Plugins) {
+		theApp.Run(args)
+	}
+}
+
+func runPluginIfExists(rpcService *plugin.RpcServer, args []string, pluginList map[string]*plugin.PluginMetadata) bool {
+	for executableName, metadata := range pluginList {
+		for _, command := range metadata.Commands {
+			if command.Name == args[0] || command.Alias == args[0] {
+				args[0] = command.Name
+
+				rpcService.Start()
+				defer rpcService.Stop()
+
+				pluginArgs := append([]string{rpcService.Port()}, args...)
+
+				cmd := exec.Command(executableName, pluginArgs...)
+				cmd.Stdout = os.Stdout
+				cmd.Stdin = os.Stdin
+
+				defer stopPlugin(cmd)
+				err := cmd.Run()
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func stopPlugin(plugin *exec.Cmd) {
+	plugin.Process.Kill()
+	plugin.Wait()
 }

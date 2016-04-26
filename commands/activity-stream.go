@@ -112,7 +112,7 @@ func (cmd *ActivityStreamEnv) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(activityStream)
+	fmt.Fprintln(c.App.Writer, activityStream)
 }
 
 func (cmd *ActivityStreamStderr) Run(scope scope.Scope, c *cli.Context) {
@@ -123,7 +123,7 @@ func (cmd *ActivityStreamStderr) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(activityStream)
+	fmt.Fprintln(c.App.Writer, activityStream)
 }
 
 func (cmd *ActivityStreamStdin) Run(scope scope.Scope, c *cli.Context) {
@@ -134,7 +134,7 @@ func (cmd *ActivityStreamStdin) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(activityStream)
+	fmt.Fprintln(c.App.Writer, activityStream)
 }
 
 func (cmd *ActivityStreamStdout) Run(scope scope.Scope, c *cli.Context) {
@@ -145,5 +145,5 @@ func (cmd *ActivityStreamStdout) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(activityStream)
+	fmt.Fprintln(c.App.Writer, activityStream)
 }

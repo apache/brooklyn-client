@@ -55,7 +55,7 @@ func (cmd *Catalog) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Name", "Description"})
+	table := terminal.NewTable(c, []string{"Id", "Name", "Description"})
 	for _, app := range catalog {
 		table.Add(app.Id, app.Name, app.Description)
 	}

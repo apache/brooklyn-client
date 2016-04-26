@@ -78,7 +78,7 @@ func (cmd *Deploy) Run(scope scope.Scope, c *cli.Context) {
 			error_handler.ErrorExit(err)
 		}
 	}
-	table := terminal.NewTable([]string{"Id:", create.EntityId})
+	table := terminal.NewTable(c, []string{"Id:", create.EntityId})
 	table.Add("Name:", create.EntityDisplayName)
 	table.Add("Status:", create.CurrentStatus)
 	table.Print()

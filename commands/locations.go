@@ -55,7 +55,7 @@ func (cmd *Locations) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Name", "Spec"})
+	table := terminal.NewTable(c, []string{"Id", "Name", "Spec"})
 	for _, location := range locationList {
 		table.Add(location.Id, location.Name, location.Spec)
 	}

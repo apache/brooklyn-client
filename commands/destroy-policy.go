@@ -55,5 +55,5 @@ func (cmd *DestroyPolicy) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(spec)
+	fmt.Fprintln(c.App.Writer, spec)
 }

@@ -35,6 +35,7 @@ import (
 
 type Application struct {
 	network *net.Network
+	c       *cli.Context
 }
 
 func NewApplication(network *net.Network) (cmd *Application) {
@@ -54,6 +55,7 @@ func (cmd *Application) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *Application) Run(scope scope.Scope, c *cli.Context) {
+	cmd.c = c
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
@@ -83,7 +85,7 @@ func (cmd *Application) show(appName string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id:", application.Id})
+	table := terminal.NewTable(cmd.c, []string{"Id:", application.Id})
 	table.Add("Name:", application.Spec.Name)
 	table.Add("Status:", string(application.Status))
 	if serviceUp, ok := state[serviceIsUpStr]; ok {
@@ -103,7 +105,7 @@ func (cmd *Application) list() {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Id", "Name", "Status", "Location"})
+	table := terminal.NewTable(cmd.c, []string{"Id", "Name", "Status", "Location"})
 	for _, app := range applications {
 		table.Add(app.Id, app.Spec.Name, string(app.Status), strings.Join(app.Spec.Locations, ", "))
 	}

@@ -24,27 +24,53 @@ import (
 	"path/filepath"
 
 	"github.com/apache/brooklyn-client/error_handler"
+	"github.com/apache/brooklyn-client/plugin"
 )
 
 type Config struct {
 	FilePath string
-	Map      map[string]interface{}
+	Model    ConfigModel
+}
+
+type ConfigModel struct {
+	Auth      map[string]Credentials
+	PluginDir string
+	Plugins   map[string]*plugin.PluginMetadata
+	Target    string
+}
+
+type Url struct {
+	Target string
+}
+
+type Credentials struct {
+	Username string
+	Password string
 }
 
 func GetConfig() (config *Config) {
 	// check to see if $BRCLI_HOME/.brooklyn_cli or $HOME/.brooklyn_cli exists
 	// Then parse it to get user credentials
 	config = new(Config)
+	var pluginDir string
 	if os.Getenv("BRCLI_HOME") != "" {
+		pluginDir = filepath.Join(os.Getenv("BRCLI_HOME"), "plugins")
 		config.FilePath = filepath.Join(os.Getenv("BRCLI_HOME"), ".brooklyn_cli")
 	} else {
+		pluginDir = os.Getenv("HOME")
 		config.FilePath = filepath.Join(os.Getenv("HOME"), ".brooklyn_cli")
 	}
 	if _, err := os.Stat(config.FilePath); os.IsNotExist(err) {
-		config.Map = make(map[string]interface{})
+		config.Model = ConfigModel{}
 		config.Write()
 	}
+
 	config.Read()
+
+	if config.Model.PluginDir == "" {
+		config.Model.PluginDir = pluginDir
+		config.Write()
+	}
 	return
 }
 
@@ -57,7 +83,7 @@ func (config *Config) Write() {
 	defer fileToWrite.Close()
 
 	enc := json.NewEncoder(fileToWrite)
-	enc.Encode(config.Map)
+	enc.Encode(config.Model)
 }
 
 func (config *Config) Read() {
@@ -68,5 +94,5 @@ func (config *Config) Read() {
 	defer fileToRead.Close()
 
 	dec := json.NewDecoder(fileToRead)
-	dec.Decode(&config.Map)
+	dec.Decode(&config.Model)
 }

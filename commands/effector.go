@@ -56,7 +56,7 @@ func (cmd *Effector) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	table := terminal.NewTable([]string{"Name", "Description", "Parameters"})
+	table := terminal.NewTable(c, []string{"Name", "Description", "Parameters"})
 	for _, effector := range effectors {
 		var parameters []string
 		for _, parameter := range effector.Parameters {
