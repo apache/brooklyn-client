@@ -60,10 +60,10 @@ func Children(network *net.Network, application, entity string) ([]models.Entity
 	return entityList, err
 }
 
-func AddChildren(network *net.Network, application, entity, filePath string) (models.TaskSummary, error) {
+func AddChildren(network *net.Network, application, entity, resource string) (models.TaskSummary, error) {
 	urlStr := fmt.Sprintf("/v1/applications/%s/entities/%s/children", application, entity)
 	var response models.TaskSummary
-	body, err := network.SendPostFileRequest(urlStr, filePath, "application/json")
+	body, err := network.SendPostResourceRequest(urlStr, resource, "application/json")
 	if err != nil {
 		return response, err
 	}

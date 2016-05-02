@@ -147,17 +147,48 @@ func (net *Network) SendPostRequest(urlStr string, data []byte) ([]byte, error) 
 	return body, err
 }
 
-func (net *Network) SendPostFileRequest(url, filePath string, contentType string) ([]byte, error) {
-	file, err := os.Open(filepath.Clean(filePath))
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	req := net.NewPostRequest(url, file)
+func (net *Network) SendPostResourceRequest(restUrl string, resourceUrl string, contentType string) ([]byte, error) {
+	resource, err := openResource(resourceUrl)
+	defer resource.Close()
+	req := net.NewPostRequest(restUrl, resource)
 	req.Header.Set("Content-Type", contentType)
 	body, err := net.SendRequest(req)
 	return body, err
 }
+
+func openResource(resourceUrl string) (io.ReadCloser, error) {
+	u, err := url.Parse(resourceUrl)
+	if err != nil {
+		return nil, err
+	}
+	if "" == u.Scheme || "file" == u.Scheme {
+		return openFileResource(u)
+
+	} else if "http" == u.Scheme || "https" == u.Scheme {
+		return openHttpResource(resourceUrl)
+
+	} else {
+		return nil, errors.New("Unrecognised protocol scheme: " + u.Scheme)
+	}
+}
+
+func openFileResource(url *url.URL) (io.ReadCloser, error) {
+	filePath := url.Path;
+	file, err := os.Open(filepath.Clean(filePath))
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
+}
+
+func openHttpResource(resourceUrl string) (io.ReadCloser, error) {
+	resp, err := http.Get(resourceUrl)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Body, nil
+}
+
 
 func VerifyLoginURL(network *Network) error {
 	url, err := url.Parse(network.BrooklynUrl)

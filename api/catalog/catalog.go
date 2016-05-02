@@ -161,9 +161,9 @@ func Locations(network *net.Network) (models.CatalogLocationSummary, error) {
 	return catalogLocation, err
 }
 
-func AddCatalog(network *net.Network, filePath string) (string, error) {
+func AddCatalog(network *net.Network, resource string) (string, error) {
 	url := "/v1/catalog"
-	body, err := network.SendPostFileRequest(url, filePath, "application/json")
+	body, err := network.SendPostResourceRequest(url, resource, "application/json")
 	if err != nil {
 		return "", err
 	}
