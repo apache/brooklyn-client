@@ -30,19 +30,22 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"crypto/tls"
 )
 
 type Network struct {
 	BrooklynUrl  string
 	BrooklynUser string
 	BrooklynPass string
+	SkipSslChecks bool
 }
 
-func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string) (net *Network) {
+func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string, skipSslChecks bool) (net *Network) {
 	net = new(Network)
 	net.BrooklynUrl = brooklynUrl
 	net.BrooklynUser = brooklynUser
 	net.BrooklynPass = brooklynPass
+	net.SkipSslChecks = skipSslChecks
 	return
 }
 
@@ -93,7 +96,10 @@ func makeError(resp *http.Response, code int, body []byte) error {
 }
 
 func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
-	client := &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: net.SkipSslChecks},
+	}
+	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
