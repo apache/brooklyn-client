@@ -19,7 +19,7 @@
 package commands
 
 import (
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	//"github.com/apache/brooklyn-client/api/entity_policies"
 	"github.com/apache/brooklyn-client/command_metadata"
 	"github.com/apache/brooklyn-client/net"

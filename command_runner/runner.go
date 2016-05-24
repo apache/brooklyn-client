@@ -21,7 +21,7 @@ package command_runner
 import (
 	"github.com/apache/brooklyn-client/command_factory"
 	"github.com/apache/brooklyn-client/scope"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 type Runner interface {

@@ -25,7 +25,7 @@ import (
 	"github.com/apache/brooklyn-client/error_handler"
 	"github.com/apache/brooklyn-client/net"
 	"github.com/apache/brooklyn-client/scope"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"strings"
 )
 

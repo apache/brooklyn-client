@@ -26,7 +26,7 @@ import (
 	"github.com/apache/brooklyn-client/io"
 	"github.com/apache/brooklyn-client/net"
 	"github.com/apache/brooklyn-client/scope"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"golang.org/x/crypto/ssh/terminal"
 	"syscall"
 )
