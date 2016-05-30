@@ -39,7 +39,7 @@ var appConfig = configDefaults{
 	Name:     os.Args[0],
 	HelpName: os.Args[0],
 	Usage:    "A Brooklyn command line client application",
-	Version:  "0.9.0",
+	Version:  "0.10.0-SNAPSHOT",  // BROOKLYN_VERSION
 }
 
 func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
@@ -51,6 +51,13 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 	app.HelpName = appConfig.HelpName
 	app.Usage = appConfig.Usage
 	app.Version = appConfig.Version
+
+	app.Flags = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "skipSslChecks",
+			Usage: "Skip verification of server's certificate chain and hostname (for use with self-signed certs)",
+		},
+	}
 
 	app.Commands = []cli.Command{}
 
