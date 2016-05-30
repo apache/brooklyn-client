@@ -23,7 +23,7 @@ import (
 	"github.com/apache/brooklyn-client/command_metadata"
 	"github.com/apache/brooklyn-client/command_runner"
 	"github.com/apache/brooklyn-client/error_handler"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"os"
 	"strings"
 )

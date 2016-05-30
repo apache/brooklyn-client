@@ -18,7 +18,7 @@
  */
 package command_metadata
 
-import "github.com/codegangsta/cli"
+import "github.com/urfave/cli"
 
 type CommandMetadata struct {
 	Name            string

@@ -28,7 +28,7 @@ import (
 	"github.com/apache/brooklyn-client/net"
 	"github.com/apache/brooklyn-client/scope"
 	"github.com/apache/brooklyn-client/terminal"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"sort"
 	"strconv"
 	"strings"

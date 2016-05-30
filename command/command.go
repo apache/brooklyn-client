@@ -21,7 +21,7 @@ package command
 import (
 	"github.com/apache/brooklyn-client/command_metadata"
 	"github.com/apache/brooklyn-client/scope"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 type Command interface {
