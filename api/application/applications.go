@@ -48,10 +48,10 @@ func Applications(network *net.Network) ([]models.ApplicationSummary, error) {
 	return appSummary, err
 }
 
-func Create(network *net.Network, filePath string) (models.TaskSummary, error) {
+func Create(network *net.Network, resource string) (models.TaskSummary, error) {
 	url := "/v1/applications"
 	var response models.TaskSummary
-	body, err := network.SendPostFileRequest(url, filePath, "application/json")
+	body, err := network.SendPostResourceRequest(url, resource, "application/json")
 	if err != nil {
 		return response, err
 	}
