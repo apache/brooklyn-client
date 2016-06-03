@@ -30,14 +30,21 @@ own fork as a remote.
   to a suitable location for your Go code, for example, simply $HOME/go.
 - Get the Brooklyn CLI and dependencies. 
 
-`go get github.com/apache/brooklyn-client/br`  
+```bash
+go get github.com/apache/brooklyn-client/br
+```
 
     
-## A note on dependency management
+## Installing Dependencies
 
-The CLI has a small number of dependencies, notably on codegansta/cli.  To manage the version of dependencies, the CLI
-code currently uses Go vendoring. The dependencies are held in the top level 'vendor' directory.
+The CLI has a small number of dependencies, notably on `urfave/cli`.  To manage the version of dependencies, the CLI
+code currently uses [Glide](https://github.com/Masterminds/glide). The dependencies are installed to the top level 'vendor' directory.
 
+```bash
+go get github.com/Masterminds/glide
+cd $GOPATH/src/github.com/apache/brooklyn-client
+glide install
+```
 
 ## Compiling the code with Go for development purposes
 
@@ -52,7 +59,7 @@ the file "test_app.yaml" to change the location to your own value, and then invo
 where the username and password need only be supplied if Brooklyn requires them:
 
 ```bash
-    $ sh test.sh  http://your-brooklyn-host:8081 myuser mypassword
+sh test.sh  http://your-brooklyn-host:8081 myuser mypassword
 ```
 
 Note, the tests are not yet comprehensive, and contributions are welcome.
