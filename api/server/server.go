@@ -19,9 +19,7 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/apache/brooklyn-client/models"
 	"github.com/apache/brooklyn-client/net"
 )
 
@@ -169,7 +167,7 @@ func ClearStates(network *net.Network) (string, error) {
 	if err != nil {
 		return "", nil
 	}
-	return string(body)
+	return string(body), nil
 }
 
 func Export(network *net.Network) (string, error) {
@@ -178,7 +176,7 @@ func Export(network *net.Network) (string, error) {
 	if err != nil {
 		return "", nil
 	}
-	return string(body)
+	return string(body), nil
 }
 
 // WIP
@@ -188,5 +186,5 @@ func Shutdown(network *net.Network) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(body)
+	return string(body), nil
 }
