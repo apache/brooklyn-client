@@ -97,7 +97,7 @@ consisting of a zip file containing all the binaries.  This artifact can be refe
 
 ## Running
 
-See instructions in the included [Runtime README](README) file.
+See instructions in the included [Runtime README](release/files/README) file.
 
 ----
 Licensed to the Apache Software Foundation (ASF) under one 
