@@ -9,3 +9,6 @@ target
 .settings/
 .metadata/
 vendor/
+
+*.log
+brooklyn*.log.*

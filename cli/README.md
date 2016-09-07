@@ -22,8 +22,8 @@ Optional:
 ## Workspace Setup
 
 Go is very particular about the layout of a source tree, and the naming of packages.  It is therefore important to 
-get the code from github.com/apache/brooklyn-client and not your own fork. If you want to contribute to the 
-project, the procedure to follow is still to get the code from github.com/apache/brooklyn-client, and then to add your
+get the code from github.com/apache/brooklyn-client/cli and not your own fork. If you want to contribute to the 
+project, the procedure to follow is still to get the code from github.com/apache/brooklyn-client/cli, and then to add your
 own fork as a remote. 
 
 - Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly 
@@ -31,7 +31,7 @@ own fork as a remote.
 - Get the Brooklyn CLI and dependencies. 
 
 ```bash
-go get github.com/apache/brooklyn-client/br
+go get github.com/apache/brooklyn-client/cli/br
 ```
 
     
@@ -42,7 +42,7 @@ code currently uses [Glide](https://github.com/Masterminds/glide). The dependenc
 
 ```bash
 go get github.com/Masterminds/glide
-cd $GOPATH/src/github.com/apache/brooklyn-client
+cd $GOPATH/src/github.com/apache/brooklyn-client/cli
 glide install
 ```
 
