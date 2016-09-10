@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.brooklyn</groupId>
+        <artifactId>brooklyn-client</artifactId>
+        <version>0.10.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <packaging>pom</packaging>
+
+    <artifactId>brooklyn-client-cli</artifactId>
+    <name>Brooklyn Client Command Line Interface</name>
+    <description>
+        A command line client for Apache Brooklyn
+    </description>
+
+
+    <!--
+
+    Run as one of:
+
+    mvn -Dtarget=native clean install                      build for local platform
+    mvn -Dtarget=all clean install                         build for all supported platforms
+    mvn -Dtarget=cross -Dos=OS -Darch=ARCH clean install   build for platform with operating system OS and architecture ARCH
+
+    -->
+
+    <properties>
+        <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
+        <maven.assembly.plugin.version>2.6</maven.assembly.plugin.version>
+        <target>all</target>
+    </properties>
+
+    <repositories>
+        <!--
+            Same as in the parent apache pom. Repeated here in case
+            direct parent's pom not found at relativePath. Can't fetch
+            the parent from remote repos for snapshot versions - no
+            snapshot repos enabled by default.
+        -->
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>process-build-all</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target>
+                                <ant target="${target}"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assembly.plugin.version}</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>release/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.11</version>
+                <configuration>
+                    <excludes combine.children="append">
+                        <exclude>vendor/**</exclude>
+                        <exclude>glide.*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>
