@@ -22,8 +22,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/apache/brooklyn-client/models"
-	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/cli/models"
+	"github.com/apache/brooklyn-client/cli/net"
 	"net/url"
 	"strconv"
 )

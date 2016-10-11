@@ -20,12 +20,12 @@ package commands
 
 import (
 	"fmt"
-	"github.com/apache/brooklyn-client/api/version"
-	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/error_handler"
-	"github.com/apache/brooklyn-client/io"
-	"github.com/apache/brooklyn-client/net"
-	"github.com/apache/brooklyn-client/scope"
+	"github.com/apache/brooklyn-client/cli/api/version"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/error_handler"
+	"github.com/apache/brooklyn-client/cli/io"
+	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/urfave/cli"
 	"golang.org/x/crypto/ssh/terminal"
 	"syscall"

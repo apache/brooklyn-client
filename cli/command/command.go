@@ -19,8 +19,8 @@
 package command
 
 import (
-	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/scope"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/urfave/cli"
 )
 

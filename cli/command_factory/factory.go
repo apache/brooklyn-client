@@ -20,11 +20,11 @@ package command_factory
 
 import (
 	"errors"
-	"github.com/apache/brooklyn-client/command"
-	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/commands"
-	"github.com/apache/brooklyn-client/io"
-	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/cli/command"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/commands"
+	"github.com/apache/brooklyn-client/cli/io"
+	"github.com/apache/brooklyn-client/cli/net"
 	"sort"
 	"strings"
 )

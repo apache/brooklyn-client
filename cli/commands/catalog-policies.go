@@ -19,7 +19,7 @@
 package commands
 
 import (
-	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/cli/net"
 )
 
 type CatalogPolicies struct {
