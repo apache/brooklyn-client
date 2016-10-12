@@ -19,7 +19,6 @@
 package app
 
 import (
-	"fmt"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/command_runner"
 	"github.com/apache/brooklyn-client/cli/error_handler"
@@ -111,7 +110,7 @@ func subCommandAction(command string, operand string, runner command_runner.Runn
 	return func(context *cli.Context) {
 		err := runner.RunSubCmdByName(command, operand, context)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			error_handler.ErrorExit(err)
 		}
 	}
 }

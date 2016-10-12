@@ -19,61 +19,45 @@
 package commands
 
 import (
-	"github.com/apache/brooklyn-client/cli/command"
+	"github.com/apache/brooklyn-client/cli/api/catalog"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
+	"github.com/apache/brooklyn-client/cli/terminal"
 	"github.com/urfave/cli"
-	"strings"
-	"fmt"
 )
 
-type Catalog struct {
+type CatalogList struct {
 	network *net.Network
-	catalogCommands map[string]command.Command
 }
 
-func NewCatalog(network *net.Network) (cmd *Catalog) {
-	cmd = new(Catalog)
+func NewCatalogList(network *net.Network) (cmd *CatalogList) {
+	cmd = new(CatalogList)
 	cmd.network = network
-	cmd.catalogCommands = map[string]command.Command {
-		ListCatalogCommand: NewCatalogList(cmd.network),
-	}
 	return
 }
 
-const ListCatalogCommand = "list"
-
-var catalogCommands = []string{
-	ListCatalogCommand,
-}
-var catalogCommandsUsage = strings.Join(catalogCommands, " | ")
-
-func (cmd *Catalog) SubCommandNames() []string {
-	return catalogCommands
-}
-
-func (cmd *Catalog) SubCommand(name string) command.Command {
-	return cmd.catalogCommands[name]
-}
-
-func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
+func (cmd *CatalogList) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "catalog",
-		Description: "Catalog operations",
-		Usage:       "BROOKLYN_NAME catalog (" + catalogCommandsUsage + ")",
+		Name:        "list",
+		Description: "* List the available catalog applications",
+		Usage:       "BROOKLYN_NAME catalog list",
 		Flags:       []cli.Flag{},
-		Operands:    []command_metadata.CommandMetadata{
-			cmd.SubCommand(ListCatalogCommand).Metadata(),
-		},
 	}
 }
 
-func (cmd *Catalog) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *CatalogList) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Printf("Unrecognised instruction, please use one of (%s)\n", catalogCommandsUsage)
-
+	catalog, err := catalog.Catalog(cmd.network)
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
+	table := terminal.NewTable([]string{"Id", "Name", "Description"})
+	for _, app := range catalog {
+		table.Add(app.Id, app.Name, app.Description)
+	}
+	table.Print()
 }
