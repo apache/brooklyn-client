@@ -20,6 +20,12 @@ package commands
 
 import (
 	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/urfave/cli"
+	"github.com/apache/brooklyn-client/cli/scope"
+	"github.com/apache/brooklyn-client/cli/error_handler"
+	"strings"
+	"github.com/apache/brooklyn-client/cli/api/catalog"
 )
 
 type DeleteCatalogApplication struct {
@@ -30,4 +36,32 @@ func NewDeleteCatalogApplication(network *net.Network) (cmd *DeleteCatalogApplic
 	cmd = new(DeleteCatalogApplication)
 	cmd.network = network
 	return
+}
+
+func (cmd *DeleteCatalogApplication) Metadata() command_metadata.CommandMetadata {
+	return command_metadata.CommandMetadata{
+		Name:        "delete",
+		Description: "delete the given catalog application",
+		Usage:       "BROOKLYN_NAME catalog delete [APPLICATION_ID:VERSION]",
+		Flags:       []cli.Flag{},
+	}
+}
+
+func (cmd *DeleteCatalogApplication) Run(scope scope.Scope, c *cli.Context) {
+	if err := net.VerifyLoginURL(cmd.network); err != nil {
+		error_handler.ErrorExit(err)
+	}
+	if len(c.Args()) != 1 {
+		error_handler.ErrorExit("command requires single argument APPLICATION_ID:VERSION")
+	}
+	appVersion := strings.Split(c.Args().First(), ":")
+	if len(appVersion) != 2 {
+		error_handler.ErrorExit("command requires single argument APPLICATION_ID:VERSION")
+	}
+	appId := appVersion[0]
+	version := appVersion[1]
+	_, err := catalog.DeleteApplicationWithVersion(cmd.network, appId, version)
+	if nil != err {
+		error_handler.ErrorExit(err)
+	}
 }

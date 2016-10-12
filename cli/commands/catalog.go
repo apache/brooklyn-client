@@ -39,14 +39,17 @@ func NewCatalog(network *net.Network) (cmd *Catalog) {
 	cmd.network = network
 	cmd.catalogCommands = map[string]command.Command {
 		ListCatalogCommand: NewCatalogList(cmd.network),
+		DeleteCatalogCommand: NewDeleteCatalogApplication(cmd.network),
 	}
 	return
 }
 
 const ListCatalogCommand = "list"
+const DeleteCatalogCommand = "delete"
 
 var catalogCommands = []string{
 	ListCatalogCommand,
+	DeleteCatalogCommand,
 }
 var catalogCommandsUsage = strings.Join(catalogCommands, " | ")
 
@@ -66,6 +69,7 @@ func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
 		Flags:       []cli.Flag{},
 		Operands:    []command_metadata.CommandMetadata{
 			cmd.SubCommand(ListCatalogCommand).Metadata(),
+			cmd.SubCommand(DeleteCatalogCommand).Metadata(),
 		},
 	}
 }

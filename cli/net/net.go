@@ -84,10 +84,21 @@ func makeError(resp *http.Response, code int, body []byte) error {
 		Status:  resp.Status,
 		Headers: resp.Header,
 	}
-	details := make(map[string]string)
+	return makeErrorBody(theError, body)
+}
+
+func makeSimpleError(code int, body []byte) error {
+	theError := HttpError{
+		Code:    code,
+	}
+	return makeErrorBody(theError, body)
+}
+
+func makeErrorBody(theError HttpError, body []byte) error {
+	details := make(map[string]interface{})
 	if err := json.Unmarshal(body, &details); nil == err {
 		if message, ok := details["message"]; ok {
-			theError.Body = message
+			theError.Body = message.(string)
 			return theError
 		}
 	}
@@ -96,20 +107,25 @@ func makeError(resp *http.Response, code int, body []byte) error {
 }
 
 func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
+	body, _, err := net.SendRequestGetStatusCode(req)
+	return body, err
+}
+
+func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: net.SkipSslChecks},
 	}
 	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if code, failed := unsuccessful(resp.Status); failed {
-		return nil, makeError(resp, code, body)
+		return nil, 0, makeError(resp, code, body)
 	}
-	return body, err
+	return body, resp.StatusCode, err
 }
 
 const httpSuccessSeriesFrom = 200
@@ -136,7 +152,13 @@ func (net *Network) SendGetRequest(url string) ([]byte, error) {
 
 func (net *Network) SendDeleteRequest(url string) ([]byte, error) {
 	req := net.NewDeleteRequest(url)
-	body, err := net.SendRequest(req)
+	body, code, err := net.SendRequestGetStatusCode(req)
+	if nil != err {
+		return nil, err
+	}
+	if code != http.StatusNoContent {
+		return nil, makeSimpleError(code, body)
+	}
 	return body, err
 }
 
