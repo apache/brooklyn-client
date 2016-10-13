@@ -51,7 +51,6 @@ func NewFactory(network *net.Network, config *io.Config) (factory concreteFactor
 	factory.simpleCommand(commands.NewActivityStreamStderr(network))
 	factory.simpleCommand(commands.NewActivityStreamStdin(network))
 	factory.simpleCommand(commands.NewActivityStreamStdout(network))
-	factory.simpleCommand(commands.NewAddCatalog(network))
 	factory.simpleCommand(commands.NewAddChildren(network))
 	factory.simpleCommand(commands.NewApplication(network))
 	//factory.simpleCommand(commands.NewApplications(network))
