@@ -55,5 +55,7 @@ func (cmd *AddCatalog) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(create)
+	for id, _ := range create {
+		fmt.Println(id)
+	}
 }

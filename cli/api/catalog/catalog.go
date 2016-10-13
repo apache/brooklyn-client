@@ -161,13 +161,15 @@ func Locations(network *net.Network) ([]models.CatalogLocationSummary, error) {
 	return catalogLocations, err
 }
 
-func AddCatalog(network *net.Network, resource string) (string, error) {
+func AddCatalog(network *net.Network, resource string) (map[string]models.CatalogEntitySummary, error) {
 	url := "/v1/catalog"
+	var entities map[string]models.CatalogEntitySummary
 	body, err := network.SendPostResourceRequest(url, resource, "application/json")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(body), nil
+	err = json.Unmarshal(body, &entities)
+	return entities, nil
 }
 
 func Reset(network *net.Network) (string, error) {
