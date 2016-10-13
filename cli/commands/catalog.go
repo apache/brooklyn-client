@@ -78,6 +78,6 @@ func (cmd *Catalog) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Printf("Unrecognised instruction, please use one of (%s)\n", catalogCommandsUsage)
+ 	fmt.Printf("'catalog' requires one of (%s)\n", catalogCommandsUsage)
 
 }

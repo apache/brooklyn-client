@@ -150,15 +150,15 @@ func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
 	return policies, err
 }
 
-func Locations(network *net.Network) (models.CatalogLocationSummary, error) {
+func Locations(network *net.Network) ([]models.CatalogLocationSummary, error) {
 	url := "/v1/catalog/locations"
-	var catalogLocation models.CatalogLocationSummary
+	var catalogLocations []models.CatalogLocationSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		return catalogLocation, err
+		return catalogLocations, err
 	}
-	err = json.Unmarshal(body, &catalogLocation)
-	return catalogLocation, err
+	err = json.Unmarshal(body, &catalogLocations)
+	return catalogLocations, err
 }
 
 func AddCatalog(network *net.Network, resource string) (string, error) {
