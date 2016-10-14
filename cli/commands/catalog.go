@@ -40,7 +40,7 @@ func NewCatalog(network *net.Network) (cmd *Catalog) {
 	cmd.catalogCommands = map[string]command.Command {
 		ListCatalogCommand: NewCatalogList(cmd.network),
 		AddCatalogCommand: NewAddCatalog(cmd.network),
-		DeleteCatalogCommand: NewDeleteCatalogApplication(cmd.network),
+		DeleteCatalogCommand: NewDeleteCatalogItem(cmd.network),
 	}
 	return
 }

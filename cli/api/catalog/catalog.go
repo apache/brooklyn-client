@@ -100,7 +100,7 @@ func GetPolicyWithVersion(network *net.Network, policyId, version string) (model
 }
 
 func DeletePolicyWithVersion(network *net.Network, policyId, version string) (string, error) {
-	url := fmt.Sprintf("/v1/catalog/policies/%s/%s", policyId)
+	url := fmt.Sprintf("/v1/catalog/policies/%s/%s", policyId, version)
 	body, err := network.SendDeleteRequest(url)
 	if err != nil {
 		return "", err
@@ -132,6 +132,15 @@ func GetApplicationWithVersion(network *net.Network, applicationId, version stri
 
 func DeleteApplicationWithVersion(network *net.Network, applicationId, version string) (string, error) {
 	url := fmt.Sprintf("/v1/catalog/applications/%s/%s", applicationId, version)
+	body, err := network.SendDeleteRequest(url)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
+func DeleteLocationWithVersion(network *net.Network, locationId, version string) (string, error) {
+	url := fmt.Sprintf("/v1/catalog/locations/%s/%s", locationId, version)
 	body, err := network.SendDeleteRequest(url)
 	if err != nil {
 		return "", err

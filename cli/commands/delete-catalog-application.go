@@ -28,40 +28,88 @@ import (
 	"github.com/apache/brooklyn-client/cli/api/catalog"
 )
 
-type DeleteCatalogApplication struct {
+type DeleteCatalogItem  struct {
 	network *net.Network
 }
 
-func NewDeleteCatalogApplication(network *net.Network) (cmd *DeleteCatalogApplication) {
-	cmd = new(DeleteCatalogApplication)
+func NewDeleteCatalogItem(network *net.Network) (cmd *DeleteCatalogItem) {
+	cmd = new(DeleteCatalogItem)
 	cmd.network = network
 	return
 }
 
-func (cmd *DeleteCatalogApplication) Metadata() command_metadata.CommandMetadata {
+func (cmd *DeleteCatalogItem) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "delete",
-		Description: "delete the given catalog application",
-		Usage:       "BROOKLYN_NAME catalog delete [APPLICATION_ID:VERSION]",
-		Flags:       []cli.Flag{},
+		Description: "delete the given catalog item",
+		Usage:       "BROOKLYN_NAME catalog delete [ITEM_ID:VERSION]",
+		Flags:       []cli.Flag{
+			cli.BoolFlag{
+				Name:  "applications, a",
+				Usage: "delete application (default)",
+			},
+			cli.BoolFlag{
+				Name:  "entities, e",
+				Usage: "delete entity",
+			},
+			cli.BoolFlag{
+				Name:  "locations, l",
+				Usage: "delete location",
+			},
+			cli.BoolFlag{
+				Name:  "policies, p",
+				Usage: "delete policy",
+			},
+		},
 	}
 }
 
-func (cmd *DeleteCatalogApplication) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *DeleteCatalogItem) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
 	if len(c.Args()) != 1 {
-		error_handler.ErrorExit("command requires single argument APPLICATION_ID:VERSION")
+		error_handler.ErrorExit("command requires single argument ITEM_ID:VERSION")
 	}
-	appVersion := strings.Split(c.Args().First(), ":")
-	if len(appVersion) != 2 {
-		error_handler.ErrorExit("command requires single argument APPLICATION_ID:VERSION")
+	itemVersion := strings.Split(c.Args().First(), ":")
+	if len(itemVersion) != 2 {
+		error_handler.ErrorExit("command requires single argument ITEM_ID:VERSION")
 	}
-	appId := appVersion[0]
-	version := appVersion[1]
-	_, err := catalog.DeleteApplicationWithVersion(cmd.network, appId, version)
+	itemId := itemVersion[0]
+	version := itemVersion[1]
+	err := cmd.deleteItem(c, itemId, version)
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
+}
+
+func (cmd *DeleteCatalogItem) deleteItem(c *cli.Context, itemId string, version string) (error){
+	if c.IsSet("entities") {
+		return cmd.deleteEntity(c, itemId, version)
+	} else if c.IsSet("locations") {
+		return cmd.deleteLocation(c, itemId, version)
+	} else if c.IsSet("policies") {
+		return cmd.deletePolicy(c, itemId, version)
+	}
+	return cmd.deleteApplication(c, itemId, version)
+}
+
+func (cmd *DeleteCatalogItem) deleteApplication(c *cli.Context, itemId string, version string) (error){
+	_, err := catalog.DeleteApplicationWithVersion(cmd.network, itemId, version)
+	return err
+}
+
+func (cmd *DeleteCatalogItem) deleteEntity(c *cli.Context, itemId string, version string) (error){
+	_, err := catalog.DeleteEntityWithVersion(cmd.network, itemId, version)
+	return err
+}
+
+func (cmd *DeleteCatalogItem) deletePolicy(c *cli.Context, itemId string, version string) (error){
+	_, err := catalog.DeletePolicyWithVersion(cmd.network, itemId, version)
+	return err
+}
+
+func (cmd *DeleteCatalogItem) deleteLocation(c *cli.Context, itemId string, version string) (error){
+	_, err := catalog.DeleteLocationWithVersion(cmd.network, itemId, version)
+	return err
 }
