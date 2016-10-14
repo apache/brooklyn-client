@@ -149,7 +149,7 @@ func DeleteLocationWithVersion(network *net.Network, locationId, version string)
 }
 
 func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
-	url := "/v1/catalog/policies"
+	url := "/v1/catalog/policies?allVersions"
 	var policies []models.CatalogPolicySummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
@@ -160,7 +160,7 @@ func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
 }
 
 func Locations(network *net.Network) ([]models.CatalogLocationSummary, error) {
-	url := "/v1/catalog/locations"
+	url := "/v1/catalog/locations?allVersions=true"
 	var catalogLocations []models.CatalogLocationSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
@@ -211,7 +211,7 @@ func PostLocationWithVersion(network *net.Network, locationId, version string) (
 }
 
 func Entities(network *net.Network) ([]models.CatalogItemSummary, error) {
-	url := "/v1/catalog/entities"
+	url := "/v1/catalog/entities?allVersions=true"
 	var entities []models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
@@ -222,7 +222,7 @@ func Entities(network *net.Network) ([]models.CatalogItemSummary, error) {
 }
 
 func Catalog(network *net.Network) ([]models.CatalogItemSummary, error) {
-	url := "/v1/catalog/applications"
+	url := "/v1/catalog/applications?allVersions=true"
 	var applications []models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
