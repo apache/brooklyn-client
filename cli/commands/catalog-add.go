@@ -28,26 +28,26 @@ import (
 	"github.com/urfave/cli"
 )
 
-type AddCatalog struct {
+type CatalogAdd struct {
 	network *net.Network
 }
 
-func NewAddCatalog(network *net.Network) (cmd *AddCatalog) {
-	cmd = new(AddCatalog)
+func NewCatalogAdd(network *net.Network) (cmd *CatalogAdd) {
+	cmd = new(CatalogAdd)
 	cmd.network = network
 	return
 }
 
-func (cmd *AddCatalog) Metadata() command_metadata.CommandMetadata {
+func (cmd *CatalogAdd) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "add-catalog",
-		Description: "(deprecated, use catalog add) Add a new catalog item from the supplied YAML (a file or http URL)",
-		Usage:       "BROOKLYN_NAME add-catalog ( FILEPATH | URL )",
+		Name:        "add",
+		Description: "Add a new catalog item from the supplied YAML (a file or http URL)",
+		Usage:       "BROOKLYN_NAME catalog add ( FILEPATH | URL )",
 		Flags:       []cli.Flag{},
 	}
 }
 
-func (cmd *AddCatalog) Run(scope scope.Scope, c *cli.Context) {
+func (cmd *CatalogAdd) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
@@ -55,5 +55,7 @@ func (cmd *AddCatalog) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(create)
+	for id, _ := range create {
+		fmt.Println(id)
+	}
 }

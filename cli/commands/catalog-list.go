@@ -27,6 +27,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/terminal"
 	"github.com/urfave/cli"
 	"github.com/apache/brooklyn-client/cli/models"
+	"errors"
 )
 
 type CatalogList struct {
@@ -39,29 +40,13 @@ func NewCatalogList(network *net.Network) (cmd *CatalogList) {
 	return
 }
 
+const commandName = "list"
+
 func (cmd *CatalogList) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        "list",
+		Name:        commandName,
 		Description: "* List the available catalog applications",
-		Usage:       "BROOKLYN_NAME catalog list",
-		Flags:       []cli.Flag{
-			cli.BoolFlag{
-				Name:  "applications, a",
-				Usage: "list applications (default)",
-			},
-			cli.BoolFlag{
-				Name:  "entities, e",
-				Usage: "list entities",
-			},
-			cli.BoolFlag{
-				Name:  "locations, l",
-				Usage: "list locations",
-			},
-			cli.BoolFlag{
-				Name:  "policies, p",
-				Usage: "list policies",
-			},
-		},
+		Usage:       "BROOKLYN_NAME catalog " + commandName,
 	}
 }
 
@@ -81,18 +66,26 @@ func (cmd *CatalogList) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *CatalogList) list(c *cli.Context) ([]models.IdentityDetails, error) {
-	if c.IsSet("entities") {
-		list, err := cmd.listEntities(c)
-		return list, err
-	} else if c.IsSet("locations") {
-		list, err := cmd.listLocations(c)
-		return list, err
-        } else if c.IsSet("policies") {
-		list, err := cmd.listPolicies(c)
-		return list, err
+
+	catalogType, err := GetCatalogType(c, commandName)
+	if  err != nil {
+		return nil, err
 	}
-	items, err := cmd.listCatalogItems(c)
-	return items, err
+	switch catalogType {
+	case ApplicationsItemType:
+		items, err := cmd.listCatalogApplications(c)
+		return items, err
+	case EntitiesItemType:
+		items, err := cmd.listEntities(c)
+		return items, err
+	case LocationsItemType:
+		items, err := cmd.listLocations(c)
+		return items, err
+	case PoliciesItemType:
+		items, err := cmd.listPolicies(c)
+		return items, err
+	}
+	return nil, errors.New("Unrecognised argument")
 }
 
 func (cmd *CatalogList) listPolicies(c *cli.Context) ([]models.IdentityDetails, error) {
@@ -131,7 +124,7 @@ func (cmd *CatalogList) listEntities(c *cli.Context) ([]models.IdentityDetails, 
 	return result, nil
 }
 
-func (cmd *CatalogList) listCatalogItems(c *cli.Context) ([]models.IdentityDetails, error) {
+func (cmd *CatalogList) listCatalogApplications(c *cli.Context) ([]models.IdentityDetails, error) {
 	items, err := catalog.Catalog(cmd.network)
 	if err != nil {
 		return nil, err

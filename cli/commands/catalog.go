@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 	"strings"
 	"fmt"
+	"errors"
 )
 
 type Catalog struct {
@@ -39,7 +40,7 @@ func NewCatalog(network *net.Network) (cmd *Catalog) {
 	cmd.network = network
 	cmd.catalogCommands = map[string]command.Command {
 		ListCatalogCommand: NewCatalogList(cmd.network),
-		AddCatalogCommand: NewAddCatalog(cmd.network),
+		AddCatalogCommand: NewCatalogAdd(cmd.network),
 		DeleteCatalogCommand: NewDeleteCatalogItem(cmd.network),
 	}
 	return
@@ -55,6 +56,33 @@ var catalogCommands = []string{
 	DeleteCatalogCommand,
 }
 var catalogCommandsUsage = strings.Join(catalogCommands, " | ")
+
+type CatalogItemType int
+const  (
+	Unknown = iota
+	ApplicationsItemType
+	EntitiesItemType
+	LocationsItemType
+	PoliciesItemType
+)
+const catalogItemTypesUsage = " ( applications | entities | locations | policies )"
+
+func GetCatalogType(c *cli.Context, commandName string) (CatalogItemType, error) {
+	if len(c.Args()) != 1 {
+		return Unknown, errors.New(c.App.Name + " " + commandName + catalogItemTypesUsage)
+	}
+	commandType := c.Args().First()
+	if strings.HasPrefix("entities", commandType) {
+		return EntitiesItemType, nil
+	} else if strings.HasPrefix("locations", commandType) {
+		return LocationsItemType, nil
+	} else if strings.HasPrefix("policies", commandType) {
+		return PoliciesItemType, nil
+	} else if strings.HasPrefix("applications", commandType) {
+		return ApplicationsItemType, nil
+	}
+	return Unknown, errors.New("Unknown type: " + commandType)
+}
 
 func (cmd *Catalog) SubCommandNames() []string {
 	return catalogCommands
@@ -83,5 +111,4 @@ func (cmd *Catalog) Run(scope scope.Scope, c *cli.Context) {
 		error_handler.ErrorExit(err)
 	}
  	fmt.Printf("'catalog' requires one of (%s)\n", catalogCommandsUsage)
-
 }
