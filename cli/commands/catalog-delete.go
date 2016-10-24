@@ -26,6 +26,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"strings"
 	"github.com/apache/brooklyn-client/cli/api/catalog"
+	"errors"
 )
 
 type DeleteCatalogItem  struct {
@@ -42,38 +43,25 @@ func (cmd *DeleteCatalogItem) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "delete",
 		Description: "delete the given catalog item",
-		Usage:       "BROOKLYN_NAME catalog delete [ITEM_ID:VERSION]",
-		Flags:       []cli.Flag{
-			cli.BoolFlag{
-				Name:  "applications, a",
-				Usage: "delete application (default)",
-			},
-			cli.BoolFlag{
-				Name:  "entities, e",
-				Usage: "delete entity",
-			},
-			cli.BoolFlag{
-				Name:  "locations, l",
-				Usage: "delete location",
-			},
-			cli.BoolFlag{
-				Name:  "policies, p",
-				Usage: "delete policy",
-			},
-		},
+		Usage:       "BROOKLYN_NAME catalog  " + deleteCommandName +
+			" TYPE [ITEM_ID:VERSION] (where TYPE is one of applications, locations, entities, policies, may be abbreviated)",
 	}
 }
+
+const deleteCommandName = "delete"
+
 
 func (cmd *DeleteCatalogItem) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
-	if len(c.Args()) != 1 {
-		error_handler.ErrorExit("command requires single argument ITEM_ID:VERSION")
+	args := c.Args()
+	if len(args) != 2 {
+		error_handler.ErrorExit("command requires arguments TYPE ITEM_ID:VERSION")
 	}
-	itemVersion := strings.Split(c.Args().First(), ":")
+	itemVersion := strings.Split(args.Get(1), ":")
 	if len(itemVersion) != 2 {
-		error_handler.ErrorExit("command requires single argument ITEM_ID:VERSION")
+		error_handler.ErrorExit("command requires arguments TYPE ITEM_ID:VERSION")
 	}
 	itemId := itemVersion[0]
 	version := itemVersion[1]
@@ -84,14 +72,21 @@ func (cmd *DeleteCatalogItem) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *DeleteCatalogItem) deleteItem(c *cli.Context, itemId string, version string) (error){
-	if c.IsSet("entities") {
+	catalogType, err := GetCatalogType(c)
+	if  err != nil {
+		return err
+	}
+	switch catalogType {
+	case ApplicationsItemType:
+		return cmd.deleteApplication(c, itemId, version)
+	case EntitiesItemType:
 		return cmd.deleteEntity(c, itemId, version)
-	} else if c.IsSet("locations") {
+	case LocationsItemType:
 		return cmd.deleteLocation(c, itemId, version)
-	} else if c.IsSet("policies") {
+	case PoliciesItemType:
 		return cmd.deletePolicy(c, itemId, version)
 	}
-	return cmd.deleteApplication(c, itemId, version)
+	return errors.New("Unknown type " + c.Args().First())
 }
 
 func (cmd *DeleteCatalogItem) deleteApplication(c *cli.Context, itemId string, version string) (error){

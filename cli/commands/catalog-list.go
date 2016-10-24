@@ -40,13 +40,13 @@ func NewCatalogList(network *net.Network) (cmd *CatalogList) {
 	return
 }
 
-const commandName = "list"
+const listCommandName = "list"
 
 func (cmd *CatalogList) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
-		Name:        commandName,
+		Name:        listCommandName,
 		Description: "* List the available catalog applications",
-		Usage:       "BROOKLYN_NAME catalog " + commandName,
+		Usage:       "BROOKLYN_NAME catalog " + listCommandName + " " + catalogItemTypesUsage + " (may be abbreviated)",
 	}
 }
 
@@ -66,8 +66,10 @@ func (cmd *CatalogList) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *CatalogList) list(c *cli.Context) ([]models.IdentityDetails, error) {
-
-	catalogType, err := GetCatalogType(c, commandName)
+	if len(c.Args()) != 1 {
+		return nil, errors.New(c.App.Name + " " + listCommandName + catalogItemTypesUsage + " (may be abbreviated)")
+	}
+	catalogType, err := GetCatalogType(c)
 	if  err != nil {
 		return nil, err
 	}

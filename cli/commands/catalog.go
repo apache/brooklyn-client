@@ -67,10 +67,7 @@ const  (
 )
 const catalogItemTypesUsage = " ( applications | entities | locations | policies )"
 
-func GetCatalogType(c *cli.Context, commandName string) (CatalogItemType, error) {
-	if len(c.Args()) != 1 {
-		return Unknown, errors.New(c.App.Name + " " + commandName + catalogItemTypesUsage)
-	}
+func GetCatalogType(c *cli.Context) (CatalogItemType, error) {
 	commandType := c.Args().First()
 	if strings.HasPrefix("entities", commandType) {
 		return EntitiesItemType, nil
