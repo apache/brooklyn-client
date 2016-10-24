@@ -28,8 +28,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
 	"crypto/tls"
 )
 
@@ -111,19 +109,27 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	return body, err
 }
 
-func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, error) {
+func (net *Network) makeClient() (*http.Client) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: net.SkipSslChecks},
 	}
 	client := &http.Client{Transport: tr}
+	return client
+}
+
+func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, error) {
+        client := net.makeClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, 0, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	if code, failed := unsuccessful(resp.Status); failed {
-		return nil, 0, makeError(resp, code, body)
+	if err != nil {
+		body = nil
+	}
+	if failed := unsuccessful(resp.StatusCode); failed {
+		return nil, 0, makeError(resp, resp.StatusCode, body)
 	}
 	return body, resp.StatusCode, err
 }
@@ -131,16 +137,8 @@ func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, er
 const httpSuccessSeriesFrom = 200
 const httpSuccessSeriesTo = 300
 
-func unsuccessful(status string) (int, bool) {
-	tokens := strings.Split(status, " ")
-	if 0 == len(tokens) {
-		return -1, false
-	}
-	code, err := strconv.Atoi(tokens[0])
-	if nil != err {
-		return -1, false
-	}
-	return code, code < httpSuccessSeriesFrom || httpSuccessSeriesTo <= code
+func unsuccessful(code int) (bool) {
+	return code < httpSuccessSeriesFrom || httpSuccessSeriesTo <= code
 }
 
 func (net *Network) SendGetRequest(url string) ([]byte, error) {
@@ -176,7 +174,10 @@ func (net *Network) SendPostRequest(urlStr string, data []byte) ([]byte, error) 
 }
 
 func (net *Network) SendPostResourceRequest(restUrl string, resourceUrl string, contentType string) ([]byte, error) {
-	resource, err := openResource(resourceUrl)
+	resource, err := net.openResource(resourceUrl)
+	if err != nil {
+		return nil, err
+	}
 	defer resource.Close()
 	req := net.NewPostRequest(restUrl, resource)
 	req.Header.Set("Content-Type", contentType)
@@ -184,23 +185,23 @@ func (net *Network) SendPostResourceRequest(restUrl string, resourceUrl string, 
 	return body, err
 }
 
-func openResource(resourceUrl string) (io.ReadCloser, error) {
+func (net *Network) openResource(resourceUrl string) (io.ReadCloser, error) {
 	u, err := url.Parse(resourceUrl)
 	if err != nil {
 		return nil, err
 	}
 	if "" == u.Scheme || "file" == u.Scheme {
-		return openFileResource(u)
+		return net.openFileResource(u)
 
 	} else if "http" == u.Scheme || "https" == u.Scheme {
-		return openHttpResource(resourceUrl)
+		return net.openHttpResource(resourceUrl)
 
 	} else {
 		return nil, errors.New("Unrecognised protocol scheme: " + u.Scheme)
 	}
 }
 
-func openFileResource(url *url.URL) (io.ReadCloser, error) {
+func (net *Network) openFileResource(url *url.URL) (io.ReadCloser, error) {
 	filePath := url.Path;
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
@@ -209,10 +210,14 @@ func openFileResource(url *url.URL) (io.ReadCloser, error) {
 	return file, nil
 }
 
-func openHttpResource(resourceUrl string) (io.ReadCloser, error) {
-	resp, err := http.Get(resourceUrl)
+func (net *Network) openHttpResource(resourceUrl string) (io.ReadCloser, error) {
+	client := net.makeClient()
+	resp, err := client.Get(resourceUrl)
 	if err != nil {
 		return nil, err
+	}
+	if failed := unsuccessful(resp.StatusCode) ; failed {
+		return nil, errors.New("Error retrieving " + resourceUrl + " (" + resp.Status + ")")
 	}
 	return resp.Body, nil
 }
