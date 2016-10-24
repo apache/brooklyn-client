@@ -43,8 +43,13 @@ func NewTable(headers []string) Table {
 	}
 }
 
-func (t *PrintableTable) Add(row ...string) {
-	t.rows = append(t.rows, row)
+func (t *PrintableTable) Add(rows ...string) {
+	singleLines := make([]string, len(rows))
+	for i, r := range rows {
+		single := strings.Replace(r, "\n", " ", -1)
+		singleLines[i] = strings.TrimSpace(single)
+	}
+	t.rows = append(t.rows, singleLines)
 }
 
 func (t *PrintableTable) Print() {
@@ -84,10 +89,6 @@ func (t *PrintableTable) printHeader() {
 func (t *PrintableTable) printRow(row []string) {
 	output := ""
 	for columnIndex, value := range row {
-		if columnIndex == 0 {
-			value = value
-		}
-
 		output = output + t.cellValue(columnIndex, value)
 	}
 	fmt.Printf("%s\n", output)
@@ -95,8 +96,10 @@ func (t *PrintableTable) printRow(row []string) {
 
 func (t *PrintableTable) cellValue(col int, value string) string {
 	padding := ""
+	delim := ""
 	if col < len(t.headers)-1 {
+		delim = "| "
 		padding = strings.Repeat(" ", t.maxSizes[col]-utf8.RuneCountInString(value))
 	}
-	return fmt.Sprintf("%s%s   ", value, padding)
+	return fmt.Sprintf("%s%s   " + delim, value, padding)
 }
