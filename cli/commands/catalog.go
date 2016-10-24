@@ -65,17 +65,17 @@ const  (
 	LocationsItemType
 	PoliciesItemType
 )
-const catalogItemTypesUsage = " ( applications | entities | locations | policies )"
+const catalogItemTypesUsage = " ( application | entity | location | policy )"
 
 func GetCatalogType(c *cli.Context) (CatalogItemType, error) {
 	commandType := c.Args().First()
-	if strings.HasPrefix("entities", commandType) {
+	if strings.HasPrefix("entity", commandType) {
 		return EntitiesItemType, nil
-	} else if strings.HasPrefix("locations", commandType) {
+	} else if strings.HasPrefix("location", commandType) {
 		return LocationsItemType, nil
-	} else if strings.HasPrefix("policies", commandType) {
+	} else if strings.HasPrefix("policy", commandType) {
 		return PoliciesItemType, nil
-	} else if strings.HasPrefix("applications", commandType) {
+	} else if strings.HasPrefix("application", commandType) {
 		return ApplicationsItemType, nil
 	}
 	return Unknown, errors.New("Unknown type: " + commandType)
