@@ -92,7 +92,7 @@ func getCommand(baseName string, metadata command_metadata.CommandMetadata, runn
 				Aliases:         operand.Aliases,
 				ShortName:       operand.ShortName,
 				Description:     operand.Description,
-				Usage:           operand.Usage,
+				Usage:           strings.Replace(operand.Usage, "BROOKLYN_NAME", baseName, -1),
 				Flags:           operand.Flags,
 				SkipFlagParsing: operand.SkipFlagParsing,
 				Action:          subCommandAction(command.Name, operand.Name, runner),

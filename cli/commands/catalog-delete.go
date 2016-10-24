@@ -44,7 +44,7 @@ func (cmd *DeleteCatalogItem) Metadata() command_metadata.CommandMetadata {
 		Name:        "delete",
 		Description: "delete the given catalog item",
 		Usage:       "BROOKLYN_NAME catalog  " + deleteCommandName +
-			" TYPE [ITEM_ID:VERSION] (where TYPE is one of application, location, entity, policy, may be abbreviated)",
+			" TYPE ITEM_ID:VERSION (where TYPE is one of application, location, entity, policy, may be abbreviated)",
 	}
 }
 
