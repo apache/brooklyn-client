@@ -79,10 +79,6 @@ func (cmd *Application) show(appName string) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	location, err := locations.GetLocation(cmd.network, application.Spec.Locations[0])
-	if nil != err {
-		error_handler.ErrorExit(err)
-	}
 	table := terminal.NewTable([]string{"Id:", application.Id})
 	table.Add("Name:", application.Spec.Name)
 	table.Add("Status:", string(application.Status))
@@ -91,10 +87,16 @@ func (cmd *Application) show(appName string) {
 	}
 	table.Add("Type:", application.Spec.Type)
 	table.Add("CatalogItemId:", entity.CatalogItemId)
-	table.Add("LocationId:", strings.Join(application.Spec.Locations, ", "))
-	table.Add("LocationName:", location.Name)
-	table.Add("LocationSpec:", location.Spec)
-	table.Add("LocationType:", location.Type)
+	if len(application.Spec.Locations) > 0 {
+		table.Add("LocationId:", strings.Join(application.Spec.Locations, ", "))
+		location, err := locations.GetLocation(cmd.network, application.Spec.Locations[0])
+		if nil != err {
+			error_handler.ErrorExit(err)
+		}
+		table.Add("LocationName:", location.Name)
+		table.Add("LocationSpec:", location.Spec)
+		table.Add("LocationType:", location.Type)
+	}
 	table.Print()
 }
 
