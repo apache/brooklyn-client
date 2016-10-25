@@ -43,13 +43,11 @@ func (cmd *DeleteCatalogItem) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "delete",
 		Description: "delete the given catalog item",
-		Usage:       "BROOKLYN_NAME catalog  " + deleteCommandName +
-			" TYPE ITEM_ID:VERSION (where TYPE is one of application, location, entity, policy, may be abbreviated)",
+		Usage:       "BROOKLYN_NAME catalog " + deleteCommandUsage,
 	}
 }
 
-const deleteCommandName = "delete"
-
+const deleteCommandUsage = "delete  TYPE  ITEM_ID:VERSION  (where TYPE is one of application, location, entity, policy; may be abbreviated)"
 
 func (cmd *DeleteCatalogItem) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
@@ -57,11 +55,11 @@ func (cmd *DeleteCatalogItem) Run(scope scope.Scope, c *cli.Context) {
 	}
 	args := c.Args()
 	if len(args) != 2 {
-		error_handler.ErrorExit("command requires arguments TYPE ITEM_ID:VERSION")
+		error_handler.ErrorExit(c.App.Name + " " + deleteCommandUsage)
 	}
 	itemVersion := strings.Split(args.Get(1), ":")
 	if len(itemVersion) != 2 {
-		error_handler.ErrorExit("command requires arguments TYPE ITEM_ID:VERSION")
+		error_handler.ErrorExit(c.App.Name +  " " + deleteCommandUsage)
 	}
 	itemId := itemVersion[0]
 	version := itemVersion[1]

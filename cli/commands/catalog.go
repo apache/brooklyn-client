@@ -55,7 +55,7 @@ var catalogCommands = []string{
 	AddCatalogCommand,
 	DeleteCatalogCommand,
 }
-var catalogCommandsUsage = strings.Join(catalogCommands, " | ")
+var catalogCommandsUsage = "list TYPE | add FILE/URL | delete TYPE ID:VERSION"
 
 type CatalogItemType int
 const  (
