@@ -19,10 +19,9 @@
 package app
 
 import (
-	"fmt"
-	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/command_runner"
-	"github.com/apache/brooklyn-client/error_handler"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/command_runner"
+	"github.com/apache/brooklyn-client/cli/error_handler"
 	"github.com/urfave/cli"
 	"os"
 	"strings"
@@ -93,7 +92,7 @@ func getCommand(baseName string, metadata command_metadata.CommandMetadata, runn
 				Aliases:         operand.Aliases,
 				ShortName:       operand.ShortName,
 				Description:     operand.Description,
-				Usage:           operand.Usage,
+				Usage:           strings.Replace(operand.Usage, "BROOKLYN_NAME", baseName, -1),
 				Flags:           operand.Flags,
 				SkipFlagParsing: operand.SkipFlagParsing,
 				Action:          subCommandAction(command.Name, operand.Name, runner),
@@ -111,7 +110,7 @@ func subCommandAction(command string, operand string, runner command_runner.Runn
 	return func(context *cli.Context) {
 		err := runner.RunSubCmdByName(command, operand, context)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			error_handler.ErrorExit(err)
 		}
 	}
 }

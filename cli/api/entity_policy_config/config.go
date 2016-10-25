@@ -21,8 +21,8 @@ package entity_policy_config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/apache/brooklyn-client/models"
-	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/cli/models"
+	"github.com/apache/brooklyn-client/cli/net"
 )
 
 func CurrentState(network *net.Network, application, entity, policy string) (string, error) {

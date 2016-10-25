@@ -21,6 +21,7 @@ package error_handler
 import (
 	"fmt"
 	"os"
+	"github.com/apache/brooklyn-client/cli/net"
 )
 
 const CLIUsageErrorExitCode int = 1
@@ -29,6 +30,9 @@ const CLITrapErrorCode int = 3
 
 func ErrorExit(errorvalue interface{}, errorcode ...int) {
 	switch errorvalue.(type) {
+	case net.HttpError:
+		httpError := errorvalue.(net.HttpError)
+		fmt.Fprintln(os.Stderr, httpError.Body)
 	case error:
 		fmt.Fprintln(os.Stderr, errorvalue)
 	case string:

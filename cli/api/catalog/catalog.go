@@ -21,8 +21,8 @@ package catalog
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/apache/brooklyn-client/models"
-	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/cli/models"
+	"github.com/apache/brooklyn-client/cli/net"
 )
 
 func Icon(network *net.Network, itemId string) ([]byte, error) {
@@ -100,7 +100,7 @@ func GetPolicyWithVersion(network *net.Network, policyId, version string) (model
 }
 
 func DeletePolicyWithVersion(network *net.Network, policyId, version string) (string, error) {
-	url := fmt.Sprintf("/v1/catalog/policies/%s/%s", policyId)
+	url := fmt.Sprintf("/v1/catalog/policies/%s/%s", policyId, version)
 	body, err := network.SendDeleteRequest(url)
 	if err != nil {
 		return "", err
@@ -139,8 +139,17 @@ func DeleteApplicationWithVersion(network *net.Network, applicationId, version s
 	return string(body), nil
 }
 
+func DeleteLocationWithVersion(network *net.Network, locationId, version string) (string, error) {
+	url := fmt.Sprintf("/v1/catalog/locations/%s/%s", locationId, version)
+	body, err := network.SendDeleteRequest(url)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
 func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
-	url := "/v1/catalog/policies"
+	url := "/v1/catalog/policies?allVersions"
 	var policies []models.CatalogPolicySummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
@@ -150,24 +159,26 @@ func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
 	return policies, err
 }
 
-func Locations(network *net.Network) (models.CatalogLocationSummary, error) {
-	url := "/v1/catalog/locations"
-	var catalogLocation models.CatalogLocationSummary
+func Locations(network *net.Network) ([]models.CatalogLocationSummary, error) {
+	url := "/v1/catalog/locations?allVersions=true"
+	var catalogLocations []models.CatalogLocationSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		return catalogLocation, err
+		return catalogLocations, err
 	}
-	err = json.Unmarshal(body, &catalogLocation)
-	return catalogLocation, err
+	err = json.Unmarshal(body, &catalogLocations)
+	return catalogLocations, err
 }
 
-func AddCatalog(network *net.Network, resource string) (string, error) {
+func AddCatalog(network *net.Network, resource string) (map[string]models.CatalogEntitySummary, error) {
 	url := "/v1/catalog"
+	var entities map[string]models.CatalogEntitySummary
 	body, err := network.SendPostResourceRequest(url, resource, "application/json")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(body), nil
+	err = json.Unmarshal(body, &entities)
+	return entities, nil
 }
 
 func Reset(network *net.Network) (string, error) {
@@ -200,7 +211,7 @@ func PostLocationWithVersion(network *net.Network, locationId, version string) (
 }
 
 func Entities(network *net.Network) ([]models.CatalogItemSummary, error) {
-	url := "/v1/catalog/entities"
+	url := "/v1/catalog/entities?allVersions=true"
 	var entities []models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
@@ -211,7 +222,7 @@ func Entities(network *net.Network) ([]models.CatalogItemSummary, error) {
 }
 
 func Catalog(network *net.Network) ([]models.CatalogItemSummary, error) {
-	url := "/v1/catalog/applications"
+	url := "/v1/catalog/applications?allVersions=true"
 	var applications []models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {

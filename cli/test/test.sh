@@ -139,7 +139,7 @@ function shouldRenameTomcatServerEntity() {
     local appname=$1
     local rename=$2
 
-    br app "${appname}" entity "Tomcat Server" rename "${rename}"
+    br app "${appname}" entity "Tomcat 7 Server" rename "${rename}"
     br app "${appname}" entity "${rename}" | grep TomcatServer || fail
 }
 

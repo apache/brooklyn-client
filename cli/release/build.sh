@@ -23,8 +23,7 @@
 OSVALUES="darwin freebsd linux netbsd openbsd windows"
 ARCHVALUES="386 amd64"
 BRNAME="br"
-GOPACKAGE="github.com/apache/brooklyn-client/${BRNAME}"
-PROJECT="github.com/apache/brooklyn-client"
+PROJECT="github.com/apache/brooklyn-client/cli"
 CLI_PACKAGE="${PROJECT}/${BRNAME}"
 GOBIN=go
 GLIDE=glide

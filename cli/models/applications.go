@@ -18,6 +18,11 @@
  */
 package models
 
+type MemberSpec struct {
+	Id            string   `json:"id"`
+	Name          string   `json:"name"`
+}
+
 type Tree struct {
 	Id            string   `json:"id"`
 	ParentId      string   `json:"parentId"`
@@ -26,7 +31,7 @@ type Tree struct {
 	CatalogItemId string   `json:"catalogItemId"`
 	Children      []Tree   `json:"children"`
 	GroupIds      []string `json:"groupIds"`
-	Members       []string `json:"members"`
+	Members       []MemberSpec `json:"members"`
 }
 
 type TaskSummary struct {

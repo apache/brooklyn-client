@@ -21,8 +21,8 @@ package entity_config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/apache/brooklyn-client/models"
-	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/cli/models"
+	"github.com/apache/brooklyn-client/cli/net"
 )
 
 func ConfigValue(network *net.Network, application, entity, config string) (interface{}, error) {

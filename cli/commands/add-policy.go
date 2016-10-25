@@ -20,10 +20,10 @@ package commands
 
 import (
 	"github.com/urfave/cli"
-	//"github.com/apache/brooklyn-client/api/entity_policies"
-	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/net"
-	"github.com/apache/brooklyn-client/scope"
+	//"github.com/apache/brooklyn-client/cli/api/entity_policies"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/scope"
 )
 
 type AddPolicy struct {

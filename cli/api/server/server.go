@@ -20,7 +20,7 @@ package server
 
 import (
 	"fmt"
-	"github.com/apache/brooklyn-client/net"
+	"github.com/apache/brooklyn-client/cli/net"
 )
 
 func Up(network *net.Network) (string, error) {

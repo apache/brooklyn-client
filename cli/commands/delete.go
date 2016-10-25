@@ -20,11 +20,11 @@ package commands
 
 import (
 	"fmt"
-	"github.com/apache/brooklyn-client/api/application"
-	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/error_handler"
-	"github.com/apache/brooklyn-client/net"
-	"github.com/apache/brooklyn-client/scope"
+	"github.com/apache/brooklyn-client/cli/api/application"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/error_handler"
+	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/urfave/cli"
 )
 

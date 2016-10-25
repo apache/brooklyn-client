@@ -23,7 +23,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/apache/brooklyn-client/error_handler"
+	"github.com/apache/brooklyn-client/cli/error_handler"
 )
 
 type Config struct {

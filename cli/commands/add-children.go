@@ -19,12 +19,12 @@
 package commands
 
 import (
-	"github.com/apache/brooklyn-client/api/entities"
-	"github.com/apache/brooklyn-client/command_metadata"
-	"github.com/apache/brooklyn-client/error_handler"
-	"github.com/apache/brooklyn-client/net"
-	"github.com/apache/brooklyn-client/scope"
-	"github.com/apache/brooklyn-client/terminal"
+	"github.com/apache/brooklyn-client/cli/api/entities"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/error_handler"
+	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/scope"
+	"github.com/apache/brooklyn-client/cli/terminal"
 	"github.com/urfave/cli"
 	"time"
 )
