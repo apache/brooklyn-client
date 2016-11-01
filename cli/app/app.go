@@ -56,6 +56,10 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 			Name:  "skipSslChecks",
 			Usage: "Skip verification of server's certificate chain and hostname (for use with self-signed certs)",
 		},
+		cli.StringFlag{
+			Name:  "json, j",
+			Usage: "Render value as json with json path selector as described at https://github.com/NodePrime/jsonpath. (Experimental, not supported on all commands at present) ",
+		},
 	}
 
 	app.Commands = []cli.Command{}

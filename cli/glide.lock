@@ -1,10 +1,14 @@
-hash: 1d87d5643857ae47cd40cc29e7b9b813198980c84b3491376b3561c467e37994
-updated: 2016-06-02T21:50:02.953614402+01:00
+hash: b5e09364283348512d5174937c662382a47e3d5e93f0f707aada9c2520d861e3
+updated: 2016-11-01T17:46:14.530067679Z
 imports:
+- name: github.com/NodePrime/jsonpath
+  version: 84403ded544328c99be3472727667179eef23a91
+  subpackages:
+  - cli/jsonpath
 - name: github.com/urfave/cli
   version: 5db74198dee1cfe60cf06a611d03a420361baad6
 - name: golang.org/x/crypto
   version: 1f22c0103821b9390939b6776727195525381532
   subpackages:
   - ssh/terminal
-devImports: []
+testImports: []

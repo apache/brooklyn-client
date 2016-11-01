@@ -109,7 +109,7 @@ func (cmd *CatalogList) listLocations(c *cli.Context) ([]models.IdentityDetails,
 	}
 	result := make([]models.IdentityDetails, len(locations))
 	for i, location := range locations {
-		result[i] = location.CatalogItemSummary.IdentityDetails
+		result[i] = location.IdentityDetails
 	}
 	return result, nil
 }
