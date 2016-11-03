@@ -27,5 +27,6 @@ type ConfigSummary struct {
 	Links          map[string]URI      `json:"links"`
 	Label          string              `json:"label"`
 	Priority       float64             `json:"priority"`
+	Pinned         bool                `json:"pinned"`
 	Type           string              `json:"type"`
 }

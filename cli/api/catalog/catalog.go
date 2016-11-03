@@ -89,7 +89,7 @@ func GetPolicy(network *net.Network, policyId string) (models.CatalogItemSummary
 }
 
 func GetPolicyWithVersion(network *net.Network, policyId, version string) (models.CatalogItemSummary, error) {
-	url := fmt.Sprintf("/v1/catalog/policies/%s/%s", policyId)
+	url := fmt.Sprintf("/v1/catalog/policies/%s/%s", policyId, version)
 	var catalogItem models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
@@ -148,9 +148,9 @@ func DeleteLocationWithVersion(network *net.Network, locationId, version string)
 	return string(body), nil
 }
 
-func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
+func Policies(network *net.Network) ([]models.CatalogItemSummary, error) {
 	url := "/v1/catalog/policies?allVersions"
-	var policies []models.CatalogPolicySummary
+	var policies []models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
 		return policies, err
@@ -159,9 +159,9 @@ func Policies(network *net.Network) ([]models.CatalogPolicySummary, error) {
 	return policies, err
 }
 
-func Locations(network *net.Network) ([]models.CatalogLocationSummary, error) {
+func Locations(network *net.Network) ([]models.CatalogItemSummary, error) {
 	url := "/v1/catalog/locations?allVersions=true"
-	var catalogLocations []models.CatalogLocationSummary
+	var catalogLocations []models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
 		return catalogLocations, err
@@ -190,9 +190,20 @@ func Reset(network *net.Network) (string, error) {
 	return string(body), nil
 }
 
-func GetLocationWithVersion(network *net.Network, locationId, version string) (models.CatalogLocationSummary, error) {
+func GetLocation(network *net.Network, locationId string) (models.CatalogItemSummary, error) {
+	url := fmt.Sprintf("/v1/catalog/locations/%s", locationId)
+	var catalogLocation models.CatalogItemSummary
+	body, err := network.SendGetRequest(url)
+	if err != nil {
+		return catalogLocation, err
+	}
+	err = json.Unmarshal(body, &catalogLocation)
+	return catalogLocation, err
+}
+
+func GetLocationWithVersion(network *net.Network, locationId, version string) (models.CatalogItemSummary, error) {
 	url := fmt.Sprintf("/v1/catalog/locations/%s/%s", locationId, version)
-	var catalogLocation models.CatalogLocationSummary
+	var catalogLocation models.CatalogItemSummary
 	body, err := network.SendGetRequest(url)
 	if err != nil {
 		return catalogLocation, err
@@ -232,13 +243,3 @@ func Catalog(network *net.Network) ([]models.CatalogItemSummary, error) {
 	return applications, err
 }
 
-func GetLocation(network *net.Network, locationId string) (models.CatalogLocationSummary, error) {
-	url := fmt.Sprintf("/v1/catalog/locations/%s", locationId)
-	var catalogLocation models.CatalogLocationSummary
-	body, err := network.SendGetRequest(url)
-	if err != nil {
-		return catalogLocation, err
-	}
-	err = json.Unmarshal(body, &catalogLocation)
-	return catalogLocation, err
-}

@@ -1,6 +1,7 @@
 package: github.com/apache/brooklyn-client
 import:
 - package: github.com/urfave/cli
+- package: github.com/NodePrime/jsonpath/cli/jsonpath
 - package: golang.org/x/crypto
   subpackages:
   - ssh/terminal

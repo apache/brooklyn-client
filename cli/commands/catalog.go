@@ -39,6 +39,7 @@ func NewCatalog(network *net.Network) (cmd *Catalog) {
 	cmd = new(Catalog)
 	cmd.network = network
 	cmd.catalogCommands = map[string]command.Command {
+		ShowCatalogCommand: NewCatalogShow(cmd.network),
 		ListCatalogCommand: NewCatalogList(cmd.network),
 		AddCatalogCommand: NewCatalogAdd(cmd.network),
 		DeleteCatalogCommand: NewDeleteCatalogItem(cmd.network),
@@ -46,16 +47,18 @@ func NewCatalog(network *net.Network) (cmd *Catalog) {
 	return
 }
 
+const ShowCatalogCommand = "show"
 const ListCatalogCommand = "list"
 const AddCatalogCommand = "add"
 const DeleteCatalogCommand = "delete"
 
 var catalogCommands = []string{
+	ShowCatalogCommand,
 	ListCatalogCommand,
 	AddCatalogCommand,
 	DeleteCatalogCommand,
 }
-var catalogCommandsUsage = "list TYPE | add FILE/URL | delete TYPE ID:VERSION"
+var catalogCommandsUsage = "list TYPE | add FILE/URL | delete TYPE ID:VERSION | show ITEM"
 
 type CatalogItemType int
 const  (
@@ -96,6 +99,7 @@ func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
 		Usage:       "BROOKLYN_NAME catalog (" + catalogCommandsUsage + ")",
 		Flags:       []cli.Flag{},
 		Operands:    []command_metadata.CommandMetadata{
+			cmd.SubCommand(ShowCatalogCommand).Metadata(),
 			cmd.SubCommand(ListCatalogCommand).Metadata(),
 			cmd.SubCommand(AddCatalogCommand).Metadata(),
 			cmd.SubCommand(DeleteCatalogCommand).Metadata(),
