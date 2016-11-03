@@ -1,13 +1,2 @@
-.idea
-*.iml
 temp_test
-target
-
-.project
-.classpath
-.settings/
-.metadata/
 vendor/
-
-*.log
-brooklyn*.log.*
