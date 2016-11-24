@@ -671,26 +671,6 @@
             <!-- distributionManagement configured by the parent Apache POM -->
         </profile>
         <profile>
-            <id>rat-check</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.rat</groupId>
-                        <artifactId>apache-rat-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>rat-check</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>eclipse-compiler</id>
             <build>
                 <pluginManagement>
