@@ -20,5 +20,6 @@
 # extras file for org.heneveld.license-audit-maven-plugin
 # listing projects from which *source* files are included
 
+- id: github.com/NodePrime/jsonpath/cli/jsonpath
 - id: github.com/urfave/cli
 - id: golang.org/x/crypto/ssh
