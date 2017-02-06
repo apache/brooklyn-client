@@ -162,6 +162,7 @@ public class ApplicationResourceIntegrationTest {
         Assert.assertNotNull(response);
         try {
             Asserts.succeedsEventually(ImmutableMap.of("timeout", Duration.minutes(1)), new Runnable() {
+                @Override
                 public void run() {
                     try {
                         ApplicationSummary summary = api.getApplicationApi().get("redis-app");
@@ -182,6 +183,7 @@ public class ApplicationResourceIntegrationTest {
 
     private void assertServiceStateEventually(final String app, final String entity, final Lifecycle state, Duration timeout) {
         Asserts.succeedsEventually(ImmutableMap.of("timeout", timeout), new Runnable() {
+            @Override
             public void run() {
                 Object status = api.getSensorApi().get(app, entity, "service.state", false);
                 assertTrue(state.toString().equalsIgnoreCase(status.toString()), "status="+status);
