@@ -20,6 +20,8 @@ package commands
 
 import (
 	"fmt"
+	"syscall"
+
 	"github.com/apache/brooklyn-client/cli/api/version"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/error_handler"
@@ -28,7 +30,6 @@ import (
 	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/urfave/cli"
 	"golang.org/x/crypto/ssh/terminal"
-	"syscall"
 )
 
 type Login struct {
@@ -48,7 +49,7 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 		Name:        "login",
 		Description: "Login to brooklyn",
 		Usage:       "BROOKLYN_NAME login URL [USER [PASSWORD]]",
-		Flags:       []cli.Flag{},
+		Flags:       []cli.Flag{cli.BoolFlag{Name: "skipSslChecks", Usage: "Skip SSL Checks"}},
 	}
 }
 
@@ -61,7 +62,7 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.network.BrooklynUrl = c.Args().Get(0)
 	cmd.network.BrooklynUser = c.Args().Get(1)
 	cmd.network.BrooklynPass = c.Args().Get(2)
-	cmd.network.SkipSslChecks = c.GlobalBool("skipSslChecks")
+	cmd.network.SkipSslChecks = c.Bool("skipSslChecks")
 
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
