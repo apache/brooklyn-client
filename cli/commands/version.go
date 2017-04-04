@@ -26,6 +26,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/urfave/cli"
+	"github.com/apache/brooklyn-client/cli/terminal"
 )
 
 type Version struct {
@@ -47,6 +48,11 @@ func (cmd *Version) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
+type versionData struct {
+	Version string `json:"version"`
+	Server  string `json:"server"`
+}
+
 func (cmd *Version) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
@@ -55,5 +61,15 @@ func (cmd *Version) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	fmt.Println(version.Version)
+
+	currentVersion := versionData{
+		Version: version.Version,
+		Server: cmd.network.BrooklynUrl,
+	}
+	if json := c.GlobalString("json") ; json != "" {
+		terminal.DisplayAsJson(currentVersion, json)
+	} else {
+		fmt.Printf("version: %v\n", currentVersion.Version)
+		fmt.Printf("server: %v\n", currentVersion.Server)
+	}
 }

@@ -22,6 +22,8 @@ import (
 	"fmt"
 	"strings"
 	"unicode/utf8"
+	"encoding/json"
+	"github.com/NodePrime/jsonpath"
 )
 
 type Table interface {
@@ -102,4 +104,37 @@ func (t *PrintableTable) cellValue(col int, value string) string {
 		padding = strings.Repeat(" ", t.maxSizes[col]-utf8.RuneCountInString(value))
 	}
 	return fmt.Sprintf("%s%s   " + delim, value, padding)
+}
+
+
+func DisplayAsJson(v interface{}, jsonPath string) (err error) {
+	marshalled, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	// a convenient special case
+	if "$" == jsonPath {
+		fmt.Printf("%s", string(marshalled))
+		return nil
+	}
+
+	paths, err := jsonpath.ParsePaths(jsonPath)
+	if err != nil {
+		return err
+	}
+	eval, err := jsonpath.EvalPathsInBytes(marshalled, paths)
+	if err != nil {
+		return err
+	}
+	for {
+		if result, ok := eval.Next(); ok {
+			fmt.Print(result.Pretty(false)) // true -> show keys in pretty string
+		} else {
+			break
+		}
+	}
+	if eval.Error != nil {
+		return eval.Error
+	}
+	return nil
 }

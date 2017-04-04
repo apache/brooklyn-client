@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"encoding/json"
 	"github.com/urfave/cli"
-	"github.com/NodePrime/jsonpath"
 )
 
 type IdentityDetails struct {
@@ -66,7 +65,7 @@ func createTableWithIdentityDetails(item IdentityDetails) (terminal.Table) {
 func (summary *CatalogItemSummary) Display(c *cli.Context) (err error) {
 
 	if json := c.GlobalString("json") ; json != "" {
-		displayAsJson(summary, json)
+		terminal.DisplayAsJson(summary, json)
 	} else {
 		summary.displayAsTable()
 	}
@@ -77,7 +76,7 @@ func (summary *CatalogItemSummary) Display(c *cli.Context) (err error) {
 func (summary *CatalogEntitySummary) Display(c *cli.Context) (err error) {
 
 	if json := c.GlobalString("json") ; json != "" {
-		displayAsJson(summary, json)
+		terminal.DisplayAsJson(summary, json)
 	} else {
 		summary.displayAsTable()
 	}
@@ -153,35 +152,3 @@ func (summary *CatalogEntitySummary) displayAsTable() (err error){
 }
 
 
-
-func displayAsJson(v interface{}, jsonPath string) (err error) {
-	marshalled, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	// a convenient special case
-	if "$" == jsonPath {
-		fmt.Printf("%s", string(marshalled))
-		return nil
-	}
-
-	paths, err := jsonpath.ParsePaths(jsonPath)
-	if err != nil {
-		return err
-	}
-	eval, err := jsonpath.EvalPathsInBytes(marshalled, paths)
-	if err != nil {
-		return err
-	}
-	for {
-		if result, ok := eval.Next(); ok {
-			fmt.Print(result.Pretty(false)) // true -> show keys in pretty string
-		} else {
-			break
-		}
-	}
-	if eval.Error != nil {
-		return eval.Error
-	}
-	return nil
-}
