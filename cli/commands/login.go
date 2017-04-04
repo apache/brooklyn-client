@@ -100,8 +100,7 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 			error_handler.ErrorExit(err)
 		}
 		fmt.Printf("\n")
-		password := string(bytePassword)
-		cmd.network.BrooklynPass = strings.TrimSpace(password)
+		cmd.network.BrooklynPass = string(bytePassword)
 	}
 
 	if cmd.config.Map == nil {
