@@ -21,6 +21,11 @@ package commands
 import (
 	"fmt"
 	"syscall"
+	"bufio"
+	"os"
+	"strings"
+	"net/http"
+	"errors"
 
 	"github.com/apache/brooklyn-client/cli/api/version"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
@@ -76,6 +81,17 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0 : len(cmd.network.BrooklynUrl)-1]
 	}
 
+	// Prompt for username if not supplied
+	if cmd.network.BrooklynUser == "" {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Enter Username: ")
+		user, err := reader.ReadString('\n')
+		if err != nil {
+			error_handler.ErrorExit(err)
+		}
+		cmd.network.BrooklynUser = strings.TrimSpace(user)
+	}
+
 	// Prompt for password if not supplied (password is not echoed to screen
 	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
 		fmt.Print("Enter Password: ")
@@ -84,7 +100,8 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 			error_handler.ErrorExit(err)
 		}
 		fmt.Printf("\n")
-		cmd.network.BrooklynPass = string(bytePassword)
+		password := string(bytePassword)
+		cmd.network.BrooklynPass = strings.TrimSpace(password)
 	}
 
 	if cmd.config.Map == nil {
@@ -106,8 +123,11 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.config.Map["skipSslChecks"] = cmd.network.SkipSslChecks
 	cmd.config.Write()
 
-	loginVersion, err := version.Version(cmd.network)
+	loginVersion, code, err := version.Version(cmd.network)
 	if nil != err {
+		if code == http.StatusUnauthorized {
+			err = errors.New("Unauthorized")
+		}
 		error_handler.ErrorExit(err)
 	}
 	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)

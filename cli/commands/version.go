@@ -51,7 +51,7 @@ func (cmd *Version) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
-	version, err := version.Version(cmd.network)
+	version, _, err := version.Version(cmd.network)
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}

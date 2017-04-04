@@ -24,13 +24,14 @@ import (
 	"github.com/apache/brooklyn-client/cli/net"
 )
 
-func Version(network *net.Network) (models.VersionSummary, error) {
+func Version(network *net.Network) (models.VersionSummary, int, error) {
 	url := "/v1/server/version"
 	var versionSummary models.VersionSummary
-	body, err := network.SendGetRequest(url)
+	req := network.NewGetRequest(url)
+	body, code, err := network.SendRequestGetStatusCode(req)
 	if err != nil {
-		return versionSummary, err
+		return versionSummary, code, err
 	}
 	err = json.Unmarshal(body, &versionSummary)
-	return versionSummary, err
+	return versionSummary, code, err
 }
