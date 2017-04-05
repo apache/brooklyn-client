@@ -23,6 +23,14 @@ import (
 	"fmt"
 	"github.com/apache/brooklyn-client/cli/models"
 	"github.com/apache/brooklyn-client/cli/net"
+	"net/url"
+        "path/filepath"
+	"errors"
+	"os"
+	"strings"
+	"archive/zip"
+	"io/ioutil"
+	"bytes"
 )
 
 func Icon(network *net.Network, itemId string) ([]byte, error) {
@@ -170,15 +178,102 @@ func Locations(network *net.Network) ([]models.CatalogItemSummary, error) {
 	return catalogLocations, err
 }
 
+
+func ZipResource(resource string) (*bytes.Buffer, error) {
+	buf := new(bytes.Buffer)
+	writer := zip.NewWriter(buf)
+	defer writer.Close()
+
+	walkFn := func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
+
+		relativePath, err := filepath.Rel(resource, path)
+		if err != nil {
+			return err
+		}
+		f, err := writer.Create(relativePath)
+		if err != nil {
+			return err
+		}
+
+		fileBytes, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		_, err = f.Write(fileBytes)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	err := filepath.Walk(resource, walkFn)
+
+	return buf, err;
+}
+
 func AddCatalog(network *net.Network, resource string) (map[string]models.CatalogEntitySummary, error) {
-	url := "/v1/catalog"
+	urlString := "/v1/catalog"
 	var entities map[string]models.CatalogEntitySummary
-	body, err := network.SendPostResourceRequest(url, resource, "application/json")
+
+	//Assume application/json. This is correct for http/file resources.
+	//Zips will need application/x-zip
+	contentType := "application/json"
+	u, err := url.Parse(resource)
+	if err != nil {
+		return nil, err
+	}
+
+	//Only deal with the below file types
+	if "" != u.Scheme && "file" != u.Scheme  && "http" != u.Scheme && "https" != u.Scheme{
+		return nil, errors.New("Unrecognised protocol scheme: " + u.Scheme)
+	}
+
+	if "" == u.Scheme || "file" == u.Scheme {
+		file, err := os.Open(filepath.Clean(resource))
+		if err != nil {
+			return nil, err
+		}
+
+		fileStat, err := file.Stat()
+		if err != nil {
+			return nil, err
+		}
+
+		if fileStat.IsDir() {
+			//A dir is a special case, we need to zip it up, and call a different network method
+			buf, err := ZipResource(resource)
+			if err != nil {
+				return nil, err
+			}
+			body, err := network.SendPostRequestWithContentType(urlString, buf.Bytes(), "application/x-zip")
+			if err != nil {
+				return nil, err
+			}
+			err = json.Unmarshal(body, &entities)
+			return entities, err
+		} else {
+			extension := filepath.Ext(resource)
+			lowercaseExtension := strings.ToLower(extension)
+			if lowercaseExtension == ".zip" {
+				contentType = "application/x-zip"
+			} else if lowercaseExtension == ".jar" {
+				contentType = "application/x-jar"
+			}
+		}
+
+	}
+
+	body, err := network.SendPostResourceRequest(urlString, resource, contentType)
 	if err != nil {
 		return nil, err
 	}
 	err = json.Unmarshal(body, &entities)
-	return entities, nil
+
+	return entities, err
 }
 
 func Reset(network *net.Network) (string, error) {
