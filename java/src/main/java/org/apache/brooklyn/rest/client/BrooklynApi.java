@@ -68,7 +68,6 @@ import org.apache.brooklyn.rest.api.ScriptApi;
 import org.apache.brooklyn.rest.api.SensorApi;
 import org.apache.brooklyn.rest.api.ServerApi;
 import org.apache.brooklyn.rest.api.UsageApi;
-import org.apache.brooklyn.rest.api.VersionApi;
 import org.apache.brooklyn.rest.client.util.http.BuiltResponsePreservingError;
 import org.apache.brooklyn.util.collections.MutableMap;
 import org.apache.brooklyn.util.exceptions.Exceptions;
@@ -370,10 +369,6 @@ public class BrooklynApi {
 
     public UsageApi getUsageApi() {
         return proxy(UsageApi.class);
-    }
-
-    public VersionApi getVersionApi() {
-        return proxy(VersionApi.class);
     }
 
     public AccessApi getAccessApi() {
