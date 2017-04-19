@@ -63,11 +63,6 @@ public class ApplicationResourceIntegrationTest {
     private static final Duration LONG_WAIT = Duration.minutes(10);
     
     private final String redisSpec = "{\"name\": \"redis-app\", \"type\": \"org.apache.brooklyn.entity.nosql.redis.RedisStore\", \"locations\": [ \"localhost\"]}";
-    
-    private final ApplicationSpec legacyRedisSpec = ApplicationSpec.builder().name("redis-legacy-app")
-            .entities(ImmutableSet.of(new EntitySpec("redis-ent", "org.apache.brooklyn.entity.nosql.redis.RedisStore")))
-            .locations(ImmutableSet.of("localhost"))
-            .build();
 
     private ManagementContext manager;
 
@@ -110,20 +105,6 @@ public class ApplicationResourceIntegrationTest {
         assertEquals(getManagementContext().getApplications().size(), 1);
         final String entityId = getManagementContext().getApplications().iterator().next().getChildren().iterator().next().getId();
         assertServiceStateEventually("redis-app", entityId, Lifecycle.RUNNING, LONG_WAIT);
-    }
-    
-    @Test(groups = "Integration", dependsOnMethods = "testDeployRedisApplication")
-    public void testDeployLegacyRedisApplication() throws Exception {
-        @SuppressWarnings("deprecation")
-        Response response = api.getApplicationApi().create(legacyRedisSpec);
-        assertEquals(response.getStatus(), 201);
-        assertEquals(getManagementContext().getApplications().size(), 2);
-        assertServiceStateEventually("redis-legacy-app", "redis-ent", Lifecycle.RUNNING, LONG_WAIT);
-        
-        // Tear the app down so it doesn't interfere with other tests 
-        Response deleteResponse = api.getApplicationApi().delete("redis-legacy-app");
-        assertEquals(deleteResponse.getStatus(), 202);
-        assertEquals(getManagementContext().getApplications().size(), 1);
     }
 
     @Test(groups = "Integration", dependsOnMethods = "testDeployRedisApplication")
