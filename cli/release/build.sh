@@ -36,8 +36,8 @@ START_TIME=$(date +%s)
 os=""
 arch=""
 all=""
-outdir="."
-sourcedir="."
+outdir=`pwd`/target
+sourcedir=`pwd`
 label=""
 timestamp=""
 
@@ -174,12 +174,7 @@ See golang.org for more information, or run maven with '-Dno-go-client' to skip.
   exit 1
 fi
 
-
-if [ -n "$outdir" -a ! -d "$outdir" ]; then
-	show_help
-	echo "No such directory: $outdir"
-	exit 1
-fi
+mkdir -p $outdir
 
 # Set GOPATH to $outdir and link to source code.
 export GOPATH=${outdir}
