@@ -48,6 +48,9 @@ func (cmd *CatalogAdd) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *CatalogAdd) Run(scope scope.Scope, c *cli.Context) {
+        if c.Args().First() == "" {
+                error_handler.ErrorExit("A filename or URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
+        }
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
