@@ -24,21 +24,28 @@ Optional:
 
 Go is very particular about the layout of a source tree and the source repository, 
 as it relies on this in the naming of packages.  
-Developers familiar with [`$GOPATH`](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) -- or on OS's that don't support soft links --
-may prefer to `go get github.com/apache/brooklyn-client/cli/br` and
-run github commands (branching and adding remote forks) in the that subdir
-under `$GOPATH/src`. However for new users we recommend the instructions here
-setting up Go to work against a normal checked-out project (not under the `GOPATH`).
 
-First ensure that your `GOPATH` is set, for example:
+If you're familiar with Go and just want to develop the `br` tool itself you may simply work in your usual `GOPATH`, 
+using `go get github.com/apache/brooklyn-client/cli/br` and adding your own fork as a remote. 
+If you know `glide` then you probably know what to do and can ignore these instructions;
+`br` is built just like any other Go project. 
+
+If you're new to Go and you want to work on the CLI alongside non-Go components in Apache Brooklyn,
+then the common Go setup -- where code lives under the `GOPATH` -- may be tedious to work with.
+A good pattern is to have the requisite `GOPATH` entry linking to the `brooklyn-client` project
+elsewhere on disk, so you have just one copy in the usual space and there is no need to touch the `GOPATH` thereafter.
+This is the recommended default described by the instructions below.
+
+First ensure that a `GOPATH` is set; this is where Go will store its files. 
+`~/go` is the default, and `~/.go` is acceptable also. For example:
 
 ```bash
 export GOPATH=$HOME/go
 ```
 
-These instructions assume you have `brooklyn-client` checked out and are
+These instructions now assume that you have `brooklyn-client` checked out and are
 in the `cli` subdirectory, where this file resides. 
-Tell Go to use this checked-out folder by linking to it under `GOPATH`:
+Tell Go to use this checked-out project by linking to it under `GOPATH`:
 
 ```bash
 rm -rf $GOPATH/src/github.com/apache/brooklyn-client
