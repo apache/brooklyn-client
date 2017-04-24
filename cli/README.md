@@ -10,8 +10,9 @@ A command line client for [Apache Brooklyn](https://brooklyn.apache.org).
 The CLI tool is written in Go and should be obtained and built as a standard Go project. 
 You will need the following tools to build it:
 
-- Go (version 1.6.1 or higher), with full cross-compiler support (see https://golang.org/dl).
-  On Mac, if using Homebrew, use "brew install go --with-cc-all"
+- Go (version 1.6.1 or higher), with full cross-compiler support: 
+the standard [binary packages](https://golang.org/dl) include this,
+or you can use your favorite package managers (e.g. `brew install go --with-cc-all`).
 
 Optional:
 - Maven (used by the Brooklyn build process)
@@ -21,34 +22,54 @@ Optional:
 
 ## Workspace Setup
 
-Go is very particular about the layout of a source tree, and the naming of packages.  It is therefore important to 
-get the code from github.com/apache/brooklyn-client/cli and not your own fork. If you want to contribute to the 
-project, the procedure to follow is still to get the code from github.com/apache/brooklyn-client/cli, and then to add your
-own fork as a remote. 
+Go is very particular about the layout of a source tree and the source repository, 
+as it relies on this in the naming of packages.  
+Developers familiar with [`$GOPATH`](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) -- or on OS's that don't support soft links --
+may prefer to `go get github.com/apache/brooklyn-client/cli/br` and
+run github commands (branching and adding remote forks) in the that subdir
+under `$GOPATH/src`. However for new users we recommend the instructions here
+setting up Go to work against a normal checked-out project (not under the `GOPATH`).
 
-- Ensure your [$GOPATH](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) is set correctly 
-  to a suitable location for your Go code, for example, simply $HOME/go.
-- Get the Brooklyn CLI and dependencies. 
+First ensure that your `GOPATH` is set, for example:
 
 ```bash
-go get github.com/apache/brooklyn-client/cli/br
+export GOPATH=$HOME/go
 ```
 
-    
+These instructions assume you have `brooklyn-client` checked out and are
+in the `cli` subdirectory, where this file resides. 
+Tell Go to use this checked-out folder by linking to it under `GOPATH`:
+
+```bash
+rm -rf $GOPATH/src/github.com/apache/brooklyn-client
+cd ..
+ln -s `pwd` $GOPATH/src/github.com/apache/brooklyn-client
+cd cli
+```
+
+
 ## Installing Dependencies
 
-The CLI has a small number of dependencies, notably on `urfave/cli`.  To manage the version of dependencies, the CLI
-code currently uses [Glide](https://github.com/Masterminds/glide). The dependencies are installed to the top level 'vendor' directory.
+The CLI has a small number of dependencies, including the popular `urfave/cli`.
+To manage the version of dependencies, the CLI
+code currently uses [Glide](https://github.com/Masterminds/glide) to fetch
+and maintain these:
 
 ```bash
 go get github.com/Masterminds/glide
-cd $GOPATH/src/github.com/apache/brooklyn-client/cli
-glide install
+$GOPATH/bin/glide install
 ```
+
 
 ## Compiling the code with Go for development purposes
 
-Just use the regular Go build commands.
+Just use the regular Go build commands:
+
+```bash
+go build -o target/br ./br
+```
+
+The binary is now ready to use in `target/br`. 
 
 
 ## Testing 
@@ -64,11 +85,11 @@ sh test.sh  http://your-brooklyn-host:8081 myuser mypassword
 
 Note, the tests are not yet comprehensive, and contributions are welcome.
 
+
 ## Building the code as part of the Brooklyn build process
 
 For consistency with the other sub-projects of the overall [Brooklyn](https://github.com/apache/brooklyn) build, Maven
-is used to perform the build when brooklyn-client is built as one of the sub-modules of Brooklyn.  Most of the work is
-delegated to the release/build.sh script, which cross-compiles the code for a number of platform-architecture combinations.
+is used to perform the build when brooklyn-client is built as one of the sub-modules of Brooklyn, cross-compiling the code for a number of platform-architecture combinations.
 
 Invoke the build script via Maven with one of 
 
@@ -82,8 +103,8 @@ location, the Maven build makes no assumption about the location of the project 
 `target` directory is used as the GOPATH, and a soft link is created as `target/src/github.com/apache/brooklyn-cli` to 
 the code in the root directory. 
 
-This builds the requested binaries into the "target" directory, each in its own subdirectory with a name that includes 
-the platform/architecture details, e.g. bin/linux.386/br.  The build installs a maven artifact to the maven repository,
+This builds the requested binaries into the `target/` directory, each in its own subdirectory with a name that includes 
+the platform/architecture details, e.g. `bin/linux.386/br`.  The build installs a maven artifact to the maven repository,
 consisting of a zip file containing all the binaries.  This artifact can be referenced in a POM as
 
 ```xml
@@ -91,13 +112,18 @@ consisting of a zip file containing all the binaries.  This artifact can be refe
 <artifactId>brooklyn-client-cli</artifactId>
 <classifier>bin</classifier>
 <type>zip</type>
-<version>...</version>
+<version>0.12.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
 ```
 
+Most of the work is delegated to the `release/build.sh` script;
+it is not normally necessary to use this, but if you need to know more,
+try `release/build.sh -h` for more information.
 
-## Running
+
+## Usage
 
 See instructions in the included [Runtime README](release/files/README) file.
+
 
 ----
 Licensed to the Apache Software Foundation (ASF) under one 
