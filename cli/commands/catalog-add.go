@@ -41,13 +41,16 @@ func NewCatalogAdd(network *net.Network) (cmd *CatalogAdd) {
 func (cmd *CatalogAdd) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "add",
-		Description: "Add a new catalog item from the supplied YAML (a file or http URL)",
+		Description: "Add catalog items from the supplied BOM YAML or from a ZIP or local folder containing a catalog.bom and optionally other resources",
 		Usage:       "BROOKLYN_NAME catalog add ( FILEPATH | URL )",
 		Flags:       []cli.Flag{},
 	}
 }
 
 func (cmd *CatalogAdd) Run(scope scope.Scope, c *cli.Context) {
+        if c.Args().First() == "" {
+                error_handler.ErrorExit("A filename or URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
+        }
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}

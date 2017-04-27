@@ -21,6 +21,7 @@ package error_handler
 import (
 	"fmt"
 	"os"
+        "strconv"
 	"github.com/apache/brooklyn-client/cli/net"
 )
 
@@ -32,7 +33,7 @@ func ErrorExit(errorvalue interface{}, errorcode ...int) {
 	switch errorvalue.(type) {
 	case net.HttpError:
 		httpError := errorvalue.(net.HttpError)
-		fmt.Fprintln(os.Stderr, httpError.Body)
+		fmt.Fprintln(os.Stderr, "Server error ("+strconv.Itoa(httpError.Code)+"): "+httpError.Body)
 	case error:
 		fmt.Fprintln(os.Stderr, errorvalue)
 	case string:

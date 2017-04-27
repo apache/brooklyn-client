@@ -219,20 +219,22 @@ func AddCatalog(network *net.Network, resource string) (map[string]models.Catalo
 	urlString := "/v1/catalog"
 	var entities map[string]models.CatalogEntitySummary
 
-	//Assume application/json. This is correct for http/file resources.
-	//Zips will need application/x-zip
-	contentType := "application/json"
+	//Force auto-detect by default
+	contentType := "application/octet-stream"
 	u, err := url.Parse(resource)
 	if err != nil {
 		return nil, err
 	}
 
 	//Only deal with the below file types
-	if "" != u.Scheme && "file" != u.Scheme  && "http" != u.Scheme && "https" != u.Scheme{
+	if "" != u.Scheme && "file" != u.Scheme  && "http" != u.Scheme && "https" != u.Scheme {
 		return nil, errors.New("Unrecognised protocol scheme: " + u.Scheme)
 	}
 
 	if "" == u.Scheme || "file" == u.Scheme {
+                if "file" == u.Scheme {
+                        resource = u.Path
+                }
 		file, err := os.Open(filepath.Clean(resource))
 		if err != nil {
 			return nil, err
