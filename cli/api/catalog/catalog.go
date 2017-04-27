@@ -233,8 +233,12 @@ func AddCatalog(network *net.Network, resource string) (map[string]models.Catalo
 
 	if "" == u.Scheme || "file" == u.Scheme {
                 if "file" == u.Scheme {
+			if u.Path == "" {
+				return nil, errors.New("No resource in 'file:' URL: " + resource)
+			}
                         resource = u.Path
                 }
+
 		file, err := os.Open(filepath.Clean(resource))
 		if err != nil {
 			return nil, err
