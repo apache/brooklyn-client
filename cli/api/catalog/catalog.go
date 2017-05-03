@@ -181,15 +181,6 @@ func AddCatalog(network *net.Network, resource string) (map[string]models.Catalo
 	return entities, nil
 }
 
-func Reset(network *net.Network) (string, error) {
-	url := "/v1/catalog/reset"
-	body, err := network.SendEmptyPostRequest(url)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
-}
-
 func GetLocation(network *net.Network, locationId string) (models.CatalogItemSummary, error) {
 	url := fmt.Sprintf("/v1/catalog/locations/%s", locationId)
 	var catalogLocation models.CatalogItemSummary
