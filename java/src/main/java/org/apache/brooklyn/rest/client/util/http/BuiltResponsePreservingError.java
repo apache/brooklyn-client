@@ -23,7 +23,6 @@ import java.lang.annotation.Annotation;
 import javax.ws.rs.core.Response;
 
 import org.apache.brooklyn.util.exceptions.Exceptions;
-import org.jboss.resteasy.client.core.BaseClientResponse;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.specimpl.BuiltResponse;
 
@@ -51,8 +50,8 @@ public class BuiltResponsePreservingError extends BuiltResponse {
         Object entity = null;
         try {
             status = source.getStatus();
-            if (source instanceof BaseClientResponse)
-                headers.putAll(((BaseClientResponse<?>)source).getMetadata());
+            if (source instanceof org.jboss.resteasy.client.core.BaseClientResponse)
+                headers.putAll(((org.jboss.resteasy.client.core.BaseClientResponse<?>)source).getMetadata());
             if (source instanceof org.jboss.resteasy.client.ClientResponse) {
                 entity = ((org.jboss.resteasy.client.ClientResponse<?>)source).getEntity(type);
             } else {
@@ -63,8 +62,8 @@ public class BuiltResponsePreservingError extends BuiltResponse {
             Exceptions.propagateIfFatal(e);
             return new BuiltResponsePreservingError(status, headers, entity, new Annotation[0], e);
         } finally {
-            if (source instanceof BaseClientResponse)
-                ((BaseClientResponse<?>)source).close();
+            if (source instanceof org.jboss.resteasy.client.core.BaseClientResponse)
+                ((org.jboss.resteasy.client.core.BaseClientResponse<?>)source).close();
         }
     }
     
@@ -74,6 +73,12 @@ public class BuiltResponsePreservingError extends BuiltResponse {
             throw new IllegalStateException("getEntity called on BuiltResponsePreservingError, where an Error had been preserved", error);
         }
         return super.getEntity();
+    }
+
+    @Override
+    public String toString() {
+        return "brooklyn-rest-client:BuiltResponse["+error+":"+getStatus()+
+            (!isClosed() && error==null ? ":"+getEntity() : "")+"]";
     }
 
 }

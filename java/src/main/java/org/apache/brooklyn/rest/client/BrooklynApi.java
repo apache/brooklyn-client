@@ -26,12 +26,31 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
+import org.apache.brooklyn.rest.api.AccessApi;
+import org.apache.brooklyn.rest.api.ActivityApi;
+import org.apache.brooklyn.rest.api.ApplicationApi;
+import org.apache.brooklyn.rest.api.CatalogApi;
+import org.apache.brooklyn.rest.api.EffectorApi;
+import org.apache.brooklyn.rest.api.EntityApi;
+import org.apache.brooklyn.rest.api.EntityConfigApi;
+import org.apache.brooklyn.rest.api.LocationApi;
+import org.apache.brooklyn.rest.api.PolicyApi;
+import org.apache.brooklyn.rest.api.PolicyConfigApi;
+import org.apache.brooklyn.rest.api.ScriptApi;
+import org.apache.brooklyn.rest.api.SensorApi;
+import org.apache.brooklyn.rest.api.ServerApi;
+import org.apache.brooklyn.rest.api.UsageApi;
+import org.apache.brooklyn.rest.client.util.http.BuiltResponsePreservingError;
+import org.apache.brooklyn.rest.domain.ApiError;
+import org.apache.brooklyn.util.collections.MutableMap;
+import org.apache.brooklyn.util.exceptions.Exceptions;
+import org.apache.brooklyn.util.javalang.AggregateClassLoader;
+import org.apache.brooklyn.util.net.Urls;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -52,27 +71,9 @@ import org.jboss.resteasy.util.GenericType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.gson.Gson;
-
-import org.apache.brooklyn.rest.api.AccessApi;
-import org.apache.brooklyn.rest.api.ActivityApi;
-import org.apache.brooklyn.rest.api.ApplicationApi;
-import org.apache.brooklyn.rest.api.CatalogApi;
-import org.apache.brooklyn.rest.api.EffectorApi;
-import org.apache.brooklyn.rest.api.EntityApi;
-import org.apache.brooklyn.rest.api.EntityConfigApi;
-import org.apache.brooklyn.rest.api.LocationApi;
-import org.apache.brooklyn.rest.api.PolicyApi;
-import org.apache.brooklyn.rest.api.PolicyConfigApi;
-import org.apache.brooklyn.rest.api.ScriptApi;
-import org.apache.brooklyn.rest.api.SensorApi;
-import org.apache.brooklyn.rest.api.ServerApi;
-import org.apache.brooklyn.rest.api.UsageApi;
-import org.apache.brooklyn.rest.client.util.http.BuiltResponsePreservingError;
-import org.apache.brooklyn.util.collections.MutableMap;
-import org.apache.brooklyn.util.exceptions.Exceptions;
-import org.apache.brooklyn.util.javalang.AggregateClassLoader;
-import org.apache.brooklyn.util.net.Urls;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -375,6 +376,14 @@ public class BrooklynApi {
         return proxy(AccessApi.class);
     }
 
+    /** Extracts an instance of the given type from the response, including JSON strings in there.
+     * Forgives most errors except for obviously incompatible ones.
+     * To fail on any server error, use {@link #getEntityOnSuccess(Response, Class)}.
+     * <p>
+     * This method will coerce and empty map "{}" to a no-arg contructed instance of the target class.
+     * This method will also ignore most errors in the response. 
+     * <p>
+     * It has changed to identify the most obvious errors. */
     public static <T> T getEntity(Response response, Class<T> type) {
         if (response instanceof ClientResponse) {
             ClientResponse<?> clientResponse = (ClientResponse<?>) response;
@@ -382,13 +391,56 @@ public class BrooklynApi {
         } else if (response instanceof BuiltResponse) {
             // Handle BuiltResponsePreservingError turning objects into Strings
             if (response.getEntity() instanceof String && !type.equals(String.class)) {
+                failSomeErrors(response, type, true);
                 return new Gson().fromJson(response.getEntity().toString(), type);
             }
         }
         // Last-gasp attempt.
         return type.cast(response.getEntity());
     }
+    
+    /** As {@link #getEntity(Response, Class)} but fails if the response is an error of any sort. */
+    public static <T> T getEntityOnSuccess(Response response, Class<T> type) {
+        failSomeErrors(response, type, false);
+        return getEntity(response, type);
+    }
 
+    /** Fails if the response is clearly an ApiError response which the caller did not want.
+     * To fail on any error (probably better), callers will normally use the {@link #getEntityOnSuccess(Response, Class)} method,
+     * or {@link #getEntity(Response, Class)} if preferring to ignore errors. */
+    private static <T> void failSomeErrors(Response response, Class<?> type, boolean onlyIfItLooksLikeApiError) {
+        if (response.getStatus()<400) {
+            // not an error
+            return;
+        }
+        if (onlyIfItLooksLikeApiError && type.isAssignableFrom(ApiError.class) && !Map.class.isAssignableFrom(type)) {
+            // if user wanted a map or an ApiError, don't fail (for legacy compatibility)
+            return;
+        }
+        
+        Object obj = new Gson().fromJson(response.getEntity().toString(), Object.class);
+        
+        if (onlyIfItLooksLikeApiError && !(obj instanceof Map)) {
+            // only handle maps
+            return;
+        }
+        
+        @SuppressWarnings("rawtypes")
+        Map m = (Map)obj;
+        Object error = m.get("error");
+        if (onlyIfItLooksLikeApiError && (error==null || new Integer(0).equals(error) || "".equals(error))) {
+            // error should be non-zero for "ApiError"
+            return;
+        }
+        
+        Object message = m.get("message");
+        if (message==null) message = m.get("detail");
+        
+        throw new IllegalArgumentException("Server error "+response.getStatus()+" cannot be converted to "+type.getName()+
+            (message!=null ? ": "+message : ""));
+    }
+
+    /** As {@link #getEntity(Response, Class)} */
     public static <T> T getEntity(Response response, GenericType<T> type) {
         if (response instanceof ClientResponse) {
             ClientResponse<?> clientResponse = (ClientResponse<?>) response;
@@ -396,6 +448,7 @@ public class BrooklynApi {
         } else if (response instanceof BuiltResponse) {
             // Handle BuiltResponsePreservingError turning objects into Strings
             if (response.getEntity() instanceof String) {
+                failSomeErrors(response, type.getType(), true);
                 return new Gson().fromJson(response.getEntity().toString(), type.getGenericType());
             }
         }
@@ -403,6 +456,33 @@ public class BrooklynApi {
         return type.getType().cast(response.getEntity());
     }
 
+    
+    /** As {@link #getEntity(Response, GenericType)} but fails if the response is an error of any sort. */
+    public static <T> T getEntityOnSuccess(Response response, GenericType<T> type) {
+        failSomeErrors(response, type.getType(), false);
+        return getEntity(response, type);
+    }
+
+    /** As {@link #getEntity(Response, Class)} */
+    @SuppressWarnings("unchecked")
+    public static <T> T getEntity(Response response, javax.ws.rs.core.GenericType<T> type) {
+        if (response instanceof BuiltResponse) {
+            // Handle BuiltResponsePreservingError turning objects into Strings
+            if (response.getEntity() instanceof String) {
+                failSomeErrors(response, type.getRawType(), true);
+                return new Gson().fromJson(response.getEntity().toString(), type.getType());
+            }
+        }
+        return (T) getEntity(response, type.getRawType());
+    }
+
+    
+    /** As {@link #getEntity(Response, javax.ws.rs.core.GenericType)} but fails if the response is an error of any sort. */
+    public static <T> T getEntityOnSuccess(Response response, javax.ws.rs.core.GenericType<T> type) {
+        failSomeErrors(response, type.getRawType(), false);
+        return getEntity(response, type);
+    }
+    
     /**
      * @deprecated since 0.8.0-incubating. Use {@link #getEntity(Response, GenericType)} instead.
      */
