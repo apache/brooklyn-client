@@ -166,11 +166,15 @@ func (net *Network) SendEmptyPostRequest(url string) ([]byte, error) {
 	return body, err
 }
 
-func (net *Network) SendPostRequest(urlStr string, data []byte) ([]byte, error) {
+func (net *Network) SendPostRequestWithContentType(urlStr string, data []byte, contentType string) ([]byte, error) {
 	req := net.NewPostRequest(urlStr, bytes.NewBuffer(data))
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", contentType)
 	body, err := net.SendRequest(req)
 	return body, err
+}
+
+func (net *Network) SendPostRequest(urlStr string, data []byte) ([]byte, error) {
+	return net.SendPostRequestWithContentType(urlStr, data, "application/json")
 }
 
 func (net *Network) SendPostResourceRequest(restUrl string, resourceUrl string, contentType string) ([]byte, error) {
