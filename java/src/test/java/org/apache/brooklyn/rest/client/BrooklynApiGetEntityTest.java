@@ -53,7 +53,7 @@ public class BrooklynApiGetEntityTest {
     @Test
     public void testGetEntityIgnoresExtraFields() {
         BrooklynApi.getEntity(
-            new BuiltResponse(200, null, "{ foo: \"This should cause an error\" }", null),
+            new BuiltResponse(200, null, "{ foo: \"This unknown field should be silently ignored\" }", null),
             TaskSummary.class);
     }
 
