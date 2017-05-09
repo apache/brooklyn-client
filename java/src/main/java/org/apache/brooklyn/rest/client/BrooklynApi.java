@@ -405,8 +405,9 @@ public class BrooklynApi {
         return getEntity(response, type);
     }
 
-    /** This fails if it is clearly an ApiError response which the caller did not want.
-     * To fail on any error (probably better), use  */
+    /** Fails if the response is clearly an ApiError response which the caller did not want.
+     * To fail on any error (probably better), callers will normally use the {@link #getEntityOnSuccess(Response, Class)} method,
+     * or {@link #getEntity(Response, Class)} if preferring to ignore errors. */
     private static <T> void failSomeErrors(Response response, Class<?> type, boolean onlyIfItLooksLikeApiError) {
         if (response.getStatus()<400) {
             // not an error
