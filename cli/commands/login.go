@@ -111,11 +111,8 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.config.Map = make(map[string]interface{})
 	}
 	// now persist these credentials to the yaml file
-	auth, ok := cmd.config.Map["auth"].(map[string]interface{})
-	if !ok {
-		auth = make(map[string]interface{})
-		cmd.config.Map["auth"] = auth
-	}
+	auth := make(map[string]interface{})
+	cmd.config.Map["auth"] = auth
 
 	auth[cmd.network.BrooklynUrl] = map[string]string{
 		"username": cmd.network.BrooklynUser,
