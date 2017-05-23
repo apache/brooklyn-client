@@ -83,13 +83,17 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 
 	// Prompt for username if not supplied
 	if cmd.network.BrooklynUser == "" {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Enter Username: ")
-		user, err := reader.ReadString('\n')
-		if err != nil {
-			error_handler.ErrorExit(err)
+		var userName string
+		for userName == "" {
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("Enter Username: ")
+			user, err := reader.ReadString('\n')
+			if err != nil {
+				error_handler.ErrorExit(err)
+			}
+			userName = strings.TrimSpace(user)
 		}
-		cmd.network.BrooklynUser = strings.TrimSpace(user)
+		cmd.network.BrooklynUser = userName
 	}
 
 	// Prompt for password if not supplied (password is not echoed to screen
