@@ -154,7 +154,7 @@ func (net *Network) SendDeleteRequest(url string) ([]byte, error) {
 	if nil != err {
 		return nil, err
 	}
-	if code != http.StatusNoContent {
+	if unsuccessful(code) {
 		return nil, makeSimpleError(code, body)
 	}
 	return body, err
