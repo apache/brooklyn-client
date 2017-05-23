@@ -123,7 +123,7 @@ func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, er
         client := net.makeClient()
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, resp.StatusCode, err
+		return nil, 0, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
