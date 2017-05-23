@@ -48,6 +48,14 @@ func GetConfig() (config *Config) {
 	return
 }
 
+
+func (config *Config) Delete() (err error) {
+	if _, err := os.Stat(config.FilePath); err == nil {
+		err = os.Remove(config.FilePath)
+	}
+	return err
+}
+
 func (config *Config) Write() {
 	// Create file as read/write by user (but does not change perms of existing file)
 	fileToWrite, err := os.OpenFile(config.FilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
