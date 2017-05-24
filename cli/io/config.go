@@ -55,7 +55,7 @@ func GetConfig() (config *Config) {
 		config.Map = make(map[string]interface{})
 		config.Write()
 	}
-	config.Read()
+	config.read()
 	return
 }
 
@@ -79,7 +79,7 @@ func (config *Config) Write() {
 	enc.Encode(config.Map)
 }
 
-func (config *Config) Read() {
+func (config *Config) read() {
 	fileToRead, err := os.Open(config.FilePath)
 	if err != nil {
 		error_handler.ErrorExit(err)
