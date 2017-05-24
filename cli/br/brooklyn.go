@@ -34,7 +34,7 @@ func main() {
 	config := io.GetConfig()
 	skipSslChecks := config.GetSkipSslChecks()
 	target, username, password, err := config.GetNetworkCredentials()
-	if err != nil {
+	if err != nil && !isLogin(os.Args) {
 		error_handler.ErrorExit(err)
 	}
 
@@ -49,4 +49,8 @@ func main() {
 	if err := theApp.Run(args); nil != err {
 		error_handler.ErrorExit(err)
 	}
+}
+
+func isLogin(args []string) bool {
+	return len(args) > 1 && args[1] == "login"
 }

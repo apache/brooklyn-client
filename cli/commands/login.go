@@ -93,6 +93,9 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.network.BrooklynPass = c.Args().Get(2)
 	cmd.network.SkipSslChecks = c.Bool("skipSslChecks")
 
+	// invalidate current credentials record
+	io.GetConfig().Delete()
+
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
@@ -125,6 +128,7 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		if code == http.StatusUnauthorized {
 			err = errors.New("Unauthorized")
 		}
+		cmd.config.Delete()
 		error_handler.ErrorExit(err)
 	}
 	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)
