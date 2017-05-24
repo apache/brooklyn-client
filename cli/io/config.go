@@ -24,7 +24,18 @@ import (
 	"path/filepath"
 
 	"github.com/apache/brooklyn-client/cli/error_handler"
+	"encoding/base64"
+	"errors"
 )
+
+// Deprecated: support old style of .brooklyn_cli format for version <= 0.11.0
+const authKey = "auth"
+
+const credentialsKey = "credentials"
+const usernameKey = "username"
+const secretKey = "password"
+const targetKey = "target"
+const skipSslChecksKey = "skipSslChecks"
 
 type Config struct {
 	FilePath string
@@ -77,4 +88,117 @@ func (config *Config) Read() {
 
 	dec := json.NewDecoder(fileToRead)
 	dec.Decode(&config.Map)
+}
+
+
+// getCredentials reads credentials from .brooklyn_cli data formatted for versions > 0.11.0
+// Note that the password is base64 encoded to avoid json formatting problems
+//{
+//  "credentials": {
+//      "password": "cGFzc3dvcmQ=",
+//      "username": "geoff"
+//  },
+//  "skipSslChecks": false,
+//  "target": "http://geoffs-macbook-pro.local:8081"
+//}
+func (config *Config) getCredentials(target string) (username string, password string, err error) {
+	credentials, found := config.Map[credentialsKey].(map[string]interface{})
+	if !found {
+		err = errors.New("No credentials found for " + target)
+		return
+	}
+
+	if username, found = credentials["username"].(string); !found {
+		err = errors.New("No credentials for " + target)
+		return
+	}
+
+	if password, found = credentials["password"].(string); !found {
+		err = errors.New("No credentials for " + target)
+		return
+	}
+
+	if decodedPassword, err := base64.StdEncoding.DecodeString(password); err != nil {
+		err = errors.New("Could not decode password for " + username)
+	} else {
+		password = string(decodedPassword)
+	}
+	return username, password, err
+}
+
+// Deprecated:
+// getCredentialsOldStyle provides backward support for .brooklyn_cli format for version <= 0.11.0:
+// {
+//  "auth": {
+//    "http://geoffs-macbook-pro.local:8081": {
+//      "password": "password",
+//      "username": "geoff"
+//    }
+//  },
+//  "skipSslChecks": false,
+//  "target": "http://geoffs-macbook-pro.local:8081"
+//}
+func (config *Config) getCredentialsOldStyle(target string) (username string, password string, err error) {
+	auth, found := config.Map[authKey].(map[string]interface{})
+	if !found {
+		err = errors.New("No credentials for " + target)
+		return
+	}
+
+	creds, found := auth[target].(map[string]interface{})
+	if !found {
+		err = errors.New("No credentials found for " + target)
+		return
+	}
+
+	if username, found = creds[usernameKey].(string); !found {
+		err = errors.New("No credentials for " + username)
+		return
+	}
+
+	if password, found = creds[secretKey].(string); !found {
+		err = errors.New("No credentials for " + username)
+		return
+	}
+
+	return username, password, err
+}
+
+func (config *Config) SetNetworkCredentials(target string, username string, password string) {
+	if config.Map == nil {
+		config.Map = make(map[string]interface{})
+	}
+	encodedPassword := base64.StdEncoding.EncodeToString([]byte(password))
+	config.Map[credentialsKey] = map[string]interface{}{
+		usernameKey: username,
+		secretKey: encodedPassword,
+	}
+	config.Map[targetKey] = target
+
+	// Overwrite old style format from version <= 0.11.0
+	delete(config.Map, authKey)
+}
+
+func (config *Config) GetNetworkCredentials() (target string, username string, password string, err error) {
+	target, found := config.Map[targetKey].(string)
+	if found {
+		if username, password, err = config.getCredentials(target); nil != err {
+			username, password, err = config.getCredentialsOldStyle(target)
+		}
+	} else {
+		err = errors.New("No target defined in config file")
+	}
+	return target, username, password, err
+}
+
+func (config *Config) GetSkipSslChecks() bool {
+	if config.Map == nil {
+		config.Map = make(map[string]interface{})
+	}
+	skipSslChecks, _ := config.Map[skipSslChecksKey].(bool)
+	return skipSslChecks
+}
+
+func (config *Config) SetSkipSslChecks(skipSslChecks bool) {
+	config.Map["skipSslChecks"] = skipSslChecks
 }

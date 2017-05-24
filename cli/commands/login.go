@@ -58,6 +58,30 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
+
+func (cmd *Login) promptAndReadUsername() (username string) {
+	for username == "" {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Enter Username: ")
+		user, err := reader.ReadString('\n')
+		if err != nil {
+			error_handler.ErrorExit(err)
+		}
+		username = strings.TrimSpace(user)
+	}
+	return username
+}
+
+func (cmd *Login) promptAndReadPassword() (password string) {
+	fmt.Print("Enter Password: ")
+	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		error_handler.ErrorExit(err)
+	}
+	fmt.Printf("\n")
+	return string(bytePassword)
+}
+
 func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	if !c.Args().Present() {
 		error_handler.ErrorExit("A URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
@@ -83,44 +107,17 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 
 	// Prompt for username if not supplied
 	if cmd.network.BrooklynUser == "" {
-		var userName string
-		for userName == "" {
-			reader := bufio.NewReader(os.Stdin)
-			fmt.Print("Enter Username: ")
-			user, err := reader.ReadString('\n')
-			if err != nil {
-				error_handler.ErrorExit(err)
-			}
-			userName = strings.TrimSpace(user)
-		}
-		cmd.network.BrooklynUser = userName
+		cmd.network.BrooklynUser = cmd.promptAndReadUsername()
 	}
 
 	// Prompt for password if not supplied (password is not echoed to screen
 	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
-		fmt.Print("Enter Password: ")
-		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
-		if err != nil {
-			error_handler.ErrorExit(err)
-		}
-		fmt.Printf("\n")
-		cmd.network.BrooklynPass = string(bytePassword)
+		cmd.network.BrooklynPass = cmd.promptAndReadPassword()
 	}
 
-	if cmd.config.Map == nil {
-		cmd.config.Map = make(map[string]interface{})
-	}
 	// now persist these credentials to the yaml file
-	auth := make(map[string]interface{})
-	cmd.config.Map["auth"] = auth
-
-	auth[cmd.network.BrooklynUrl] = map[string]string{
-		"username": cmd.network.BrooklynUser,
-		"password": cmd.network.BrooklynPass,
-	}
-
-	cmd.config.Map["target"] = cmd.network.BrooklynUrl
-	cmd.config.Map["skipSslChecks"] = cmd.network.SkipSslChecks
+	cmd.config.SetNetworkCredentials(cmd.network.BrooklynUrl, cmd.network.BrooklynUser, cmd.network.BrooklynPass)
+	cmd.config.SetSkipSslChecks(cmd.network.SkipSslChecks)
 	cmd.config.Write()
 
 	loginVersion, code, err := version.Version(cmd.network)

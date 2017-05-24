@@ -30,27 +30,14 @@ import (
 	"path/filepath"
 )
 
-func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, string, string, bool) {
-	var target, username, password string
-	var skipSslChecks bool
-	target, found := yamlMap["target"].(string)
-	if found {
-		auth, found := yamlMap["auth"].(map[string]interface{})
-		if found {
-			creds := auth[target].(map[string]interface{})
-			username, found = creds["username"].(string)
-			if found {
-				password, found = creds["password"].(string)
-			}
-		}
-		skipSslChecks, _ = yamlMap["skipSslChecks"].(bool)
-	}
-	return target, username, password, skipSslChecks
-}
-
 func main() {
 	config := io.GetConfig()
-	target, username, password, skipSslChecks := getNetworkCredentialsFromConfig(config.Map)
+	skipSslChecks := config.GetSkipSslChecks()
+	target, username, password, err := config.GetNetworkCredentials()
+	if err != nil {
+		error_handler.ErrorExit(err)
+	}
+
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
 	network := net.NewNetwork(target, username, password, skipSslChecks)
 	cmdFactory := command_factory.NewFactory(network, config)
