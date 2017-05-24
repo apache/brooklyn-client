@@ -26,6 +26,8 @@ import (
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"encoding/base64"
 	"errors"
+	"strings"
+	"bytes"
 )
 
 // Deprecated: support old style of .brooklyn_cli format for version <= 0.11.0
@@ -70,13 +72,20 @@ func (config *Config) Delete() (err error) {
 func (config *Config) Write() {
 	// Create file as read/write by user (but does not change perms of existing file)
 	fileToWrite, err := os.OpenFile(config.FilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+	defer fileToWrite.Close()
 	if err != nil {
 		error_handler.ErrorExit(err)
 	}
-	defer fileToWrite.Close()
 
-	enc := json.NewEncoder(fileToWrite)
-	enc.Encode(config.Map)
+	marshalledMap, err := json.Marshal(config.Map)
+	if err != nil {
+		error_handler.ErrorExit(err)
+	}
+	var formatted bytes.Buffer
+	if err = json.Indent(&formatted, marshalledMap, "", "    "); err != nil {
+		error_handler.ErrorExit(err)
+	}
+	fileToWrite.Write(formatted.Bytes())
 }
 
 func (config *Config) read() {
@@ -102,26 +111,23 @@ func (config *Config) read() {
 //  "target": "http://geoffs-macbook-pro.local:8081"
 //}
 func (config *Config) getCredentials(target string) (username string, password string, err error) {
-	credentials, found := config.Map[credentialsKey].(map[string]interface{})
+	credentials, found := config.Map[credentialsKey].(string)
 	if !found {
 		err = errors.New("No credentials found for " + target)
 		return
 	}
 
-	if username, found = credentials["username"].(string); !found {
-		err = errors.New("No credentials for " + target)
+	if decoded, errd := base64.StdEncoding.DecodeString(credentials); errd != nil {
+		err = errors.New("Could not decode credentials for " + target)
 		return
-	}
-
-	if password, found = credentials["password"].(string); !found {
-		err = errors.New("No credentials for " + target)
-		return
-	}
-
-	if decodedPassword, err := base64.StdEncoding.DecodeString(password); err != nil {
-		err = errors.New("Could not decode password for " + username)
 	} else {
-		password = string(decodedPassword)
+		userAndPassword := strings.SplitN(string(decoded), ":", 2)
+		if len(userAndPassword) != 2 {
+			err = errors.New("Invalid credentials for " + target)
+			return
+		}
+		username = userAndPassword[0]
+		password = userAndPassword[1]
 	}
 	return username, password, err
 }
@@ -168,11 +174,9 @@ func (config *Config) SetNetworkCredentials(target string, username string, pass
 	if config.Map == nil {
 		config.Map = make(map[string]interface{})
 	}
-	encodedPassword := base64.StdEncoding.EncodeToString([]byte(password))
-	config.Map[credentialsKey] = map[string]interface{}{
-		usernameKey: username,
-		secretKey: encodedPassword,
-	}
+	userAndPassword := username + ":" + password
+	encodedCredentials := base64.StdEncoding.EncodeToString([]byte(userAndPassword))
+	config.Map[credentialsKey] = encodedCredentials
 	config.Map[targetKey] = target
 
 	// Overwrite old style format from version <= 0.11.0
