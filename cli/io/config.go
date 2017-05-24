@@ -190,7 +190,7 @@ func (config *Config) GetNetworkCredentials() (target string, username string, p
 			username, password, err = config.getCredentialsOldStyle(target)
 		}
 	} else {
-		err = errors.New("No target defined in config file")
+		err = errors.New("Not logged in")
 	}
 	return target, username, password, err
 }
