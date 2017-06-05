@@ -215,9 +215,10 @@ func ZipResource(resource string) (*bytes.Buffer, error) {
 	return buf, err;
 }
 
-func AddCatalog(network *net.Network, resource string) (map[string]models.CatalogEntitySummary, error) {
+func AddCatalog(network *net.Network, resource string) (*models.CatalogBundleAddResult, error) {
 	urlString := "/v1/catalog"
-	var entities map[string]models.CatalogEntitySummary
+	urlStringWithDetail := urlString + "?detail=true"
+	var result models.CatalogBundleAddResult
 
 	//Force auto-detect by default
 	contentType := "application/octet-stream"
@@ -255,19 +256,25 @@ func AddCatalog(network *net.Network, resource string) (map[string]models.Catalo
 			if err != nil {
 				return nil, err
 			}
-			body, err := network.SendPostRequestWithContentType(urlString, buf.Bytes(), "application/x-zip")
+			body, err := network.SendPostRequestWithContentType(urlStringWithDetail, buf.Bytes(), "application/x-zip")
 			if err != nil {
 				return nil, err
 			}
-			err = json.Unmarshal(body, &entities)
-			return entities, err
+			err = json.Unmarshal(body, &result)
+			if result.Code == "" {
+				// older version of server, doesn't support detail
+				err = json.Unmarshal(body, &result.Types)
+			}
+			return &result, err
 		} else {
 			extension := filepath.Ext(resource)
 			lowercaseExtension := strings.ToLower(extension)
 			if lowercaseExtension == ".zip" {
 				contentType = "application/x-zip"
+				urlString = urlStringWithDetail
 			} else if lowercaseExtension == ".jar" {
 				contentType = "application/x-jar"
+				urlString = urlStringWithDetail
 			}
 		}
 
@@ -277,9 +284,12 @@ func AddCatalog(network *net.Network, resource string) (map[string]models.Catalo
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(body, &entities)
-
-	return entities, err
+	err = json.Unmarshal(body, &result)
+	if result.Code == "" {
+		// detail API not supported, just store the types
+		err = json.Unmarshal(body, &result.Types)
+	}
+	return &result, err
 }
 
 func GetLocation(network *net.Network, locationId string) (models.CatalogItemSummary, error) {

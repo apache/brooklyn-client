@@ -58,7 +58,14 @@ func (cmd *CatalogAdd) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		error_handler.ErrorExit(err)
 	}
-	for id, _ := range create {
-		fmt.Println(id)
+	if "" != create.Message {
+		fmt.Println(create.Message)
+		for id, _ := range create.Types {
+			fmt.Printf("* %s\n", id)
+		}
+	} else {
+		for id, _ := range create.Types {
+			fmt.Println(id)
+		}
 	}
 }

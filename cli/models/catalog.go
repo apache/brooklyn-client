@@ -54,6 +54,13 @@ type CatalogEntitySummary struct {
 	Sensors      []SensorSummary       `json:"sensors"`
 }
 
+type CatalogBundleAddResult struct {
+	Message      string                `json:"message"`
+	Bundle       string                `json:"bundle"`
+	Code         string                `json:"code"`
+	Types        map[string]CatalogItemSummary `json:"types"`
+}
+
 func createTableWithIdentityDetails(item IdentityDetails) (terminal.Table) {
 	table := terminal.NewTable([]string{"Id:", item.Id})
 	table.Add("Version:", item.Version)
