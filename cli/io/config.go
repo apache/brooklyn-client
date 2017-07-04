@@ -35,7 +35,7 @@ const authKey = "auth"
 
 const credentialsKey = "credentials"
 const usernameKey = "username"
-const secretKey = "password"
+const passwordKey = "password"
 const targetKey = "target"
 const skipSslChecksKey = "skipSslChecks"
 
@@ -103,21 +103,27 @@ func (config *Config) read() {
 // getCredentials reads credentials from .brooklyn_cli data formatted for versions > 0.11.0
 // Note that the password is base64 encoded to avoid json formatting problems
 //{
-//  "credentials": {
-//      "password": "cGFzc3dvcmQ=",
-//      "username": "geoff"
-//  },
-//  "skipSslChecks": false,
-//  "target": "http://geoffs-macbook-pro.local:8081"
+//    "credentials": {
+//        "http://geoffs-macbook-pro.local:8081": "Z2VvZmY6cGFzc3dvcmQ="
+//    },
+//    "skipSslChecks": false,
+//    "target": "http://geoffs-macbook-pro.local:8081"
 //}
+
 func (config *Config) getCredentials(target string) (username string, password string, err error) {
-	credentials, found := config.Map[credentialsKey].(string)
+	credentials, found := config.Map[credentialsKey].(map[string]interface{})
 	if !found {
-		err = errors.New("No credentials found for " + target)
+		err = errors.New("No credentials found in configuration")
 		return
 	}
 
-	if decoded, errd := base64.StdEncoding.DecodeString(credentials); errd != nil {
+	creds, found := credentials[target].(string)
+	if !found {
+		err = errors.New("No credentials found in configuration for " + target)
+		return
+	}
+
+	if decoded, errd := base64.StdEncoding.DecodeString(creds); errd != nil {
 		err = errors.New("Could not decode credentials for " + target)
 		return
 	} else {
@@ -162,7 +168,7 @@ func (config *Config) getCredentialsOldStyle(target string) (username string, pa
 		return
 	}
 
-	if password, found = creds[secretKey].(string); !found {
+	if password, found = creds[passwordKey].(string); !found {
 		err = errors.New("No credentials for " + username)
 		return
 	}
@@ -170,17 +176,48 @@ func (config *Config) getCredentialsOldStyle(target string) (username string, pa
 	return username, password, err
 }
 
-func (config *Config) SetNetworkCredentials(target string, username string, password string) {
+func (config *Config) initialize() {
 	if config.Map == nil {
 		config.Map = make(map[string]interface{})
 	}
+	if _, found := config.Map[credentialsKey]; !found {
+		config.Map[credentialsKey] = make(map[string]interface{})
+	}
+}
+
+func (config *Config) setCredential(target string, username string, password string) {
+	credentialsMap := config.Map[credentialsKey].(map[string]interface{})
 	userAndPassword := username + ":" + password
 	encodedCredentials := base64.StdEncoding.EncodeToString([]byte(userAndPassword))
-	config.Map[credentialsKey] = encodedCredentials
+	credentialsMap[target] = encodedCredentials
+}
+
+func (config *Config) SetNetworkCredentials(target string, username string, password string) {
+	config.initialize()
+	config.adaptLegacyCredentialFormat()
+	config.setCredential(target, username, password)
 	config.Map[targetKey] = target
 
 	// Overwrite old style format from version <= 0.11.0
 	delete(config.Map, authKey)
+}
+
+func (config *Config) adaptLegacyCredentialFormat() {
+	auth, found := config.Map[authKey].(map[string]interface{})
+	if !found {
+		return
+	}
+	for url, credMap := range auth {
+		creds := credMap.(map[string]interface{})
+		var username, password string
+		username, found := creds[usernameKey].(string)
+		if found {
+			password, found = creds[passwordKey].(string)
+		}
+		if found {
+			config.setCredential(url, username, password)
+		}
+	}
 }
 
 func (config *Config) GetNetworkCredentials() (target string, username string, password string, err error) {
