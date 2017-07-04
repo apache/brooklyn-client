@@ -104,7 +104,8 @@ func (config *Config) read() {
 // Note that the password is base64 encoded to avoid json formatting problems
 //{
 //    "credentials": {
-//        "http://geoffs-macbook-pro.local:8081": "Z2VvZmY6cGFzc3dvcmQ="
+//        "http://geoffs-macbook-pro.local:8081": "Z2VvZmY6cGFzc3dvcmQ=",
+//        "http://localhost:8081": "Z2VvZmY6cGFzc3dvcmQ="
 //    },
 //    "skipSslChecks": false,
 //    "target": "http://geoffs-macbook-pro.local:8081"
@@ -220,12 +221,17 @@ func (config *Config) adaptLegacyCredentialFormat() {
 	}
 }
 
+func (config *Config) GetNetworkCredentialsForTarget(target string) (username string, password string, err error) {
+	if username, password, err = config.getCredentials(target); err != nil {
+		username, password, err = config.getCredentialsOldStyle(target)
+	}
+	return
+}
+
 func (config *Config) GetNetworkCredentials() (target string, username string, password string, err error) {
 	target, found := config.Map[targetKey].(string)
 	if found {
-		if username, password, err = config.getCredentials(target); nil != err {
-			username, password, err = config.getCredentialsOldStyle(target)
-		}
+		username, password, err = config.GetNetworkCredentialsForTarget(target)
 	} else {
 		err = errors.New("Not logged in")
 	}

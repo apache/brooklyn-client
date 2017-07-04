@@ -1,0 +1,14 @@
+{
+  "auth": {
+    "http://some.site:8081": {
+      "password": "password1",
+      "username": "user1"
+    },
+    "http://another.one:8081": {
+      "password": "password2",
+      "username": "user2"
+    }
+  },
+  "skipSslChecks": false,
+  "target": "http://some.site:8081"
+}

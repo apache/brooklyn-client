@@ -1,0 +1,8 @@
+{
+  "credentials": {
+    "http://some.site:8081": "dXNlcjE6cGFzc3dvcmQx",
+    "http://another.one:8081": "dXNlcjI6cGFzc3dvcmQy"
+  },
+  "skipSslChecks": false,
+  "target": "http://some.site:8081"
+}

@@ -82,6 +82,18 @@ func (cmd *Login) promptAndReadPassword() (password string) {
 	return string(bytePassword)
 }
 
+func (cmd *Login) getCredentialsFromCommandLineIfNeeded() {
+	// Prompt for username if not supplied
+	if cmd.network.BrooklynUser == "" {
+		cmd.network.BrooklynUser = cmd.promptAndReadUsername()
+	}
+
+	// Prompt for password if not supplied (password is not echoed to screen
+	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
+		cmd.network.BrooklynPass = cmd.promptAndReadPassword()
+	}
+}
+
 func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	if !c.Args().Present() {
 		error_handler.ErrorExit("A URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
@@ -93,8 +105,7 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.network.BrooklynPass = c.Args().Get(2)
 	cmd.network.SkipSslChecks = c.Bool("skipSslChecks")
 
-	// invalidate current credentials record
-	io.GetConfig().Delete()
+	config := io.GetConfig()
 
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
@@ -108,15 +119,14 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0 : len(cmd.network.BrooklynUrl)-1]
 	}
 
-	// Prompt for username if not supplied
-	if cmd.network.BrooklynUser == "" {
-		cmd.network.BrooklynUser = cmd.promptAndReadUsername()
+	if cmd.network.BrooklynUrl != "" && cmd.network.BrooklynUser == "" {
+		// if only target supplied at command line see if it already exists in the config file
+		if username, password, err := config.GetNetworkCredentialsForTarget(cmd.network.BrooklynUrl); err == nil {
+			cmd.network.BrooklynUser = username
+			cmd.network.BrooklynPass = password
+		}
 	}
-
-	// Prompt for password if not supplied (password is not echoed to screen
-	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
-		cmd.network.BrooklynPass = cmd.promptAndReadPassword()
-	}
+	cmd.getCredentialsFromCommandLineIfNeeded()
 
 	// now persist these credentials to the yaml file
 	cmd.config.SetNetworkCredentials(cmd.network.BrooklynUrl, cmd.network.BrooklynUser, cmd.network.BrooklynPass)
@@ -128,7 +138,6 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		if code == http.StatusUnauthorized {
 			err = errors.New("Unauthorized")
 		}
-		cmd.config.Delete()
 		error_handler.ErrorExit(err)
 	}
 	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)
