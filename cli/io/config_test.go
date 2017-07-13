@@ -19,8 +19,8 @@
 package io
 
 import (
-	"testing"
 	"path/filepath"
+	"testing"
 )
 
 func TestConfig(t *testing.T) {

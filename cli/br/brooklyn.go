@@ -34,7 +34,7 @@ func main() {
 	config := io.GetConfig()
 	skipSslChecks := config.GetSkipSslChecks()
 	target, username, password, err := config.GetNetworkCredentials()
-	if err != nil && !isLogin(os.Args) {
+	if err != nil && requiresLogin(os.Args) {
 		error_handler.ErrorExit(err)
 	}
 
@@ -51,6 +51,32 @@ func main() {
 	}
 }
 
-func isLogin(args []string) bool {
-	return len(args) > 1 && args[1] == "login"
+func requiresLogin(args []string) bool {
+	// global help or version commands
+	if (contains(args, "-h") ||
+		contains(args, "--help") ||
+	    contains(args, "-v") ||
+	    contains(args, "--version")) {
+		return false
+	}
+	// br on its own
+	if (len(args) == 1) {
+		return false
+	}
+	//
+	if (len(args) > 1) {
+		if (args[1] == "login" || args[1] == "help") {
+			return false
+		}
+	}
+	return true
+}
+
+func contains(slice []string, val string) bool {
+	for _, a := range slice {
+		if a == val {
+			return true
+		}
+	}
+	return false
 }
