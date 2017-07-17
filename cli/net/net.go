@@ -29,6 +29,8 @@ import (
 	"os"
 	"path/filepath"
 	"crypto/tls"
+	"net"
+	"time"
 )
 
 type Network struct {
@@ -129,7 +131,7 @@ func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, er
 		body = nil
 	}
 	if failed := unsuccessful(resp.StatusCode); failed {
-		return nil, 0, makeError(resp, resp.StatusCode, body)
+		return nil, resp.StatusCode, makeError(resp, resp.StatusCode, body)
 	}
 	return body, resp.StatusCode, err
 }
@@ -237,6 +239,10 @@ func VerifyLoginURL(network *Network) error {
 	}
 	if url.Host == "" {
 		return errors.New("Use login command to set Brooklyn URL with a valid host[:port]")
+	}
+	_, err = net.DialTimeout("tcp", url.Host, time.Duration(30) * time.Second)
+	if err != nil {
+		return errors.New("Could not connect to " + url.Host)
 	}
 	return nil
 }

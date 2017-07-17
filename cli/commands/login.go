@@ -21,6 +21,11 @@ package commands
 import (
 	"fmt"
 	"syscall"
+	"bufio"
+	"os"
+	"strings"
+	"net/http"
+	"errors"
 
 	"github.com/apache/brooklyn-client/cli/api/version"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
@@ -53,6 +58,42 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 	}
 }
 
+
+func (cmd *Login) promptAndReadUsername() (username string) {
+	for username == "" {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Enter Username: ")
+		user, err := reader.ReadString('\n')
+		if err != nil {
+			error_handler.ErrorExit(err)
+		}
+		username = strings.TrimSpace(user)
+	}
+	return username
+}
+
+func (cmd *Login) promptAndReadPassword() (password string) {
+	fmt.Print("Enter Password: ")
+	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		error_handler.ErrorExit(err)
+	}
+	fmt.Printf("\n")
+	return string(bytePassword)
+}
+
+func (cmd *Login) getCredentialsFromCommandLineIfNeeded() {
+	// Prompt for username if not supplied
+	if cmd.network.BrooklynUser == "" {
+		cmd.network.BrooklynUser = cmd.promptAndReadUsername()
+	}
+
+	// Prompt for password if not supplied (password is not echoed to screen
+	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
+		cmd.network.BrooklynPass = cmd.promptAndReadPassword()
+	}
+}
+
 func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	if !c.Args().Present() {
 		error_handler.ErrorExit("A URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
@@ -63,6 +104,8 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.network.BrooklynUser = c.Args().Get(1)
 	cmd.network.BrooklynPass = c.Args().Get(2)
 	cmd.network.SkipSslChecks = c.Bool("skipSslChecks")
+
+	config := io.GetConfig()
 
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
@@ -76,38 +119,25 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0 : len(cmd.network.BrooklynUrl)-1]
 	}
 
-	// Prompt for password if not supplied (password is not echoed to screen
-	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
-		fmt.Print("Enter Password: ")
-		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
-		if err != nil {
-			error_handler.ErrorExit(err)
+	if cmd.network.BrooklynUrl != "" && cmd.network.BrooklynUser == "" {
+		// if only target supplied at command line see if it already exists in the config file
+		if username, password, err := config.GetNetworkCredentialsForTarget(cmd.network.BrooklynUrl); err == nil {
+			cmd.network.BrooklynUser = username
+			cmd.network.BrooklynPass = password
 		}
-		fmt.Printf("\n")
-		cmd.network.BrooklynPass = string(bytePassword)
 	}
+	cmd.getCredentialsFromCommandLineIfNeeded()
 
-	if cmd.config.Map == nil {
-		cmd.config.Map = make(map[string]interface{})
-	}
 	// now persist these credentials to the yaml file
-	auth, ok := cmd.config.Map["auth"].(map[string]interface{})
-	if !ok {
-		auth = make(map[string]interface{})
-		cmd.config.Map["auth"] = auth
-	}
-
-	auth[cmd.network.BrooklynUrl] = map[string]string{
-		"username": cmd.network.BrooklynUser,
-		"password": cmd.network.BrooklynPass,
-	}
-
-	cmd.config.Map["target"] = cmd.network.BrooklynUrl
-	cmd.config.Map["skipSslChecks"] = cmd.network.SkipSslChecks
+	cmd.config.SetNetworkCredentials(cmd.network.BrooklynUrl, cmd.network.BrooklynUser, cmd.network.BrooklynPass)
+	cmd.config.SetSkipSslChecks(cmd.network.SkipSslChecks)
 	cmd.config.Write()
 
-	loginVersion, err := version.Version(cmd.network)
+	loginVersion, code, err := version.Version(cmd.network)
 	if nil != err {
+		if code == http.StatusUnauthorized {
+			err = errors.New("Unauthorized")
+		}
 		error_handler.ErrorExit(err)
 	}
 	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)

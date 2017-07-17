@@ -30,27 +30,14 @@ import (
 	"path/filepath"
 )
 
-func getNetworkCredentialsFromConfig(yamlMap map[string]interface{}) (string, string, string, bool) {
-	var target, username, password string
-	var skipSslChecks bool
-	target, found := yamlMap["target"].(string)
-	if found {
-		auth, found := yamlMap["auth"].(map[string]interface{})
-		if found {
-			creds := auth[target].(map[string]interface{})
-			username, found = creds["username"].(string)
-			if found {
-				password, found = creds["password"].(string)
-			}
-		}
-		skipSslChecks, _ = yamlMap["skipSslChecks"].(bool)
-	}
-	return target, username, password, skipSslChecks
-}
-
 func main() {
 	config := io.GetConfig()
-	target, username, password, skipSslChecks := getNetworkCredentialsFromConfig(config.Map)
+	skipSslChecks := config.GetSkipSslChecks()
+	target, username, password, err := config.GetNetworkCredentials()
+	if err != nil && requiresLogin(os.Args) {
+		error_handler.ErrorExit(err)
+	}
+
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
 	network := net.NewNetwork(target, username, password, skipSslChecks)
 	cmdFactory := command_factory.NewFactory(network, config)
@@ -62,4 +49,34 @@ func main() {
 	if err := theApp.Run(args); nil != err {
 		error_handler.ErrorExit(err)
 	}
+}
+
+func requiresLogin(args []string) bool {
+	// global help or version commands
+	if (contains(args, "-h") ||
+		contains(args, "--help") ||
+	    contains(args, "-v") ||
+	    contains(args, "--version")) {
+		return false
+	}
+	// br on its own
+	if (len(args) == 1) {
+		return false
+	}
+	//
+	if (len(args) > 1) {
+		if (args[1] == "login" || args[1] == "help") {
+			return false
+		}
+	}
+	return true
+}
+
+func contains(slice []string, val string) bool {
+	for _, a := range slice {
+		if a == val {
+			return true
+		}
+	}
+	return false
 }

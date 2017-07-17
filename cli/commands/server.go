@@ -3,7 +3,7 @@
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
+ * to you under the Apache License, Server 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
@@ -16,22 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package version
+package commands
 
 import (
-	"encoding/json"
-	"github.com/apache/brooklyn-client/cli/models"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/scope"
+	"github.com/urfave/cli"
+	"fmt"
 )
 
-func Version(network *net.Network) (models.VersionSummary, int, error) {
-	url := "/v1/server/version"
-	var versionSummary models.VersionSummary
-	req := network.NewGetRequest(url)
-	body, code, err := network.SendRequestGetStatusCode(req)
-	if err != nil {
-		return versionSummary, code, err
+type Server struct {
+	network *net.Network
+}
+
+func NewServer(network *net.Network) (cmd *Server) {
+	cmd = new(Server)
+	cmd.network = network
+	return
+}
+
+func (cmd *Server) Metadata() command_metadata.CommandMetadata {
+	return command_metadata.CommandMetadata{
+		Name:        "server",
+		Description: "Display the URL of the connected Brooklyn",
+		Usage:       "BROOKLYN_NAME server",
+		Flags:       []cli.Flag{},
 	}
-	err = json.Unmarshal(body, &versionSummary)
-	return versionSummary, code, err
+}
+
+func (cmd *Server) Run(scope scope.Scope, c *cli.Context) {
+	fmt.Println(cmd.network.BrooklynUrl)
 }

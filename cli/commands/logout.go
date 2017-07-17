@@ -16,22 +16,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package version
+package commands
 
 import (
-	"encoding/json"
-	"github.com/apache/brooklyn-client/cli/models"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/error_handler"
+	"github.com/apache/brooklyn-client/cli/io"
 	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/scope"
+	"github.com/urfave/cli"
 )
 
-func Version(network *net.Network) (models.VersionSummary, int, error) {
-	url := "/v1/server/version"
-	var versionSummary models.VersionSummary
-	req := network.NewGetRequest(url)
-	body, code, err := network.SendRequestGetStatusCode(req)
-	if err != nil {
-		return versionSummary, code, err
+type Logout struct {
+	network *net.Network
+	config  *io.Config
+}
+
+func NewLogout(network *net.Network, config *io.Config) (cmd *Logout) {
+	cmd = new(Logout)
+	cmd.network = network
+	cmd.config = config
+	return
+}
+
+func (cmd *Logout) Metadata() command_metadata.CommandMetadata {
+	return command_metadata.CommandMetadata{
+		Name:        "logout",
+		Description: "Logout of brooklyn",
+		Usage:       "BROOKLYN_NAME logout",
+		Flags:       []cli.Flag{},
 	}
-	err = json.Unmarshal(body, &versionSummary)
-	return versionSummary, code, err
+}
+
+func (cmd *Logout) Run(scope scope.Scope, c *cli.Context) {
+	config := io.GetConfig()
+	err := config.Delete()
+	if err != nil {
+		error_handler.ErrorExit(err)
+	}
 }
