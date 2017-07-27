@@ -275,6 +275,8 @@ func AddCatalog(network *net.Network, resource string) (*models.CatalogBundleAdd
 			} else if lowercaseExtension == ".jar" {
 				contentType = "application/x-jar"
 				urlString = urlStringWithDetail
+			} else if lowercaseExtension == ".yaml" || lowercaseExtension == ".bom" {
+				contentType = "application/x-yaml"
 			}
 		}
 
