@@ -24,7 +24,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/models"
 	"github.com/apache/brooklyn-client/cli/net"
 	"net/url"
-        "path/filepath"
+	"path/filepath"
 	"errors"
 	"os"
 	"strings"

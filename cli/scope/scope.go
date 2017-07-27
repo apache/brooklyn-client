@@ -89,49 +89,42 @@ var scopeSpecifier = map[string]func(scope *Scope, id string){
 // the function will return ([]string{"br", "doSomething"}, Scope{Application:1, Entity:2})
 func ScopeArguments(args []string) ([]string, Scope) {
 	scope := Scope{}
-
 	if len(args) < 2 {
 		return args, scope
 	}
-
-	command := args[0]
-	args = args[1:]
-
 	args = defineScope(args, &scope)
-
-	args = prepend(command, args)
-
 	return args, scope
 }
 
 func defineScope(args []string, scope *Scope) []string {
+	// args is: name [global flags] [scope and id pair] command [flags] [arguments]
+	// Skip name and global flags
+	idx := 1
+	for isFlag(args[idx]) {
+		idx += 1
+	}
+	newArgs := args[:idx]
+	args = args[idx:]
 
-	allScopesFound := false
-	for !allScopesFound && len(args) > 2 && args[1][0] != '-' {
-		if setAppropriateScope, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
-			setAppropriateScope(scope, args[1])
+	for len(args) > 2 && !isFlag(args[1]) {
+		if scopeFn, nameOfAScope := scopeSpecifier[args[0]]; nameOfAScope {
+			scopeFn(scope, args[1])
 			args = args[2:]
 		} else {
-			allScopesFound = true
+			break
 		}
 	}
-
 	setDefaultEntityIfRequired(scope)
+	return append(newArgs, args...)
+}
 
-	return args
+// true if the first character of arg is -
+func isFlag(arg string) bool {
+	return arg[0] == '-'
 }
 
 func setDefaultEntityIfRequired(scope *Scope) {
 	if "" == scope.Entity {
 		scope.Entity = scope.Application
 	}
-}
-
-func prepend(v string, args []string) []string {
-	result := make([]string, len(args)+1)
-	result[0] = v
-	for i, a := range args {
-		result[i+1] = a
-	}
-	return result
 }

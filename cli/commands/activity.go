@@ -50,7 +50,7 @@ func (cmd *Activity) Metadata() command_metadata.CommandMetadata {
 		Name:        "activity",
 		Aliases:     []string{"activities", "act", "acts"},
 		Description: "Show the activity for an application / entity",
-		Usage:       "BROOKLYN_NAME SCOPE activity [ ACTIVITYID]",
+		Usage:       "BROOKLYN_NAME SCOPE activity [ACTIVITYID]",
 		Flags: []cli.Flag{
 			cli.StringSliceFlag{
 				Name:  "children, c",
