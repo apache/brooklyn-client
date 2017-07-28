@@ -66,25 +66,6 @@
         </mailingList>
     </mailingLists>
 
-    <properties>
-      <resteasy.version>3.0.19.Final</resteasy.version>
-    </properties>
-
-    <dependencyManagement>
-      <dependencies>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson2-provider</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
-      </dependencies>
-    </dependencyManagement>
-
     <repositories>
         <!--
             Same as in the parent apache pom. Repeated here in case

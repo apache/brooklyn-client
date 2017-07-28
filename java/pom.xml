@@ -33,6 +33,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <properties>
+      <resteasy.version>3.0.19.Final</resteasy.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.brooklyn</groupId>
@@ -47,6 +51,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
+            <version>${resteasy.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -57,6 +62,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>${resteasy.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
