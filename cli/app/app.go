@@ -60,6 +60,14 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 			Name:  "json, j",
 			Usage: "Render value as json with json path selector as described at https://github.com/NodePrime/jsonpath. (Experimental, not supported on all commands at present) ",
 		},
+		cli.BoolFlag {
+			Name: "verbose",
+			Usage: "Print HTTP requests and responses",
+		},
+		cli.BoolFlag {
+			Name: "vverbose",
+			Usage: "Print HTTP requests and responses and include body data",
+		},
 	}
 
 	app.Commands = []cli.Command{}

@@ -39,7 +39,7 @@ func main() {
 	}
 
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
-	network := net.NewNetwork(target, username, password, skipSslChecks)
+	network := net.NewNetwork(target, username, password, skipSslChecks, verbosity(os.Args))
 	cmdFactory := command_factory.NewFactory(network, config)
 
 	args, scope := scope.ScopeArguments(os.Args)
@@ -70,6 +70,16 @@ func requiresLogin(args []string) bool {
 		}
 	}
 	return true
+}
+
+func verbosity(args []string) string {
+	if contains(args, "--vverbose") {
+		return "vverbose"
+	} else if contains(args, "--verbose") {
+		return "verbose"
+	} else {
+		return "normal"
+	}
 }
 
 func contains(slice []string, val string) bool {
