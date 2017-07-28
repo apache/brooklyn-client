@@ -51,27 +51,16 @@ func DeleteSensor(network *net.Network, application, entity, sensor string) (str
 	return string(body), nil
 }
 
-// WIP
-//func SetSensor(network *net.Network, application, entity, sensor string) string {
-//	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
-//	body, err := network.SendPostRequest(url)
-//	if err != nil {
-//		error_handler.ErrorExit(err)
-//	}
+func SetSensor(network *net.Network, application, entity, sensor string, value string) (string, error) {
+	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors/%s", application, entity, sensor)
+	val := []byte("\""+value+"\"")
+	body, err := network.SendPostRequest(url, val)
+	if nil != err {
+		return "", err
+	}
+	return string(body), nil
+}
 
-//	return string(body)
-//}
-
-// WIP
-//func SetSensors(network *net.Network, application, entity, sensor string) string {
-//	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors", application, entity, sensor)
-//	body, err := network.SendPostRequest(url)
-//	if err != nil {
-//		error_handler.ErrorExit(err)
-//	}
-
-//	return string(body)
-//}
 
 func SensorList(network *net.Network, application, entity string) ([]models.SensorSummary, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/sensors", application, entity)

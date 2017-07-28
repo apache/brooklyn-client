@@ -27,6 +27,7 @@ type Scope struct {
 	Entity      string
 	Effector    string
 	Config      string
+	Sensor      string
 	Activity    string
 }
 
@@ -36,6 +37,7 @@ func (scope Scope) String() string {
 		", Entity: ", scope.Entity,
 		", Effector: ", scope.Effector,
 		", Config: ", scope.Config,
+		", Sensor: ", scope.Sensor,
 		", Activity: ", scope.Activity,
 		"}",
 	}, "")
@@ -57,6 +59,10 @@ func config(scope *Scope, id string) {
 	scope.Config = id
 }
 
+func sensor(scope *Scope, id string) {
+	scope.Sensor = id
+}
+
 func activity(scope *Scope, id string) {
 	scope.Activity = id
 }
@@ -75,6 +81,8 @@ var scopeSpecifier = map[string]func(scope *Scope, id string){
 	"conf":        config,
 	"con":         config,
 	"c":           config,
+	"sensor":      sensor,
+	"s":           sensor,
 	"activity":    activity,
 	"act":         activity,
 	"v":           activity,

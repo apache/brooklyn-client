@@ -52,7 +52,7 @@ func ConfigValueAsBytes(network *net.Network, application, entity, config string
 
 func SetConfig(network *net.Network, application, entity, config, value string) (string, error) {
 	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config/%s", application, entity, config)
-	val := []byte(value)
+	val := []byte("\""+value+"\"")
 	body, err := network.SendPostRequest(url, val)
 	if nil != err {
 		return "", err
@@ -70,16 +70,6 @@ func ConfigList(network *net.Network, application, entity string) ([]models.Conf
 
 	err = json.Unmarshal(body, &configList)
 	return configList, err
-}
-
-func PostConfig(network *net.Network, application, entity, config, value string) (string, error) {
-	url := fmt.Sprintf("/v1/applications/%s/entities/%s/config", application, entity)
-	val := []byte(value)
-	body, err := network.SendPostRequest(url, val)
-	if nil != err {
-		return "", err
-	}
-	return string(body), nil
 }
 
 func ConfigCurrentState(network *net.Network, application, entity string) (map[string]interface{}, error) {

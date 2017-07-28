@@ -20,6 +20,8 @@ package commands
 
 import (
 	"fmt"
+	"errors"
+	"github.com/apache/brooklyn-client/cli/api/entity_sensors"
 	"github.com/apache/brooklyn-client/cli/api/entity_config"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/error_handler"
@@ -51,9 +53,28 @@ func (cmd *SetConfig) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
-	response, err := entity_config.SetConfig(cmd.network, scope.Application, scope.Entity, scope.Config, c.Args().First())
-	if nil != err {
-		error_handler.ErrorExit(err)
+	
+	config := scope.Config
+	sensor := scope.Sensor
+	if config != "" && sensor != "" {
+		error_handler.ErrorExit(errors.New("Both config and sensor supplied when calling set. Please only specify one."))
 	}
-	fmt.Println(response)
+	
+	if config == "" && sensor == "" {
+		error_handler.ErrorExit(errors.New("Please specify either config or scope when calling set."))
+	}
+	
+	if config != "" {
+		_, err := entity_config.SetConfig(cmd.network, scope.Application, scope.Entity, config, c.Args().First())
+		if nil != err {
+			error_handler.ErrorExit(err)
+		}
+		fmt.Println("Config set correctly")
+	} else {
+		_, err := entity_sensors.SetSensor(cmd.network, scope.Application, scope.Entity, sensor, c.Args().First())
+		if nil != err {
+			error_handler.ErrorExit(err)
+		}
+		fmt.Println("Sensor set correctly")
+	}
 }
