@@ -22,9 +22,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -38,14 +41,16 @@ type Network struct {
 	BrooklynUser string
 	BrooklynPass string
 	SkipSslChecks bool
+	Verbosity    string
 }
 
-func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string, skipSslChecks bool) (net *Network) {
+func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string, skipSslChecks bool, verbose string) (net *Network) {
 	net = new(Network)
 	net.BrooklynUrl = brooklynUrl
 	net.BrooklynUser = brooklynUser
 	net.BrooklynPass = brooklynPass
 	net.SkipSslChecks = skipSslChecks
+	net.Verbosity = verbose
 	return
 }
 
@@ -119,9 +124,43 @@ func (net *Network) makeClient() (*http.Client) {
 	return client
 }
 
+func debug(verbosity string, supp func(b bool) ([]byte, error)) {
+	writer := func(data []byte, err error) {
+		if err == nil {
+			fmt.Fprintf(os.Stderr, "%s", data)
+			// include newline if data doesn't have one
+			if data[len(data)-1] != '\n' {
+				fmt.Fprintln(os.Stderr, "")
+			}
+		} else {
+			log.Fatalf("%s\n", err)
+		}
+	}
+	switch verbosity {
+	case "verbose":
+		writer(supp(false))
+	case "vverbose":
+		writer(supp(true))
+	}
+}
+
 func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, error) {
-        client := net.makeClient()
+	client := net.makeClient()
+	debug(net.Verbosity, func (includeBody bool) ([]byte, error) {
+		var authHeader = req.Header.Get("Authorization")
+		if authHeader != "" {
+			req.Header.Set("Authorization", "******")
+		}
+		data, err := httputil.DumpRequestOut(req, includeBody)
+		if authHeader != "" {
+			req.Header.Set("Authorization", authHeader)
+		}
+		return data, err
+	})
 	resp, err := client.Do(req)
+	debug(net.Verbosity, func (includeBody bool) ([]byte, error) {
+		return httputil.DumpResponse(resp, includeBody)
+	})
 	if err != nil {
 		return nil, 0, err
 	}
