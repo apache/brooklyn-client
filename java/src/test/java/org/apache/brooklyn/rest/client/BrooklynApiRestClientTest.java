@@ -74,7 +74,7 @@ public class BrooklynApiRestClientTest {
     @BeforeClass
     public void setUp() throws Exception {
         server = BrooklynRestApiLauncher.launcher()
-                .managementContext(manager)
+                .managementContext(getManagementContext())
                 .securityProvider(TestSecurityProvider.class)
                 .start();
 
