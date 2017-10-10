@@ -89,54 +89,7 @@ public class BrooklynApi {
     private final int timeOutInMillis;
     private static final Logger LOG = LoggerFactory.getLogger(BrooklynApi.class);
 
-    /**
-     * @deprecated since 0.9.0. Use {@link BrooklynApi#newInstance(String)} instead
-     */
-    @Deprecated
-    public BrooklynApi(URL endpoint) {
-        this(checkNotNull(endpoint, "endpoint").toString());
-    }
-
-    /**
-     * @deprecated since 0.9.0. Use {@link BrooklynApi#newInstance(String)} instead
-     */
-    @Deprecated
-    public BrooklynApi(String endpoint) {
-        // username/password cannot be null, but credentials can
-        this(endpoint, null);
-    }
-
-    /**
-     * @deprecated since 0.9.0. Use {@link BrooklynApi#newInstance(String, String, String)} instead
-     */
-    @Deprecated
-    public BrooklynApi(URL endpoint, String username, String password) {
-        this(endpoint.toString(), new UsernamePasswordCredentials(username, password));
-    }
-
-    /**
-     * @deprecated since 0.9.0. Use {@link BrooklynApi#newInstance(String, String, String)} instead
-     */
-    @Deprecated
-    public BrooklynApi(String endpoint, String username, String password) {
-        this(endpoint, new UsernamePasswordCredentials(username, password));
-    }
-
-    /**
-     * @deprecated since 0.9.0. Use {@link BrooklynApi#newInstance(String, String, String)} instead
-     */
-    @Deprecated
-    public BrooklynApi(URL endpoint, @Nullable Credentials credentials) {
-        this(endpoint.toString(), credentials);
-    }
-
-    /**
-     * Creates a BrooklynApi using an HTTP connection pool
-     *
-     * @deprecated since 0.9.0. Use {@link BrooklynApi#newInstance(String, String, String)} instead
-     */
-    @Deprecated
-    public BrooklynApi(String endpoint, @Nullable Credentials credentials) {
+    protected BrooklynApi(String endpoint, @Nullable Credentials credentials) {
         this(endpoint, credentials, 20, 5000);
     }
 
@@ -482,13 +435,4 @@ public class BrooklynApi {
         failSomeErrors(response, type.getRawType(), false);
         return getEntity(response, type);
     }
-    
-    /**
-     * @deprecated since 0.8.0-incubating. Use {@link #getEntity(Response, GenericType)} instead.
-     */
-    @Deprecated
-    public static <T> T getEntityGeneric(Response response, GenericType<T> type) {
-        return getEntity(response, type);
-    }
-
 }
