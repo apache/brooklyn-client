@@ -100,7 +100,7 @@ func defineScope(args []string, scope *Scope) []string {
 	// args is: name [global flags] [scope and id pair] command [flags] [arguments]
 	// Skip name and global flags
 	idx := 1
-	for isFlag(args[idx]) {
+	for idx < len(args) && isFlag(args[idx]) {
 		idx += 1
 	}
 	newArgs := args[:idx]

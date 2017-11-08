@@ -59,7 +59,16 @@ func TestScope(t *testing.T) {
 			Args: []string{"br", "--verbose", "a", "appid", "e", "entityId", "v", "--children", "activityId"},
 			ExpectedArgs: []string{"br", "--verbose", "v", "--children", "activityId"},
 			ExpectedScope: Scope{Application: "appid", Entity: "entityId"},
+		},{
+			Args: []string{"br", "-v"},
+			ExpectedArgs: []string{"br", "-v"},
+			ExpectedScope: Scope{},
+		},{
+			Args: []string{"br", "--help", "-v"},
+			ExpectedArgs: []string{"br", "--help", "-v"},
+			ExpectedScope: Scope{},
 		},
+
 	}
 	for _, elem := range testCases {
 		argsOut, scope := ScopeArguments(elem.Args)
