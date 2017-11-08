@@ -89,7 +89,7 @@ var scopeSpecifier = map[string]func(scope *Scope, id string){
 // the function will return ([]string{"br", "doSomething"}, Scope{Application:1, Entity:2})
 func ScopeArguments(args []string) ([]string, Scope) {
 	scope := Scope{}
-	if len(args) < 2 {
+	if len(args) < 3 {
 		return args, scope
 	}
 	args = defineScope(args, &scope)
