@@ -34,6 +34,7 @@ import (
 	"crypto/tls"
 	"net"
 	"time"
+	"strings"
 )
 
 type Network struct {
@@ -278,6 +279,15 @@ func VerifyLoginURL(network *Network) error {
 	}
 	if url.Host == "" {
 		return errors.New("Use login command to set Brooklyn URL with a valid host[:port]")
+	}
+	if len(strings.Split(url.Host, ":")) < 2 {
+		if url.Scheme == "https" {
+			url.Host += ":443"
+			network.BrooklynUrl = url.String()
+		} else if url.Scheme == "http" {
+			url.Host += ":80"
+			network.BrooklynUrl = url.String()
+		}
 	}
 	_, err = net.DialTimeout("tcp", url.Host, time.Duration(30) * time.Second)
 	if err != nil {
