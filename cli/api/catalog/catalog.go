@@ -193,6 +193,7 @@ func ZipResource(resource string) (*bytes.Buffer, error) {
 		if err != nil {
 			return err
 		}
+		relativePath = strings.Replace(relativePath, "\\", "/", -1)
 		f, err := writer.Create(relativePath)
 		if err != nil {
 			return err
