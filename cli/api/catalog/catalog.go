@@ -193,6 +193,7 @@ func ZipResource(resource string) (*bytes.Buffer, error) {
 		if err != nil {
 			return err
 		}
+		relativePath = strings.Replace(relativePath, "\\", "/", -1)
 		f, err := writer.Create(relativePath)
 		if err != nil {
 			return err
@@ -219,6 +220,7 @@ func AddCatalog(network *net.Network, resource string) (*models.CatalogBundleAdd
 	urlString := "/v1/catalog"
 	urlStringWithDetail := urlString + "?detail=true"
 	var result models.CatalogBundleAddResult
+	var body []byte
 
 	//Force auto-detect by default
 	contentType := "application/octet-stream"
@@ -227,18 +229,15 @@ func AddCatalog(network *net.Network, resource string) (*models.CatalogBundleAdd
 		return nil, err
 	}
 
-	//Only deal with the below file types
-	if "" != u.Scheme && "file" != u.Scheme  && "http" != u.Scheme && "https" != u.Scheme {
-		return nil, errors.New("Unrecognised protocol scheme: " + u.Scheme)
-	}
-
-	if "" == u.Scheme || "file" == u.Scheme {
-                if "file" == u.Scheme {
+	//If the resource exists as a file, or if the resource-parsed-as-URL as file scheme
+	_, err = os.Stat(resource)
+	if err == nil || "file" == u.Scheme {
+		if "file" == u.Scheme {
 			if u.Path == "" {
 				return nil, errors.New("No resource in 'file:' URL: " + resource)
 			}
-                        resource = u.Path
-                }
+			resource = u.Path
+		}
 
 		file, err := os.Open(filepath.Clean(resource))
 		if err != nil {
@@ -250,22 +249,16 @@ func AddCatalog(network *net.Network, resource string) (*models.CatalogBundleAdd
 			return nil, err
 		}
 
+		var dat []byte
+
 		if fileStat.IsDir() {
 			//A dir is a special case, we need to zip it up, and call a different network method
 			buf, err := ZipResource(resource)
 			if err != nil {
 				return nil, err
 			}
-			body, err := network.SendPostRequestWithContentType(urlStringWithDetail, buf.Bytes(), "application/x-zip")
-			if err != nil {
-				return nil, err
-			}
-			err = json.Unmarshal(body, &result)
-			if result.Code == "" {
-				// older version of server, doesn't support detail
-				err = json.Unmarshal(body, &result.Types)
-			}
-			return &result, err
+			dat = buf.Bytes()
+			contentType = "application/x-zip"
 		} else {
 			extension := filepath.Ext(resource)
 			lowercaseExtension := strings.ToLower(extension)
@@ -278,14 +271,28 @@ func AddCatalog(network *net.Network, resource string) (*models.CatalogBundleAdd
 			} else if lowercaseExtension == ".yaml" || lowercaseExtension == ".bom" {
 				contentType = "application/x-yaml"
 			}
+
+			dat, err = ioutil.ReadFile(resource)
+			if err != nil {
+				return nil, err
+			}
 		}
 
+		body, err = network.SendPostRequestWithContentType(urlStringWithDetail, dat, contentType)
+		if err != nil {
+			return nil, err
+		}
+
+	} else if "http" == u.Scheme || "https" == u.Scheme {
+		body, err = network.SendPostResourceRequest(urlString, resource, contentType)
+		if err != nil {
+			return nil, err
+		}
+
+	} else {
+		return nil, errors.New("File does not exist or unrecognised URL protocol scheme: " + resource)
 	}
 
-	body, err := network.SendPostResourceRequest(urlString, resource, contentType)
-	if err != nil {
-		return nil, err
-	}
 	err = json.Unmarshal(body, &result)
 	if result.Code == "" {
 		// detail API not supported, just store the types
