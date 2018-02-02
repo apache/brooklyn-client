@@ -77,13 +77,17 @@ var paramFlags = []cli.Flag{
 		Usage: "Parameter and value separated by '=', e.g. -P x=y. If the parameter value is complex or multi-" +
 		       "lined it may be provided in a file and referenced as: '@<file>', e.g. -P x=@/path/to/file.",
 	},
+	cli.StringFlag{
+		Name:  "timeout",
+		Usage: "Timeout for waiting for effector (e.g. '1s' for one second, '0' for forever); defaults to forever.",
+	},
 }
 
 func (cmd *Invoke) Metadata() command_metadata.CommandMetadata {
 	return command_metadata.CommandMetadata{
 		Name:        "invoke",
 		Description: "Invoke an effector of an application and entity",
-		Usage:       "BROOKLYN_NAME EFF-SCOPE invoke [ parameter-options ]",
+		Usage:       "BROOKLYN_NAME EFF-SCOPE invoke [ --timeout <val> ] [ parameter-options ]",
 		Flags:       paramFlags,
 	}
 }
@@ -119,8 +123,9 @@ func (cmd *Invoke) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
+	timeout := c.String("timeout")
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, scope.Effector, parms)
+	invoke(cmd.network, scope.Application, scope.Entity, scope.Effector, timeout, parms)
 }
 
 const stopEffector = "stop"
@@ -129,8 +134,9 @@ func (cmd *Stop) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
+	timeout := c.String("timeout")
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, stopEffector, parms)
+	invoke(cmd.network, scope.Application, scope.Entity, stopEffector, timeout, parms)
 }
 
 const startEffector = "start"
@@ -139,8 +145,9 @@ func (cmd *Start) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
+	timeout := c.String("timeout")
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, startEffector, parms)
+	invoke(cmd.network, scope.Application, scope.Entity, startEffector, timeout, parms)
 }
 
 const restartEffector = "restart"
@@ -149,13 +156,14 @@ func (cmd *Restart) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
+	timeout := c.String("timeout")
 	parms := c.StringSlice("param")
-	invoke(cmd.network, scope.Application, scope.Entity, restartEffector, parms)
+	invoke(cmd.network, scope.Application, scope.Entity, restartEffector, timeout, parms)
 }
 
-func invoke(network *net.Network, application, entity, effector string, parms []string) {
+func invoke(network *net.Network, application, entity, effector string, timeout string, parms []string) {
 	names, vals, err := extractParams(parms)
-	result, err := entity_effectors.TriggerEffector(network, application, entity, effector, names, vals)
+	result, err := entity_effectors.TriggerEffector(network, application, entity, effector, timeout, names, vals)
 	if nil != err {
 		error_handler.ErrorExit(err)
 	} else {
