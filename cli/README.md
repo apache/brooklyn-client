@@ -55,19 +55,6 @@ cd cli
 ```
 
 
-## Installing Dependencies
-
-The CLI has a small number of dependencies, including the popular `urfave/cli`.
-To manage the version of dependencies, the CLI
-code currently uses [Glide](https://github.com/Masterminds/glide) to fetch
-and maintain these:
-
-```bash
-go get github.com/Masterminds/glide
-$GOPATH/bin/glide install
-```
-
-
 ## Compiling the code with Go for development purposes
 
 Just use the regular Go build commands:

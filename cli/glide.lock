@@ -1,8 +1,9 @@
-hash: b5e09364283348512d5174937c662382a47e3d5e93f0f707aada9c2520d861e3
-updated: 2016-11-01T17:46:14.530067679Z
+hash: 7c8519b92c19888ea206fc6997cc110841df216d67eb54dda8db4abc3d24cc0c
+updated: 2018-03-23T12:39:58.092531Z
 imports:
 - name: github.com/NodePrime/jsonpath
   version: 84403ded544328c99be3472727667179eef23a91
+  repo: git@github.com:johnmccabe/jsonpath.git
   subpackages:
   - cli/jsonpath
 - name: github.com/urfave/cli

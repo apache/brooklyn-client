@@ -182,19 +182,6 @@ mkdir -p ${GOPATH}/src/${PROJECT%/*}
 [ -e ${GOPATH}/src/${PROJECT} ] || ln -s ${sourcedir} ${GOPATH}/src/${PROJECT}
 PATH=${GOPATH}/bin:${PATH}
 
-command -v $GLIDE >/dev/null 2>&1 || {
-	echo Installing $GLIDE
-	go get github.com/Masterminds/glide || { echo failed installing $GLIDE ; exit 1; }
-}
-
-command -v $GLIDE >/dev/null 2>&1 || {
-	echo "Command for resolving dependencies ($GLIDE) not found and could not be installed in $GOPATH"
-	exit 1
-}
-
-echo "Installing dependencies"
-$GLIDE install
-
 if [ -n "$all" -a \( -n "$os" -o -n "$arch" \) ]; then
 	show_help
 	echo "OS and ARCH must not be combined with ALL"
