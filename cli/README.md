@@ -106,7 +106,7 @@ consisting of a zip file containing all the binaries.  This artifact can be refe
 <artifactId>brooklyn-client-cli</artifactId>
 <classifier>bin</classifier>
 <type>zip</type>
-<version>1.0.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
+<version>1.0.0-M1</version>  <!-- BROOKLYN_VERSION -->
 ```
 
 Most of the work is delegated to the `release/build.sh` script;
