@@ -16,7 +16,9 @@
 # under the License.
 
 # For Brooklyn Client, we use a debian distribution instead of alpine as there are some libgcc incompatibilities with GO
-FROM maven:3.5.2-jdk-8-slim
+FROM maven:3.5.4-jdk-8-slim
 
 # Install necessary binaries to build brooklyn-client
 RUN apt-get update && apt-get install -y git-core golang-go
+
+RUN mkdir -p /var/maven/.m2/ && chmod -R 777 /var/maven/
