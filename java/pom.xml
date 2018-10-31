@@ -302,6 +302,7 @@
                                 <cobertura.user.java.nio>false</cobertura.user.java.nio>
                             </systemPropertyVariables>
                             <printSummary>true</printSummary>
+                            <useSystemClassLoader>false</useSystemClassLoader>
                         </configuration>
                     </plugin>
                     <plugin>
