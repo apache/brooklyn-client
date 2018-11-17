@@ -1,9 +1,0 @@
-package: github.com/apache/brooklyn-client/cli
-import:
-- package: github.com/urfave/cli
-# using git@github.com:johnmccabe/jsonpath.git temporarily as original repo deleted March 2018
-- package: github.com/NodePrime/jsonpath/cli/jsonpath
-  repo: git@github.com:johnmccabe/jsonpath.git
-- package: golang.org/x/crypto
-  subpackages:
-  - ssh/terminal

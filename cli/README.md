@@ -27,8 +27,8 @@ as it relies on this in the naming of packages.
 
 If you're familiar with Go and just want to develop the `br` tool itself you may simply work in your usual `GOPATH`, 
 using `go get github.com/apache/brooklyn-client/cli/br` and adding your own fork as a remote. 
-If you know `glide` then you probably know what to do and can ignore these instructions;
-`br` is built just like any other Go project. 
+
+`br` is built just like any other Go project. Dependencies are managed through [dep](https://github.com/golang/dep).
 
 If you're new to Go and you want to work on the CLI alongside non-Go components in Apache Brooklyn,
 then the common Go setup -- where code lives under the `GOPATH` -- may be tedious to work with.
