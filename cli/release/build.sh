@@ -26,7 +26,6 @@ BRNAME="br"
 PROJECT="github.com/apache/brooklyn-client/cli"
 CLI_PACKAGE="${PROJECT}/${BRNAME}"
 GOBIN=go
-GLIDE=glide
 
 START_TIME=$(date +%s)
 

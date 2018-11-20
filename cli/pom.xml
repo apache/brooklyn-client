@@ -100,8 +100,7 @@
                 <configuration>
                     <excludes combine.children="append">
                         <exclude>vendor/**</exclude>
-                        <exclude>glide.*</exclude>
-                        <exclude>.glide/**</exclude>
+                        <exclude>Gopkg.*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
