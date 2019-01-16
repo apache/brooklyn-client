@@ -34,7 +34,7 @@
     </parent>
 
     <properties>
-      <resteasy.version>3.0.19.Final</resteasy.version>
+      <resteasy.version>3.6.2.Final</resteasy.version>
     </properties>
 
     <dependencies>
