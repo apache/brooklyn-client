@@ -61,6 +61,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.jboss.resteasy.client.ClientExecutor;
+import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ProxyBuilder;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
@@ -168,7 +169,13 @@ public class BrooklynApi {
                 .setConnectionManager(connectionManagerSupplier.get())
                 .build();
 
-        return new ApacheHttpClient4Executor(httpClient);
+        return new ApacheHttpClient4Executor(httpClient) {
+            @Override
+            public ClientResponse execute(ClientRequest request) throws Exception {
+                request.header("X-Csrf-Token-Required-For-Requests", "none");
+                return super.execute(request);
+            }
+        };
     }
 
     /**
