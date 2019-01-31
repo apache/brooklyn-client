@@ -43,15 +43,27 @@ Runtime dependencies:
     Developed by: QOS.ch (http://www.qos.ch)
     License name: Eclipse Public License, version 1.0
   
-  com.fasterxml.jackson:2.7.5: 
+  com.fasterxml.jackson:2.9.7: 
     Project:      Jackson FasterXML
-    Version:      2.7.5
+    Version:      2.9.7
     Available at: 
       - http://github.com/FasterXML/jackson
-      - http://wiki.fasterxml.com/JacksonHome
       - https://github.com/FasterXML/jackson-core
+      - https://github.com/FasterXML/jackson-modules-base
     Developed by: FasterXML (http://fasterxml.com/)
     License name: Apache License, version 2.0
+  
+  com.github.fge.jackson-coreutils:1.0: 
+    Project:      jackson-coreutils
+    Version:      1.0
+    Available at: https://github.com/fge/jackson-coreutils
+    License name: GNU Lesser General Public License, version 3.0
+  
+  com.github.fge.json-patch:1.3: 
+    Project:      json-patch
+    Version:      1.3
+    Available at: https://github.com/fge/json-patch
+    License name: GNU Lesser General Public License, version 3.0
   
   com.google.code.findbugs.jsr305:2.0.1: 
     Project:      FindBugs-jsr305
@@ -59,10 +71,10 @@ Runtime dependencies:
     Available at: http://findbugs.sourceforge.net/
     License name: Apache License, version 2.0
   
-  com.google.code.gson:2.3: 
+  com.google.code.gson:2.5: 
     Project:      Gson
-    Version:      2.3
-    Available at: http://code.google.com/p/google-gson/
+    Version:      2.5
+    Available at: https://github.com/google/gson
     Developed by: Google, Inc. (http://www.google.com)
     License name: Apache License, version 2.0
   
@@ -90,7 +102,7 @@ Runtime dependencies:
     Available at: http://www.jcraft.com/jzlib/
     Developed by: jcraft (http://www.jcraft.com/)
     License name: BSD 3-Clause (New BSD) License
-    Notice:       Copyright (c) Copyright (c) 2000-2011 ymnk, JCraft,Inc. All rights reserved.
+    Notice:       Copyright (c) 2000-2011 ymnk, JCraft,Inc. All rights reserved.
   
   com.maxmind.db.maxmind-db:1.2.1: 
     Project:      MaxMind DB Reader
@@ -113,9 +125,9 @@ Runtime dependencies:
     Developed by: XStream (http://xstream.codehaus.org)
     License name: BSD 3-Clause (New BSD) License
   
-  commons-codec:1.9: 
+  commons-codec:1.10: 
     Project:      Apache Commons Codec
-    Version:      1.9
+    Version:      1.10
     Available at: http://commons.apache.org/proper/commons-codec/
     Developed by: The Apache Software Foundation (http://www.apache.org/)
     License name: Apache License, version 2.0
@@ -166,11 +178,11 @@ Runtime dependencies:
     Available at: http://beanvalidation.org/
     License name: Apache License, version 2.0
   
-  javax.ws.rs.javax.ws.rs-api:2.0.1: 
+  javax.ws.rs.javax.ws.rs-api:2.1.1: 
     Project:      javax.ws.rs-api
-    Version:      2.0.1
-    Available at: http://jax-rs-spec.java.net
-    Developed by: Oracle Corporation (http://www.oracle.com/)
+    Version:      2.1.1
+    Available at: https://github.com/eclipse-ee4j/jaxrs-api
+    Developed by: Eclipse Foundation (https://www.eclipse.org/org/foundation/)
     License name: Common Development and Distribution License, version 1.1
   
   net.i2p.crypto.eddsa:0.1.0: 
@@ -205,23 +217,30 @@ Runtime dependencies:
     Developed by: The Apache Software Foundation (http://www.apache.org/)
     License name: Apache License, version 2.0
   
-  org.apache.felix.org.apache.felix.framework:5.6.1: 
+  org.apache.felix.org.apache.felix.framework:5.6.10: 
     Project:      Apache Felix Framework
-    Version:      5.6.1
+    Version:      5.6.10
     Available at: http://felix.apache.org/
     Developed by: The Apache Software Foundation (http://www.apache.org/)
     License name: Apache License, version 2.0
   
-  org.apache.httpcomponents.httpclient:4.5.2: 
+  org.apache.geronimo.specs.geronimo-ws-metadata_2.0_spec:1.1.3: 
+    Project:      Web Services Metadata 2.0
+    Version:      1.1.3
+    Available at: http://geronimo.apache.org/maven/specs/geronimo-ws-metadata_2.0_spec/1.1.3
+    Developed by: The Apache Software Foundation (http://www.apache.org)
+    License name: Apache License, version 2.0
+  
+  org.apache.httpcomponents.httpclient:4.5.6: 
     Project:      Apache HttpClient
-    Version:      4.5.2
+    Version:      4.5.6
     Available at: http://hc.apache.org/httpcomponents-client-ga
     Developed by: The Apache Software Foundation (http://www.apache.org/)
     License name: Apache License, version 2.0
   
-  org.apache.httpcomponents.httpcore:4.4.4: 
+  org.apache.httpcomponents.httpcore:4.4.9: 
     Project:      Apache HttpCore
-    Version:      4.4.4
+    Version:      4.4.9
     Available at: http://hc.apache.org/httpcomponents-core-ga
     Developed by: The Apache Software Foundation (http://www.apache.org/)
     License name: Apache License, version 2.0
@@ -235,11 +254,11 @@ Runtime dependencies:
     License name: MIT License
     Notice:       Copyright (c) The Legion of the Bouncy Castle Inc. (http://www.bouncycastle.org)
   
-  org.codehaus.groovy.groovy-all:2.3.7: 
-    Project:      Groovy
-    Version:      2.3.7
-    Available at: http://groovy.codehaus.org/
-    Developed by: The Codehaus (http://codehaus.org)
+  org.codehaus.groovy.groovy-all:2.4.15: 
+    Project:      Apache Groovy
+    Version:      2.4.15
+    Available at: http://groovy-lang.org
+    Developed by: Apache Software Foundation (http://groovy-lang.org)
     License name: Apache License, version 2.0
   
   org.freemarker:2.3.25-incubating: 
@@ -256,18 +275,18 @@ Runtime dependencies:
     License name: Apache License, version 2.0
     Notice:       Copyright (c) Shigeru Chiba
   
-  org.jboss.logging.jboss-logging:3.1.4.GA: 
+  org.jboss.logging.jboss-logging:3.3.1.Final: 
     Project:      JBoss Logging 3
-    Version:      3.1.4.GA
+    Version:      3.3.1.Final
     Available at: http://www.jboss.org
     Developed by: JBoss by Red Hat (http://www.jboss.org)
     License name: Apache License, version 2.0
   
-  org.jboss.resteasy:3.0.19.Final: 
+  org.jboss.resteasy:3.6.2.Final: 
     Project: 
       - RESTEasy JAX-RS Implementation
-      - Resteasy Jackson Provider
-    Version:      3.0.19.Final
+      - RESTEasy Jackson 2 Provider
+    Version:      3.6.2.Final
     Available at: http://rest-easy.org
     Developed by: JBoss by Red Hat (http://www.jboss.org)
     License name: Apache License, version 2.0
@@ -279,12 +298,19 @@ Runtime dependencies:
     Developed by: JBoss by Red Hat (http://www.jboss.org)
     License name: Common Development and Distribution License, version 1.0
   
-  org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.0_spec:1.0.0.Final: 
-    Project:      JAX-RS 2.0: The Java(TM) API for RESTful Web Services
-    Version:      1.0.0.Final
+  org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec:1.0.2.Final: 
+    Project:      JAX-RS 2.1: The Java(TM) API for RESTful Web Services
+    Version:      1.0.2.Final
     Available at: http://www.jboss.org
     Developed by: JBoss by Red Hat (http://www.jboss.org)
     License name: Common Development and Distribution License, version 1.0
+  
+  org.jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec:1.0.0.Final: 
+    Project:      Java Architecture for XML Binding 2.3
+    Version:      1.0.0.Final
+    Available at: http://www.jboss.org
+    Developed by: JBoss by Red Hat (http://www.jboss.org)
+    License name: Common Development and Distribution License, version 1.1
   
   org.osgi.org.osgi.core:6.0.0: 
     Project:      org.osgi.core
@@ -293,13 +319,19 @@ Runtime dependencies:
     Developed by: OSGi Alliance (http://www.osgi.org)
     License name: Apache License, version 2.0
   
-  org.ow2.asm:5.0.4: 
+  org.ow2.asm:5.2: 
     Project:      ASM Core
-    Version:      5.0.4
+    Version:      5.2
     Available at: http://asm.objectweb.org/
     Developed by: ObjectWeb (http://www.objectweb.org/)
     License name: BSD 3-Clause (New BSD) License
     Notice:       Copyright (c) 2000-2011 INRIA, France Telecom
+  
+  org.reactivestreams.reactive-streams:1.0.2: 
+    Project:      reactive-streams
+    Version:      1.0.2
+    Available at: http://www.reactive-streams.org/
+    License name: CC0
   
   org.reflections:0.9.10: 
     Project:      Reflections
@@ -314,9 +346,9 @@ Runtime dependencies:
     Developed by: QOS.ch (http://www.qos.ch)
     License name: MIT License
   
-  org.yaml.snakeyaml:1.17: 
+  org.yaml.snakeyaml:1.23: 
     Project:      SnakeYAML
-    Version:      1.17
+    Version:      1.23
     Available at: http://www.snakeyaml.org
     License name: Apache License, version 2.0
   
