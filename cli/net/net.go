@@ -67,7 +67,6 @@ func (net *Network) NewRequest(method, path string, body io.Reader) *http.Reques
 			req.Header.Add(k,v.(string))
 		}
 	}
-	fmt.Printf("CredentialsRequired %q \n",net.CredentialsRequired)
 	if net.CredentialsRequired {
 		req.SetBasicAuth(net.BrooklynUser, net.BrooklynPass)
 	}

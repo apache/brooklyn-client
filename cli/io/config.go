@@ -20,7 +20,6 @@ package io
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 
