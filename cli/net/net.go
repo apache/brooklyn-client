@@ -43,21 +43,34 @@ type Network struct {
 	BrooklynPass string
 	SkipSslChecks bool
 	Verbosity    string
+	UserHeaders	map[string]interface{}
+	CredentialsRequired bool
 }
 
-func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string, skipSslChecks bool, verbose string) (net *Network) {
+func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string, skipSslChecks bool, verbose string, credentialsRequired bool, userHeaders map[string]interface{}) (net *Network) {
 	net = new(Network)
 	net.BrooklynUrl = brooklynUrl
 	net.BrooklynUser = brooklynUser
 	net.BrooklynPass = brooklynPass
 	net.SkipSslChecks = skipSslChecks
 	net.Verbosity = verbose
+	net.CredentialsRequired = credentialsRequired
+	net.UserHeaders = userHeaders
 	return
 }
 
 func (net *Network) NewRequest(method, path string, body io.Reader) *http.Request {
 	req, _ := http.NewRequest(method, net.BrooklynUrl+path, body)
-	req.SetBasicAuth(net.BrooklynUser, net.BrooklynPass)
+
+	if len(net.UserHeaders)>0{
+		for k, v :=range net.UserHeaders  {
+			req.Header.Add(k,v.(string))
+		}
+	}
+	fmt.Printf("CredentialsRequired %q \n",net.CredentialsRequired)
+	if net.CredentialsRequired {
+		req.SetBasicAuth(net.BrooklynUser, net.BrooklynPass)
+	}
 	return req
 }
 

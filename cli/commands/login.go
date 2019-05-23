@@ -54,7 +54,11 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 		Name:        "login",
 		Description: "Login to brooklyn",
 		Usage:       "BROOKLYN_NAME login URL [USER [PASSWORD]]",
-		Flags:       []cli.Flag{cli.BoolFlag{Name: "skipSslChecks", Usage: "Skip SSL Checks"}},
+		Flags:       []cli.Flag{
+			cli.BoolFlag{Name: "skipSslChecks", Usage: "Skip SSL Checks"},
+			cli.BoolFlag{Name: "noCredentials", Usage: "No user/password needed"},
+			cli.StringSliceFlag{Name: "header, H", Usage: "Optional headers"},
+		},
 	}
 }
 
@@ -83,6 +87,9 @@ func (cmd *Login) promptAndReadPassword() (password string) {
 }
 
 func (cmd *Login) getCredentialsFromCommandLineIfNeeded() {
+	if !cmd.network.CredentialsRequired {
+		return
+	}
 	// Prompt for username if not supplied
 	if cmd.network.BrooklynUser == "" {
 		cmd.network.BrooklynUser = cmd.promptAndReadUsername()
@@ -92,6 +99,21 @@ func (cmd *Login) getCredentialsFromCommandLineIfNeeded() {
 	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
 		cmd.network.BrooklynPass = cmd.promptAndReadPassword()
 	}
+}
+
+func parseHeaders(parsedHeaders []string) (headerMap map[string]interface{})  {
+	if len(parsedHeaders)>0{
+		headerMap = make(map[string]interface{})
+		for _, header:=range parsedHeaders  {
+			if strings.Contains(header,"="){
+				keyValue := strings.SplitN(header,"=",2)
+				headerMap[keyValue[0]]=keyValue[1]
+			}else{
+				headerMap[header]=""
+			}
+		}
+	}
+	return
 }
 
 func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
@@ -104,6 +126,8 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.network.BrooklynUser = c.Args().Get(1)
 	cmd.network.BrooklynPass = c.Args().Get(2)
 	cmd.network.SkipSslChecks = c.Bool("skipSslChecks")
+	cmd.network.CredentialsRequired = !c.Bool("noCredentials")
+	cmd.network.UserHeaders = parseHeaders(c.StringSlice("header"))
 
 	config := io.GetConfig()
 
@@ -119,7 +143,7 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0 : len(cmd.network.BrooklynUrl)-1]
 	}
 
-	if cmd.network.BrooklynUrl != "" && cmd.network.BrooklynUser == "" {
+	if cmd.network.BrooklynUrl != "" &&  cmd.network.BrooklynUser == "" && cmd.network.CredentialsRequired {
 		// if only target supplied at command line see if it already exists in the config file
 		if username, password, err := config.GetNetworkCredentialsForTarget(cmd.network.BrooklynUrl); err == nil {
 			cmd.network.BrooklynUser = username
@@ -131,6 +155,8 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	// now persist these credentials to the yaml file
 	cmd.config.SetNetworkCredentials(cmd.network.BrooklynUrl, cmd.network.BrooklynUser, cmd.network.BrooklynPass)
 	cmd.config.SetSkipSslChecks(cmd.network.SkipSslChecks)
+	cmd.config.SetCredentialsRequired(cmd.network.CredentialsRequired)
+	cmd.config.SetUserHeaders(cmd.network.UserHeaders)
 	cmd.config.Write()
 
 	loginVersion, code, err := version.Version(cmd.network)

@@ -33,13 +33,15 @@ import (
 func main() {
 	config := io.GetConfig()
 	skipSslChecks := config.GetSkipSslChecks()
+	credentialsRequired := config.GetCredentialsRequired()
+	userHeaders := config.GetUserHeaders()
 	target, username, password, err := config.GetNetworkCredentials()
 	if err != nil && requiresLogin(os.Args) {
 		error_handler.ErrorExit(err)
 	}
 
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
-	network := net.NewNetwork(target, username, password, skipSslChecks, verbosity(os.Args))
+	network := net.NewNetwork(target, username, password, skipSslChecks, verbosity(os.Args), credentialsRequired, userHeaders)
 	cmdFactory := command_factory.NewFactory(network, config)
 
 	args, scope := scope.ScopeArguments(os.Args)

@@ -20,6 +20,7 @@ package io
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -34,10 +35,13 @@ import (
 const authKey = "auth"
 
 const credentialsKey = "credentials"
+const optionsKey = "options"
 const usernameKey = "username"
 const passwordKey = "password"
 const targetKey = "target"
 const skipSslChecksKey = "skipSslChecks"
+const headersKey = "headers"
+const credentialsRequiredKey = "credentialsRequired"
 
 type Config struct {
 	FilePath string
@@ -247,5 +251,24 @@ func (config *Config) GetSkipSslChecks() bool {
 }
 
 func (config *Config) SetSkipSslChecks(skipSslChecks bool) {
-	config.Map["skipSslChecks"] = skipSslChecks
+	config.Map[skipSslChecksKey] = skipSslChecks
+}
+
+func (config *Config) GetUserHeaders() (headerMap map[string]interface{}){
+	headerMap, _ = config.Map[headersKey].(map[string]interface{})
+	return
+}
+func (config *Config) SetUserHeaders(headerMap map[string]interface{}) {
+	config.Map[headersKey] = headerMap
+}
+
+func (config *Config) GetCredentialsRequired() bool {
+	if config.Map == nil {
+		config.Map = make(map[string]interface{})
+	}
+	credentialsRequired, _ := config.Map[credentialsRequiredKey].(bool)
+	return credentialsRequired
+}
+func (config *Config) SetCredentialsRequired(credentialsRequired bool) {
+	config.Map[credentialsRequiredKey] = credentialsRequired
 }
