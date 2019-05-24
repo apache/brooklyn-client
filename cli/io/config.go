@@ -265,7 +265,10 @@ func (config *Config) GetCredentialsRequired() bool {
 	if config.Map == nil {
 		config.Map = make(map[string]interface{})
 	}
-	credentialsRequired, _ := config.Map[credentialsRequiredKey].(bool)
+	credentialsRequired, found := config.Map[credentialsRequiredKey].(bool)
+	if !found{
+		credentialsRequired=true
+	}
 	return credentialsRequired
 }
 func (config *Config) SetCredentialsRequired(credentialsRequired bool) {
