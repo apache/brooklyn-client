@@ -57,7 +57,7 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 		Flags:       []cli.Flag{
 			cli.BoolFlag{Name: "skipSslChecks", Usage: "Skip SSL Checks"},
 			cli.BoolFlag{Name: "noCredentials", Usage: "No user/password needed"},
-			cli.StringSliceFlag{Name: "header, H", Usage: "Optional headers"},
+			cli.StringSliceFlag{Name: "header, H", Usage: "Optional headers. Format: 'hedaderName'='header value'"},
 		},
 	}
 }

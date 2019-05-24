@@ -27,26 +27,35 @@ func TestConfig(t *testing.T) {
 
 	testFileFormat(t, "testconfig.json")
 	testFileFormat(t, "legacyConfig.json")
-	testCredentialsRequired(t, "testConfigHeaders.json")
-	testHeaders(t, "testConfigHeaders.json")
+
+	testCredentialsRequired(t, "testconfig.json",true)
+	testCredentialsRequired(t, "legacyConfig.json", false)
+	testCredentialsRequired(t, "testConfigHeaders.json", false)
+
+	testHeaders(t, "testconfig.json", nil)
+	testHeaders(t, "legacyConfig.json", nil)
+	testHeaders(t, "testConfigHeaders.json", mockHeaders())
 }
 
-func testCredentialsRequired(t *testing.T,testFile string) {
-	config :=getConfigFromFile(t,testFile)
-	isCredentialsRequired := config.GetCredentialsRequired()
-	assertBool(nil,t,"isCredentialsRequired",isCredentialsRequired,false)
-}
-
-func testHeaders(t *testing.T, testFile string) {
-	config :=getConfigFromFile(t,testFile)
-	userHeaders := config.GetUserHeaders()
-	expectedHeaders:=make(map[string]interface{})
+func mockHeaders() (expectedHeaders map[string]interface{}) {
+	expectedHeaders=make(map[string]interface{})
 	expectedHeaders["Header1"]="Header one"
 	expectedHeaders["Header2"]="Header 2"
 	expectedHeaders["header3"]=""
+	return
+}
+
+func testCredentialsRequired(t *testing.T,testFile string, expected bool) {
+	config :=getConfigFromFile(t,testFile)
+	isCredentialsRequired := config.GetCredentialsRequired()
+	assertBool(nil,t,"isCredentialsRequired",isCredentialsRequired,expected)
+}
+
+func testHeaders(t *testing.T, testFile string, expectedHeaders map[string]interface{}) {
+	config :=getConfigFromFile(t,testFile)
+	userHeaders := config.GetUserHeaders()
 
 	assertHeaders(nil, t, userHeaders, expectedHeaders)
-
 }
 
 func assertHeaders(err error, t *testing.T, actualHeaders map[string]interface{}, expectedHeaders map[string]interface{}) {
