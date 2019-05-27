@@ -19,6 +19,7 @@
 package commands
 
 import (
+	"encoding/base64"
 	"fmt"
 	"syscall"
 	"bufio"
@@ -37,9 +38,17 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
+const authorizationParam = "authorization"
+const skipSslChecksParam = "skipSslChecks"
+
+const BASIC_AUTH = "Basic"
+const BEARER_AUTH = "Bearer"
+
 type Login struct {
-	network *net.Network
-	config  *io.Config
+	network 		*net.Network
+	config  		*io.Config
+	brooklynUser	string
+	brooklynPass	string
 }
 
 func NewLogin(network *net.Network, config *io.Config) (cmd *Login) {
@@ -55,9 +64,9 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 		Description: "Login to brooklyn",
 		Usage:       "BROOKLYN_NAME login URL [USER [PASSWORD]]",
 		Flags:       []cli.Flag{
-			cli.BoolFlag{Name: "skipSslChecks", Usage: "Skip SSL Checks"},
-			cli.BoolFlag{Name: "noCredentials", Usage: "No user/password needed"},
-			cli.StringSliceFlag{Name: "header, H", Usage: "Optional headers. Format: 'hedaderName'='header value'"},
+			cli.BoolFlag{Name: skipSslChecksParam, Usage: "Skip SSL Checks"},
+			cli.StringFlag{Name: authorizationParam+", A", Usage: "Type of authentication header. Format: 'authorization=Basic'" +
+				" or 'authorization=Bearer:xxxxx.yyyyyy.zzzzz'"},
 		},
 	}
 }
@@ -87,33 +96,55 @@ func (cmd *Login) promptAndReadPassword() (password string) {
 }
 
 func (cmd *Login) getCredentialsFromCommandLineIfNeeded() {
-	if !cmd.network.CredentialsRequired {
+	if !cmd.isBasicAuth() {
 		return
 	}
+	if cmd.network.Credentials != ""{
+		return
+	}
+
 	// Prompt for username if not supplied
-	if cmd.network.BrooklynUser == "" {
-		cmd.network.BrooklynUser = cmd.promptAndReadUsername()
+	if cmd.brooklynUser == "" {
+		cmd.brooklynUser = cmd.promptAndReadUsername()
 	}
 
 	// Prompt for password if not supplied (password is not echoed to screen
-	if cmd.network.BrooklynUser != "" && cmd.network.BrooklynPass == "" {
-		cmd.network.BrooklynPass = cmd.promptAndReadPassword()
+	if cmd.brooklynUser!= "" && cmd.brooklynPass == "" {
+		cmd.brooklynPass = cmd.promptAndReadPassword()
+	}
+
+	cmd.network.Credentials = base64.StdEncoding.EncodeToString([]byte(cmd.brooklynUser + ":" + cmd.brooklynPass))
+}
+
+func (cmd *Login) getCredentialsFromAuthParamIfNeeded(authParam string) {
+	if cmd.isBasicAuth() {
+		return
+	}
+	if cmd.network.Credentials=="" {
+		credentials := cmd.parseAuthorizationParam(authParam)
+		if len(credentials) != 2 {
+			error_handler.ErrorExit("Use authorization=type:value")
+		} else {
+			cmd.network.Credentials = credentials[1]
+		}
 	}
 }
 
-func parseHeaders(parsedHeaders []string) (headerMap map[string]interface{})  {
-	if len(parsedHeaders)>0{
-		headerMap = make(map[string]interface{})
-		for _, header:=range parsedHeaders  {
-			if strings.Contains(header,"="){
-				keyValue := strings.SplitN(header,"=",2)
-				headerMap[keyValue[0]]=keyValue[1]
-			}else{
-				headerMap[header]=""
+func (cmd *Login) getAuthorizationType(authorizationParamInput string) (authorizationType string)  {
+	if authorizationParamInput !=""{
+		if strings.EqualFold(BASIC_AUTH,authorizationParamInput){
+			authorizationType = BASIC_AUTH
+		}else {
+			authorizationType = cmd.parseAuthorizationParam(authorizationParamInput)[0]
+			if strings.EqualFold(authorizationType,BEARER_AUTH) {
+				authorizationType=BEARER_AUTH
 			}
 		}
+	}else {
+		// default authentication
+		authorizationType = BASIC_AUTH
 	}
-	return
+	return authorizationType
 }
 
 func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
@@ -123,11 +154,13 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 
 	// If an argument was not supplied, it is set to empty string
 	cmd.network.BrooklynUrl = c.Args().Get(0)
-	cmd.network.BrooklynUser = c.Args().Get(1)
-	cmd.network.BrooklynPass = c.Args().Get(2)
+	cmd.brooklynUser = c.Args().Get(1)
+	cmd.brooklynPass = c.Args().Get(2)
 	cmd.network.SkipSslChecks = c.Bool("skipSslChecks")
-	cmd.network.CredentialsRequired = !c.Bool("noCredentials")
-	cmd.network.UserHeaders = parseHeaders(c.StringSlice("header"))
+	cmd.network.AuthorizationType = cmd.getAuthorizationType(c.String(authorizationParam))
+
+	//clear Credentials credentials
+	cmd.network.Credentials=""
 
 	config := io.GetConfig()
 
@@ -143,20 +176,25 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0 : len(cmd.network.BrooklynUrl)-1]
 	}
 
-	if cmd.network.BrooklynUrl != "" &&  cmd.network.BrooklynUser == "" && cmd.network.CredentialsRequired {
+	if cmd.network.BrooklynUrl != "" &&  cmd.brooklynUser == "" && c.String(authorizationParam)==""{
 		// if only target supplied at command line see if it already exists in the config file
-		if username, password, err := config.GetNetworkCredentialsForTarget(cmd.network.BrooklynUrl); err == nil {
-			cmd.network.BrooklynUser = username
-			cmd.network.BrooklynPass = password
+		if credentials, err := config.GetNetworkCredentialsForTarget(cmd.network.BrooklynUrl); err == nil {
+			cmd.network.Credentials = credentials
+		}
+		if authorizationType, err := config.GetAuthType(cmd.network.BrooklynUrl); err == nil{
+			// TODO remove
+			//fmt.Printf("authorizationType from file %s\n",authorizationType)
+			cmd.network.AuthorizationType = authorizationType
 		}
 	}
+
 	cmd.getCredentialsFromCommandLineIfNeeded()
+	cmd.getCredentialsFromAuthParamIfNeeded(c.String(authorizationParam))
 
 	// now persist these credentials to the yaml file
-	cmd.config.SetNetworkCredentials(cmd.network.BrooklynUrl, cmd.network.BrooklynUser, cmd.network.BrooklynPass)
+	cmd.config.SetNetworkCredentials(cmd.network.BrooklynUrl, cmd.network.Credentials)
+	cmd.config.SetAuthType(cmd.network.BrooklynUrl, cmd.network.AuthorizationType)
 	cmd.config.SetSkipSslChecks(cmd.network.SkipSslChecks)
-	cmd.config.SetCredentialsRequired(cmd.network.CredentialsRequired)
-	cmd.config.SetUserHeaders(cmd.network.UserHeaders)
 	cmd.config.Write()
 
 	loginVersion, code, err := version.Version(cmd.network)
@@ -168,3 +206,13 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	}
 	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)
 }
+
+func (cmd *Login) isBasicAuth() bool {
+	return strings.EqualFold(cmd.network.AuthorizationType,BASIC_AUTH)
+}
+
+func (cmd *Login) parseAuthorizationParam(authParam string) []string {
+	return strings.SplitN(authParam, ":", 2)
+}
+
+
