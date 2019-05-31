@@ -34,7 +34,7 @@ func TestConfig(t *testing.T) {
 
 }
 
-func getConfigFromFile(t *testing.T, testFile string)(config *Config) {
+func getConfigFromFile(t *testing.T, testFile string) (config *Config) {
 	config = new(Config)
 	expectedTarget := "http://some.site:8081"
 
@@ -56,7 +56,7 @@ func testFileFormat(t *testing.T, testFile string, testBearer bool) {
 	_, credentials, err := config.GetNetworkCredentials()
 	assertCredentials(err, t, credentials, base64.StdEncoding.EncodeToString([]byte("user1:password1")))
 
-	if testBearer{
+	if testBearer {
 		credentials, err = config.GetNetworkCredentialsForTarget("http://another.one:8081")
 		assertCredentials(err, t, credentials, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
 	}

@@ -61,7 +61,6 @@ func GetConfig() (config *Config) {
 	return
 }
 
-
 func (config *Config) Delete() (err error) {
 	if _, err := os.Stat(config.FilePath); err == nil {
 		err = os.Remove(config.FilePath)
@@ -98,7 +97,6 @@ func (config *Config) read() {
 	dec := json.NewDecoder(fileToRead)
 	dec.Decode(&config.Map)
 }
-
 
 // getCredentials reads credentials from .brooklyn_cli data formatted for versions > 0.11.0
 // Note that the password is base64 encoded to avoid json formatting problems
@@ -215,7 +213,7 @@ func (config *Config) GetNetworkCredentialsForTarget(target string) (credentials
 	if credentials, err = config.getCredentials(target); err != nil {
 		var username, password string
 		username, password, err = config.getCredentialsOldStyle(target)
-		if err == nil{
+		if err == nil {
 			credentials = base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 		}
 	}
@@ -244,13 +242,13 @@ func (config *Config) SetSkipSslChecks(skipSslChecks bool) {
 	config.Map[skipSslChecksKey] = skipSslChecks
 }
 
-func (config *Config) GetAuthType(target string) (authType string, err error){
+func (config *Config) GetAuthType(target string) (authType string, err error) {
 	authTypeMap, found := config.Map[authTypeKey].(map[string]interface{})
-	if found{
+	if found {
 		authType, found = authTypeMap[target].(string)
 	}
 	// default behaviour
-	if !found{
+	if !found {
 		authType = "Basic"
 	}
 	return authType, err
