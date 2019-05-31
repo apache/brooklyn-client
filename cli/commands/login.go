@@ -160,7 +160,6 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		}
 	}
 
-	fmt.Printf("AuthorizationType: %s, Credentials: %s\n", cmd.network.AuthorizationType, cmd.network.Credentials)
 	if cmd.network.AuthorizationType == BASIC_AUTH && cmd.network.Credentials == "" {
 		cmd.getCredentialsFromCommandLine()
 	}
