@@ -150,7 +150,7 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 		cmd.network.BrooklynUrl = cmd.network.BrooklynUrl[0 : len(cmd.network.BrooklynUrl)-1]
 	}
 
-	if cmd.network.BrooklynUrl != "" && cmd.brooklynUser == "" && c.String(authorizationParam) == "" {
+	if cmd.network.BrooklynUrl != "" && cmd.brooklynUser == "" && authParamValue == "" {
 		// if only target supplied at command line see if it already exists in the config file
 		if credentials, err := config.GetNetworkCredentialsForTarget(cmd.network.BrooklynUrl); err == nil {
 			cmd.network.Credentials = credentials
