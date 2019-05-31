@@ -32,14 +32,21 @@ import (
 
 func main() {
 	config := io.GetConfig()
-	skipSslChecks := config.GetSkipSslChecks()
-	target, username, password, err := config.GetNetworkCredentials()
+	target, credentials, err := config.GetNetworkCredentials()
+	authType, err := config.GetAuthType(target)
 	if err != nil && requiresLogin(os.Args) {
 		error_handler.ErrorExit(err)
 	}
 
+
 	//target, username, password := "http://192.168.50.101:8081", "brooklyn", "Sns4Hh9j7l"
-	network := net.NewNetwork(target, username, password, skipSslChecks, verbosity(os.Args))
+	network := &net.Network{
+		BrooklynUrl: target,
+		Credentials: credentials,
+		SkipSslChecks: config.GetSkipSslChecks(),
+		AuthorizationType: authType,
+		Verbosity: verbosity(os.Args),
+	}
 	cmdFactory := command_factory.NewFactory(network, config)
 
 	args, scope := scope.ScopeArguments(os.Args)

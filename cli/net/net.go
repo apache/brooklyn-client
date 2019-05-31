@@ -38,26 +38,16 @@ import (
 )
 
 type Network struct {
-	BrooklynUrl  string
-	BrooklynUser string
-	BrooklynPass string
-	SkipSslChecks bool
-	Verbosity    string
-}
-
-func NewNetwork(brooklynUrl, brooklynUser, brooklynPass string, skipSslChecks bool, verbose string) (net *Network) {
-	net = new(Network)
-	net.BrooklynUrl = brooklynUrl
-	net.BrooklynUser = brooklynUser
-	net.BrooklynPass = brooklynPass
-	net.SkipSslChecks = skipSslChecks
-	net.Verbosity = verbose
-	return
+	BrooklynUrl       string
+	SkipSslChecks     bool
+	Verbosity         string
+	Credentials         string
+	AuthorizationType string
 }
 
 func (net *Network) NewRequest(method, path string, body io.Reader) *http.Request {
 	req, _ := http.NewRequest(method, net.BrooklynUrl+path, body)
-	req.SetBasicAuth(net.BrooklynUser, net.BrooklynPass)
+	req.Header.Set("Authorization", net.AuthorizationType + " " + net.Credentials)
 	return req
 }
 

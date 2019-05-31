@@ -19,19 +19,23 @@
 package io
 
 import (
+	"encoding/base64"
 	"path/filepath"
 	"testing"
 )
 
 func TestConfig(t *testing.T) {
 
-	testFileFormat(t, "testConfig.json")
-	testFileFormat(t, "legacyConfig.json")
+	testFileFormat(t, "testconfig.json", true)
+	testFileFormat(t, "legacyConfig.json", false)
+
+	testAuthType(t, "testconfig.json", true)
+	testAuthType(t, "legacyConfig.json", false)
+
 }
 
-func testFileFormat(t *testing.T, testFile string) {
-
-	config := new(Config)
+func getConfigFromFile(t *testing.T, testFile string) (config *Config) {
+	config = new(Config)
 	expectedTarget := "http://some.site:8081"
 
 	path, err := filepath.Abs(testFile)
@@ -43,21 +47,48 @@ func testFileFormat(t *testing.T, testFile string) {
 	if config.Map["target"] != expectedTarget {
 		t.Errorf("target != %s: %s", expectedTarget, config.Map["target"])
 	}
-	_, username, password, err := config.GetNetworkCredentials()
-	assertUserPassword(err, t, username, "user1", password, "password1")
-
-	username, password, err = config.GetNetworkCredentialsForTarget("http://another.one:8081")
-	assertUserPassword(err, t, username, "user2", password, "password2")
+	return
 }
 
-func assertUserPassword(err error, t *testing.T, username string, expectedUser string, password string, expectedPassword string) {
+func testFileFormat(t *testing.T, testFile string, testBearer bool) {
+	config := getConfigFromFile(t, testFile)
+
+	_, credentials, err := config.GetNetworkCredentials()
+	assertCredentials(err, t, credentials, base64.StdEncoding.EncodeToString([]byte("user1:password1")))
+
+	if testBearer {
+		credentials, err = config.GetNetworkCredentialsForTarget("http://another.one:8081")
+		assertCredentials(err, t, credentials, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
+	}
+
+}
+
+func testAuthType(t *testing.T, testFile string, checkDefaultBehaviour bool) {
+	config := getConfigFromFile(t, testFile)
+
+	authType, err := config.GetAuthType("http://some.site:8081")
+	assertAuthType(err, t, authType, "Basic")
+
+	if checkDefaultBehaviour {
+		authType, err = config.GetAuthType("http://another.one:8081")
+		assertAuthType(err, t, authType, "Bearer")
+	}
+}
+
+func assertCredentials(err error, t *testing.T, credentials string, expectedCredentials string) {
 	if err != nil {
 		t.Error(err)
 	}
-	if username != expectedUser {
-		t.Errorf("username != %s: %s", expectedUser, username)
+	if credentials != expectedCredentials {
+		t.Errorf("credentials != %s: %s", credentials, expectedCredentials)
 	}
-	if password != expectedPassword {
-		t.Errorf("password != %s: %s", expectedPassword, username)
+}
+
+func assertAuthType(err error, t *testing.T, authType string, expectedAuthType string) {
+	if err != nil {
+		t.Error(err)
+	}
+	if authType != expectedAuthType {
+		t.Errorf("authType != %s: %s", authType, expectedAuthType)
 	}
 }
