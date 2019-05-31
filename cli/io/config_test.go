@@ -26,21 +26,13 @@ import (
 
 func TestConfig(t *testing.T) {
 
-	testFileFormat(t, "testconfig.json")
-	testFileFormat(t, "legacyConfig.json")
+	testFileFormat(t, "testconfig.json", true)
+	testFileFormat(t, "legacyConfig.json", false)
 
 	testAuthType(t, "testconfig.json", true)
 	testAuthType(t, "legacyConfig.json", false)
-}
 
-func mockHeaders() (expectedHeaders map[string]interface{}) {
-	expectedHeaders=make(map[string]interface{})
-	expectedHeaders["Header1"]="Header one"
-	expectedHeaders["Header2"]="Header 2"
-	expectedHeaders["header3"]=""
-	return
 }
-
 
 func getConfigFromFile(t *testing.T, testFile string)(config *Config) {
 	config = new(Config)
@@ -58,14 +50,16 @@ func getConfigFromFile(t *testing.T, testFile string)(config *Config) {
 	return
 }
 
-func testFileFormat(t *testing.T, testFile string) {
+func testFileFormat(t *testing.T, testFile string, testBearer bool) {
 	config := getConfigFromFile(t, testFile)
 
 	_, credentials, err := config.GetNetworkCredentials()
 	assertCredentials(err, t, credentials, base64.StdEncoding.EncodeToString([]byte("user1:password1")))
 
-	credentials, err = config.GetNetworkCredentialsForTarget("http://another.one:8081")
-	assertCredentials(err, t, credentials, base64.StdEncoding.EncodeToString([]byte("user2"+":"+"password2")))
+	if testBearer{
+		credentials, err = config.GetNetworkCredentialsForTarget("http://another.one:8081")
+		assertCredentials(err, t, credentials, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
+	}
 
 }
 

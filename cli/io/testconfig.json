@@ -1,7 +1,7 @@
 {
   "credentials": {
     "http://some.site:8081": "dXNlcjE6cGFzc3dvcmQx",
-    "http://another.one:8081": "dXNlcjI6cGFzc3dvcmQy"
+    "http://another.one:8081": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
   },
   "authType": {
     "http://another.one:8081": "Bearer"

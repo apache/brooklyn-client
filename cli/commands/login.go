@@ -66,11 +66,10 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 		Flags:       []cli.Flag{
 			cli.BoolFlag{Name: skipSslChecksParam, Usage: "Skip SSL Checks"},
 			cli.StringFlag{Name: authorizationParam+", A", Usage: "Type of authentication header. Format: 'authorization=Basic'" +
-				" or 'authorization=Bearer:xxxxx.yyyyyy.zzzzz'"},
+				" or 'authorization=Bearer:<JWT-token>'"},
 		},
 	}
 }
-
 
 func (cmd *Login) promptAndReadUsername() (username string) {
 	for username == "" {
@@ -95,13 +94,7 @@ func (cmd *Login) promptAndReadPassword() (password string) {
 	return string(bytePassword)
 }
 
-func (cmd *Login) getCredentialsFromCommandLineIfNeeded() {
-	if !cmd.isBasicAuth() {
-		return
-	}
-	if cmd.network.Credentials != ""{
-		return
-	}
+func (cmd *Login) getCredentialsFromCommandLine() {
 
 	// Prompt for username if not supplied
 	if cmd.brooklynUser == "" {
@@ -116,36 +109,6 @@ func (cmd *Login) getCredentialsFromCommandLineIfNeeded() {
 	cmd.network.Credentials = base64.StdEncoding.EncodeToString([]byte(cmd.brooklynUser + ":" + cmd.brooklynPass))
 }
 
-func (cmd *Login) getCredentialsFromAuthParamIfNeeded(authParam string) {
-	if cmd.isBasicAuth() {
-		return
-	}
-	if cmd.network.Credentials=="" {
-		credentials := cmd.parseAuthorizationParam(authParam)
-		if len(credentials) != 2 {
-			error_handler.ErrorExit("Use authorization=type:value")
-		} else {
-			cmd.network.Credentials = credentials[1]
-		}
-	}
-}
-
-func (cmd *Login) getAuthorizationType(authorizationParamInput string) (authorizationType string)  {
-	if authorizationParamInput !=""{
-		if strings.EqualFold(BASIC_AUTH,authorizationParamInput){
-			authorizationType = BASIC_AUTH
-		}else {
-			authorizationType = cmd.parseAuthorizationParam(authorizationParamInput)[0]
-			if strings.EqualFold(authorizationType,BEARER_AUTH) {
-				authorizationType=BEARER_AUTH
-			}
-		}
-	}else {
-		// default authentication
-		authorizationType = BASIC_AUTH
-	}
-	return authorizationType
-}
 
 func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	if !c.Args().Present() {
@@ -157,10 +120,22 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	cmd.brooklynUser = c.Args().Get(1)
 	cmd.brooklynPass = c.Args().Get(2)
 	cmd.network.SkipSslChecks = c.Bool("skipSslChecks")
-	cmd.network.AuthorizationType = cmd.getAuthorizationType(c.String(authorizationParam))
 
-	//clear Credentials credentials
+	//clear credentials
 	cmd.network.Credentials=""
+
+	authParamValue := c.String(authorizationParam)
+	if authParamValue != "" {
+		parts := strings.SplitN(authParamValue, ":", 2)
+		if len(parts) == 2 && strings.EqualFold(parts[0], BEARER_AUTH) {
+			cmd.network.AuthorizationType = BEARER_AUTH
+			cmd.network.Credentials = parts[1]
+		} else {
+			cmd.network.AuthorizationType = BASIC_AUTH
+		}
+	} else {
+		cmd.network.AuthorizationType = BASIC_AUTH
+	}
 
 	config := io.GetConfig()
 
@@ -182,14 +157,14 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 			cmd.network.Credentials = credentials
 		}
 		if authorizationType, err := config.GetAuthType(cmd.network.BrooklynUrl); err == nil{
-			// TODO remove
-			//fmt.Printf("authorizationType from file %s\n",authorizationType)
 			cmd.network.AuthorizationType = authorizationType
 		}
 	}
 
-	cmd.getCredentialsFromCommandLineIfNeeded()
-	cmd.getCredentialsFromAuthParamIfNeeded(c.String(authorizationParam))
+	fmt.Printf("AuthorizationType: %s, Credentials: %s\n",cmd.network.AuthorizationType,cmd.network.Credentials)
+	if cmd.network.AuthorizationType == BASIC_AUTH && cmd.network.Credentials == "" {
+		cmd.getCredentialsFromCommandLine()
+	}
 
 	// now persist these credentials to the yaml file
 	cmd.config.SetNetworkCredentials(cmd.network.BrooklynUrl, cmd.network.Credentials)
@@ -206,13 +181,3 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	}
 	fmt.Printf("Connected to Brooklyn version %s at %s\n", loginVersion.Version, cmd.network.BrooklynUrl)
 }
-
-func (cmd *Login) isBasicAuth() bool {
-	return strings.EqualFold(cmd.network.AuthorizationType,BASIC_AUTH)
-}
-
-func (cmd *Login) parseAuthorizationParam(authParam string) []string {
-	return strings.SplitN(authParam, ":", 2)
-}
-
-

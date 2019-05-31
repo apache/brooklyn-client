@@ -250,7 +250,7 @@ func (config *Config) GetAuthType(target string) (authType string, err error){
 		authType, found = authTypeMap[target].(string)
 	}
 	// default behaviour
-	if! found{
+	if !found{
 		authType = "Basic"
 	}
 	return authType, err
