@@ -19,49 +19,49 @@
 package models
 
 import (
-	"github.com/apache/brooklyn-client/cli/terminal"
 	"bytes"
-	"strconv"
-	"fmt"
 	"encoding/json"
-	"github.com/urfave/cli"
+	"fmt"
 	"github.com/NodePrime/jsonpath"
+	"github.com/apache/brooklyn-client/cli/terminal"
+	"github.com/urfave/cli"
+	"strconv"
 )
 
 type IdentityDetails struct {
-	Id           string                 `json:"id"`
-	Name         string                 `json:"name"`
-	SymbolicName string                 `json:"symbolicName"`
-	Version      string                 `json:"version"`
-	Description  string                 `json:"description"`
+	Id           string `json:"id"`
+	Name         string `json:"name"`
+	SymbolicName string `json:"symbolicName"`
+	Version      string `json:"version"`
+	Description  string `json:"description"`
 }
 
 type CatalogItemSummary struct {
 	IdentityDetails
-	JavaType     string                 `json:"javaType"`
-	PlanYaml     string                 `json:"planYaml"`
-	Deprecated   bool                   `json:"deprecated"`
-	Config       []ConfigSummary        `json:"config"`
-	Tags         []interface{}          `json:"tags"`
-	Links        map[string]interface{} `json:"links"`
-	Type         string                 `json:"type"`
+	JavaType   string                 `json:"javaType"`
+	PlanYaml   string                 `json:"planYaml"`
+	Deprecated bool                   `json:"deprecated"`
+	Config     []ConfigSummary        `json:"config"`
+	Tags       []interface{}          `json:"tags"`
+	Links      map[string]interface{} `json:"links"`
+	Type       string                 `json:"type"`
 }
 
 type CatalogEntitySummary struct {
 	CatalogItemSummary
-	IconUrl      string                `json:"iconUrl"`
-	Effectors    []EffectorSummary     `json:"effectors"`
-	Sensors      []SensorSummary       `json:"sensors"`
+	IconUrl   string            `json:"iconUrl"`
+	Effectors []EffectorSummary `json:"effectors"`
+	Sensors   []SensorSummary   `json:"sensors"`
 }
 
 type CatalogBundleAddResult struct {
-	Message      string                `json:"message"`
-	Bundle       string                `json:"bundle"`
-	Code         string                `json:"code"`
-	Types        map[string]CatalogItemSummary `json:"types"`
+	Message string                        `json:"message"`
+	Bundle  string                        `json:"bundle"`
+	Code    string                        `json:"code"`
+	Types   map[string]CatalogItemSummary `json:"types"`
 }
 
-func createTableWithIdentityDetails(item IdentityDetails) (terminal.Table) {
+func createTableWithIdentityDetails(item IdentityDetails) terminal.Table {
 	table := terminal.NewTable([]string{"Id:", item.Id})
 	table.Add("Version:", item.Version)
 	table.Add("Name:", item.Name)
@@ -72,18 +72,17 @@ func createTableWithIdentityDetails(item IdentityDetails) (terminal.Table) {
 
 func (summary *CatalogItemSummary) Display(c *cli.Context) (err error) {
 
-	if json := c.GlobalString("json") ; json != "" {
+	if json := c.GlobalString("json"); json != "" {
 		displayAsJson(summary, json)
 	} else {
 		summary.displayAsTable()
 	}
 	return err
 }
-
 
 func (summary *CatalogEntitySummary) Display(c *cli.Context) (err error) {
 
-	if json := c.GlobalString("json") ; json != "" {
+	if json := c.GlobalString("json"); json != "" {
 		displayAsJson(summary, json)
 	} else {
 		summary.displayAsTable()
@@ -91,9 +90,7 @@ func (summary *CatalogEntitySummary) Display(c *cli.Context) (err error) {
 	return err
 }
 
-
-
-func (summary *CatalogItemSummary) displayAsTable() (err error){
+func (summary *CatalogItemSummary) displayAsTable() (err error) {
 
 	table := createTableWithIdentityDetails(summary.IdentityDetails)
 	if summary.Deprecated {
@@ -104,7 +101,7 @@ func (summary *CatalogItemSummary) displayAsTable() (err error){
 	return err
 }
 
-func (summary *CatalogEntitySummary) displayAsTable() (err error){
+func (summary *CatalogEntitySummary) displayAsTable() (err error) {
 
 	table := createTableWithIdentityDetails(summary.IdentityDetails)
 	if summary.Deprecated {
@@ -159,8 +156,6 @@ func (summary *CatalogEntitySummary) displayAsTable() (err error){
 	return err
 }
 
-
-
 func displayAsJson(v interface{}, jsonPath string) (err error) {
 	marshalled, err := json.Marshal(v)
 	if err != nil {
@@ -182,7 +177,8 @@ func displayAsJson(v interface{}, jsonPath string) (err error) {
 	}
 	for {
 		if result, ok := eval.Next(); ok {
-			fmt.Print(result.Pretty(false)) // true -> show keys in pretty string
+			pretty := result.Pretty(false) // true -> show keys in pretty string
+			fmt.Print(pretty)
 		} else {
 			break
 		}

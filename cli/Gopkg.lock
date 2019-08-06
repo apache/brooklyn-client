@@ -11,6 +11,30 @@
   source = "git@github.com:johnmccabe/jsonpath.git"
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "UT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  pruneopts = "UT"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
+
+[[projects]]
   digest = "1:0377edffb6fff9b100103369cba0d250ff6dfe1d9d77fb994f1541082d1ce1ab"
   name = "github.com/urfave/cli"
   packages = ["."]
@@ -30,6 +54,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/NodePrime/jsonpath",
+    "github.com/stretchr/testify/assert",
     "github.com/urfave/cli",
     "golang.org/x/crypto/ssh/terminal",
   ]
