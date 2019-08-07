@@ -56,7 +56,7 @@ func DeleteLocation(network *net.Network, locationId string) (string, error) {
 
 // WIP
 func CreateLocation(network *net.Network, locationId string) (string, error) {
-	url := fmt.Sprintf("/v1/locations", locationId)
+	url := fmt.Sprintf("/v1/locations/%s", locationId)
 	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
 		return "", err

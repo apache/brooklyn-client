@@ -157,7 +157,7 @@ func States(network *net.Network) (string, error) {
 	if err != nil {
 		return "", nil
 	}
-	return string(body)
+	return string(body), nil
 }
 
 // WIP
