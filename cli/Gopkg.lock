@@ -2,15 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:bfdc609d11759ec1e9258f8f865eb8751bb2f338914f6d7feb5270b044d479ce"
-  name = "github.com/NodePrime/jsonpath"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "84403ded544328c99be3472727667179eef23a91"
-  source = "git@github.com:johnmccabe/jsonpath.git"
-
-[[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -49,14 +40,25 @@
   pruneopts = "UT"
   revision = "1f22c0103821b9390939b6776727195525381532"
 
+[[projects]]
+  digest = "1:4268f3fa156756a989269111713aa2ea011a310c7aef1e48c3cb57f87addd851"
+  name = "k8s.io/client-go"
+  packages = [
+    "third_party/forked/golang/template",
+    "util/jsonpath",
+  ]
+  pruneopts = "UT"
+  revision = "78d2af792babf2dd937ba2e2a8d99c753a5eda89"
+  version = "v12.0.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/NodePrime/jsonpath",
     "github.com/stretchr/testify/assert",
     "github.com/urfave/cli",
     "golang.org/x/crypto/ssh/terminal",
+    "k8s.io/client-go/util/jsonpath",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

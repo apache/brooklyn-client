@@ -38,7 +38,7 @@ var appConfig = configDefaults{
 	Name:     os.Args[0],
 	HelpName: os.Args[0],
 	Usage:    "A Brooklyn command line client application",
-	Version:  "1.0.0-SNAPSHOT",  // BROOKLYN_VERSION
+	Version:  "1.0.0-SNAPSHOT", // BROOKLYN_VERSION
 }
 
 func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...command_metadata.CommandMetadata) (app *cli.App) {
@@ -58,14 +58,18 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 		},
 		cli.StringFlag{
 			Name:  "json, j",
-			Usage: "Render value as json with json path selector as described at https://github.com/NodePrime/jsonpath. (Experimental, not supported on all commands at present) ",
+			Usage: "Render value as json with json path selector. (Experimental, not supported on all commands at present) ",
 		},
-		cli.BoolFlag {
-			Name: "verbose",
+		cli.BoolFlag{
+			Name:  "raw-output, r",
+			Usage: "Used with --json; if result is a string, write it without quotes",
+		},
+		cli.BoolFlag{
+			Name:  "verbose",
 			Usage: "Print HTTP requests and responses",
 		},
-		cli.BoolFlag {
-			Name: "vverbose",
+		cli.BoolFlag{
+			Name:  "vverbose",
 			Usage: "Print HTTP requests and responses and include body data",
 		},
 	}

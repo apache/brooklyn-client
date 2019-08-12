@@ -22,10 +22,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/NodePrime/jsonpath"
 	"github.com/apache/brooklyn-client/cli/terminal"
 	"github.com/urfave/cli"
+	"io"
+	"k8s.io/client-go/util/jsonpath"
+	"os"
+	"reflect"
 	"strconv"
+	"strings"
 )
 
 type IdentityDetails struct {
@@ -73,7 +77,8 @@ func createTableWithIdentityDetails(item IdentityDetails) terminal.Table {
 func (summary *CatalogItemSummary) Display(c *cli.Context) (err error) {
 
 	if json := c.GlobalString("json"); json != "" {
-		displayAsJson(summary, json)
+		raw := c.GlobalBool("raw-output")
+		displayAsJson(summary, json, raw)
 	} else {
 		summary.displayAsTable()
 	}
@@ -83,9 +88,16 @@ func (summary *CatalogItemSummary) Display(c *cli.Context) (err error) {
 func (summary *CatalogEntitySummary) Display(c *cli.Context) (err error) {
 
 	if json := c.GlobalString("json"); json != "" {
-		displayAsJson(summary, json)
+		raw := c.GlobalBool("raw-output")
+		err := displayAsJson(summary, json, raw)
+		if err != nil {
+			return fmt.Errorf("display error: %s\n", err)
+		}
 	} else {
-		summary.displayAsTable()
+		err := summary.displayAsTable()
+		if err != nil {
+			return fmt.Errorf("display error: %s\n", err)
+		}
 	}
 	return err
 }
@@ -156,35 +168,50 @@ func (summary *CatalogEntitySummary) displayAsTable() (err error) {
 	return err
 }
 
-func displayAsJson(v interface{}, jsonPath string) (err error) {
-	marshalled, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	// a convenient special case
-	if "$" == jsonPath {
-		fmt.Printf("%s", string(marshalled))
-		return nil
-	}
+func resultsBackToJson(wr io.Writer, values []reflect.Value, raw bool) error {
+	for i, r := range values {
+		object := r.Interface()
 
-	paths, err := jsonpath.ParsePaths(jsonPath)
-	if err != nil {
-		return err
-	}
-	eval, err := jsonpath.EvalPathsInBytes(marshalled, paths)
-	if err != nil {
-		return err
-	}
-	for {
-		if result, ok := eval.Next(); ok {
-			pretty := result.Pretty(false) // true -> show keys in pretty string
-			fmt.Print(pretty)
-		} else {
-			break
+		jsonText, err := json.Marshal(object)
+		if err != nil {
+			return fmt.Errorf("error converting object to JSON: %s", err)
+		}
+
+		if r.Kind() == reflect.String && raw {
+			stringWithQuotes := string(jsonText)
+			trimLeft := strings.TrimPrefix(stringWithQuotes, `"`)
+			withoutQuotes := strings.TrimSuffix(trimLeft, `"`)
+			jsonText = []byte(withoutQuotes)
+		}
+
+		if i != len(values)-1 {
+			jsonText = append(jsonText, ' ')
+		}
+		if _, err := wr.Write(jsonText); err != nil {
+			return err
 		}
 	}
-	if eval.Error != nil {
-		return eval.Error
+	return nil
+}
+
+func displayAsJson(v interface{}, displayPath string, raw bool) (err error) {
+	j := jsonpath.New("displayer")
+	j.AllowMissingKeys(true)
+
+	// wrap the path with k8s.io's conventional {} braces for convenience
+	err = j.Parse(fmt.Sprintf("{%s}", displayPath))
+	if err != nil {
+		return fmt.Errorf("could not parse JSONPath expression (%s)", err)
+	}
+
+	allResults, err := j.FindResults(v)
+	if err != nil {
+		return fmt.Errorf("error evaluating JSONPath expression: %s", err)
+	}
+	for ix := range allResults {
+		if err = resultsBackToJson(os.Stdout, allResults[ix], raw); err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -58,13 +58,17 @@ func assertItemSummaryFields(t *testing.T, expected models.CatalogItemSummary, a
 	assert.Equal(t, expected.Config[0].Pinned, actual.Config[0].Pinned, "Config[0].Pinned")
 }
 
-func testDisplay(t *testing.T, fn func(c *cli.Context) error, testPath string) string {
+func testInApp(t *testing.T, fn func(c *cli.Context) error, args ...string) string {
 
 	testApp := cli.NewApp()
 	testApp.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "json, j",
 			Usage: "Render value as json with json path selector as described at https://github.com/NodePrime/jsonpath. (Experimental, not supported on all commands at present) ",
+		},
+		cli.BoolFlag{
+			Name:  "raw-output, r",
+			Usage: "Used with --json; if result is a string, write it without quotes",
 		},
 	}
 	var out string
@@ -75,9 +79,14 @@ func testDisplay(t *testing.T, fn func(c *cli.Context) error, testPath string) s
 		})
 	}
 
-	err = testApp.Run([]string{"", "--json", testPath})
+	// prepend `br` so args are the same as in the CLI
+	args = append([]string{"br"}, args...)
+	runErr := testApp.Run(args)
+	if runErr != nil {
+		t.Fatalf("Error from Run: %s\n", runErr)
+	}
 	if err != nil {
-		t.Fatalf("Error from Run: %s\n", err)
+		t.Fatalf("Error from display: %s\n", err)
 	}
 
 	return out
@@ -85,9 +94,9 @@ func testDisplay(t *testing.T, fn func(c *cli.Context) error, testPath string) s
 
 func TestCatalogItemSummaryDisplay(t *testing.T) {
 	expected := testCatalogEntitySummary()
-	displayOutput := testDisplay(t, func(c *cli.Context) error {
+	displayOutput := testInApp(t, func(c *cli.Context) error {
 		return expected.Display(c)
-	}, "$")
+	}, "--raw-output", "--json", "$")
 	var actual models.CatalogItemSummary
 	actualBytes := []byte(displayOutput)
 	unmarshalErr := json.Unmarshal(actualBytes, &actual)
@@ -99,9 +108,9 @@ func TestCatalogItemSummaryDisplay(t *testing.T) {
 func TestCatalogEntitySummaryDisplay(t *testing.T) {
 
 	expected := testCatalogEntitySummary()
-	displayOutput := testDisplay(t, func(c *cli.Context) error {
+	displayOutput := testInApp(t, func(c *cli.Context) error {
 		return expected.Display(c)
-	}, "$")
+	}, "--raw-output", "--json", "$")
 
 	var actual models.CatalogEntitySummary
 	actualBytes := []byte(displayOutput)
@@ -110,6 +119,36 @@ func TestCatalogEntitySummaryDisplay(t *testing.T) {
 
 	assertItemSummaryFields(t, expected.CatalogItemSummary, actual.CatalogItemSummary)
 	assert.Equal(t, expected.IconUrl, actual.IconUrl, "iconUrl")
+}
+
+func TestPathsRaw(t *testing.T) {
+	type pathTest struct {
+		testPath string
+		expected string
+	}
+
+	testObject := testCatalogEntitySummary()
+
+	tests := []pathTest{
+		{"$.name", testObject.Name},
+		{"$.id", testObject.Id},
+		{"$.version", testObject.Version},
+		{"$.javaType", testObject.JavaType},
+		{"$.iconUrl", testObject.IconUrl},
+		{"$.config[0].name", testObject.Config[0].Name},
+		{"$.config[0].pinned", fmt.Sprintf("%t", testObject.Config[0].Pinned)},
+	}
+
+	for _, test := range tests {
+		actual := testInApp(t, func(c *cli.Context) error {
+			return testObject.Display(c)
+		}, "--raw-output", "--json", test.testPath)
+		assert.Equal(t, test.expected, actual, fmt.Sprintf("path %s", test.testPath))
+	}
+}
+
+func q(s string) string {
+	return fmt.Sprintf(`"%s"`, s)
 }
 
 func TestPaths(t *testing.T) {
@@ -121,14 +160,18 @@ func TestPaths(t *testing.T) {
 	testObject := testCatalogEntitySummary()
 
 	tests := []pathTest{
-		{"$.name+", testObject.Name},
-		{"$.id+", testObject.Id},
+		{"$.name", q(testObject.Name)},
+		{"$.id", q(testObject.Id)},
+		{"$.version", q(testObject.Version)},
+		{"$.javaType", q(testObject.JavaType)},
+		{"$.iconUrl", q(testObject.IconUrl)},
+		{"$.config[0].name", q(testObject.Config[0].Name)},
 	}
 
 	for _, test := range tests {
-		actual := testDisplay(t, func(c *cli.Context) error {
+		actual := testInApp(t, func(c *cli.Context) error {
 			return testObject.Display(c)
-		}, test.testPath)
+		}, "--json", test.testPath)
 		assert.Equal(t, test.expected, actual, fmt.Sprintf("path %s", test.testPath))
 	}
 }
