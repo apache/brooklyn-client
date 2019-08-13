@@ -67,7 +67,7 @@ EOH
 	echo $OSVALUES | awk 'BEGIN{printf("Supported OS:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
 	echo $ARCHVALUES | awk 'BEGIN{printf("Supported ARCH:\n")};{for(i=1;i<=NF;i++){printf("\t%s\n",$i)}}'
 	echo Default build:
-	for build in ${builds[@]} ; do
+	for build in "${builds[@]}" ; do
 	    printf "\t%s\n" $build
 	done
 }
@@ -158,6 +158,7 @@ See golang.org for more information, or run maven with '-Dno-go-client' to skip.
 fi
 
 GO_VERSION=`go version | awk '{print $3}'`
+echo GO_VERSION is ${GO_VERSION}
 GO_V=`echo $GO_VERSION | sed 's/^go1\.\([0-9][0-9]*\).*/\1/'`
 # test if not okay so error shows if regex above not matched
 if ! (( "$GO_V" >= 6 )) ; then
