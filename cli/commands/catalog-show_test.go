@@ -64,7 +64,7 @@ func testInApp(t *testing.T, fn func(c *cli.Context) error, args ...string) stri
 	testApp.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "json, j",
-			Usage: "Render value as json with json path selector as described at https://github.com/NodePrime/jsonpath. (Experimental, not supported on all commands at present) ",
+			Usage: "Render value as json with json path selector. (Experimental, not supported on all commands at present) ",
 		},
 		cli.BoolFlag{
 			Name:  "raw-output, r",
