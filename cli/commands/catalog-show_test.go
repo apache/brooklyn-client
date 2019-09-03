@@ -92,17 +92,26 @@ func testInApp(t *testing.T, fn func(c *cli.Context) error, args ...string) stri
 	return out
 }
 
+func unmarshalToCatalogEntitySummary(text string) (*models.CatalogEntitySummary, error) {
+	var summary models.CatalogEntitySummary
+	actualBytes := []byte(text)
+	err := json.Unmarshal(actualBytes, &summary)
+	if err != nil {
+		return nil, fmt.Errorf("could not unmarshal input to CatalogEntitySummary: %s", err)
+	}
+	return &summary, nil
+}
+
 func TestCatalogItemSummaryDisplay(t *testing.T) {
 	expected := testCatalogEntitySummary()
 	displayOutput := testInApp(t, func(c *cli.Context) error {
 		return expected.Display(c)
 	}, "--raw-output", "--json", "$")
-	var actual models.CatalogItemSummary
-	actualBytes := []byte(displayOutput)
-	unmarshalErr := json.Unmarshal(actualBytes, &actual)
-	assert.Nil(t, unmarshalErr, "result is not JSON: %s", actualBytes)
 
-	assertItemSummaryFields(t, expected.CatalogItemSummary, actual)
+	actual, err := unmarshalToCatalogEntitySummary(displayOutput)
+	assert.Nil(t, err, "result may be bad JSON: %s", displayOutput)
+
+	assertItemSummaryFields(t, expected.CatalogItemSummary, actual.CatalogItemSummary)
 }
 
 func TestCatalogEntitySummaryDisplay(t *testing.T) {
@@ -112,10 +121,8 @@ func TestCatalogEntitySummaryDisplay(t *testing.T) {
 		return expected.Display(c)
 	}, "--raw-output", "--json", "$")
 
-	var actual models.CatalogEntitySummary
-	actualBytes := []byte(displayOutput)
-	unmarshalErr := json.Unmarshal(actualBytes, &actual)
-	assert.Nil(t, unmarshalErr, "result is not JSON: %s", actualBytes)
+	actual, err := unmarshalToCatalogEntitySummary(displayOutput)
+	assert.Nil(t, err, "result may be bad JSON: %s", displayOutput)
 
 	assertItemSummaryFields(t, expected.CatalogItemSummary, actual.CatalogItemSummary)
 	assert.Equal(t, expected.IconUrl, actual.IconUrl, "iconUrl")
