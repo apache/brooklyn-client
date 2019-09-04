@@ -22,14 +22,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/apache/brooklyn-client/cli/terminal"
-	"github.com/urfave/cli"
 	"io"
-	"k8s.io/client-go/util/jsonpath"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/apache/brooklyn-client/cli/terminal"
+	"github.com/urfave/cli"
+	"k8s.io/client-go/util/jsonpath"
 )
 
 type IdentityDetails struct {
@@ -74,35 +75,35 @@ func createTableWithIdentityDetails(item IdentityDetails) terminal.Table {
 	return table
 }
 
-func (summary *CatalogItemSummary) Display(c *cli.Context) (err error) {
+func (summary *CatalogItemSummary) Display(c *cli.Context) error {
 
-	if json := c.GlobalString("json"); json != "" {
+	if jsonFlag := c.GlobalString("json"); jsonFlag != "" {
 		raw := c.GlobalBool("raw-output")
-		displayAsJson(summary, json, raw)
+		err := displayAsJson(summary, jsonFlag, raw)
+		if err != nil {
+			return fmt.Errorf("display error: %s", err)
+		}
 	} else {
 		summary.displayAsTable()
 	}
-	return err
+	return nil
 }
 
-func (summary *CatalogEntitySummary) Display(c *cli.Context) (err error) {
+func (summary *CatalogEntitySummary) Display(c *cli.Context) error {
 
-	if json := c.GlobalString("json"); json != "" {
+	if jsonFlag := c.GlobalString("json"); jsonFlag != "" {
 		raw := c.GlobalBool("raw-output")
-		err := displayAsJson(summary, json, raw)
+		err := displayAsJson(summary, jsonFlag, raw)
 		if err != nil {
 			return fmt.Errorf("display error: %s\n", err)
 		}
 	} else {
-		err := summary.displayAsTable()
-		if err != nil {
-			return fmt.Errorf("display error: %s\n", err)
-		}
+		summary.displayAsTable()
 	}
-	return err
+	return nil
 }
 
-func (summary *CatalogItemSummary) displayAsTable() (err error) {
+func (summary *CatalogItemSummary) displayAsTable() {
 
 	table := createTableWithIdentityDetails(summary.IdentityDetails)
 	if summary.Deprecated {
@@ -110,10 +111,9 @@ func (summary *CatalogItemSummary) displayAsTable() (err error) {
 	}
 	table.Add("Java Type:", summary.JavaType)
 	table.Print()
-	return err
 }
 
-func (summary *CatalogEntitySummary) displayAsTable() (err error) {
+func (summary *CatalogEntitySummary) displayAsTable() {
 
 	table := createTableWithIdentityDetails(summary.IdentityDetails)
 	if summary.Deprecated {
@@ -165,7 +165,6 @@ func (summary *CatalogEntitySummary) displayAsTable() (err error) {
 	}
 
 	table.Print()
-	return err
 }
 
 func resultsBackToJson(wr io.Writer, values []reflect.Value, raw bool) error {
@@ -194,12 +193,12 @@ func resultsBackToJson(wr io.Writer, values []reflect.Value, raw bool) error {
 	return nil
 }
 
-func displayAsJson(v interface{}, displayPath string, raw bool) (err error) {
+func displayAsJson(v interface{}, displayPath string, raw bool) error {
 	j := jsonpath.New("displayer")
 	j.AllowMissingKeys(true)
 
 	// wrap the path with k8s.io's conventional {} braces for convenience
-	err = j.Parse(fmt.Sprintf("{%s}", displayPath))
+	err := j.Parse(fmt.Sprintf("{%s}", displayPath))
 	if err != nil {
 		return fmt.Errorf("could not parse JSONPath expression (%s)", err)
 	}
@@ -210,7 +209,7 @@ func displayAsJson(v interface{}, displayPath string, raw bool) (err error) {
 	}
 	for ix := range allResults {
 		if err = resultsBackToJson(os.Stdout, allResults[ix], raw); err != nil {
-			return err
+			return fmt.Errorf("display error: %s", err)
 		}
 	}
 	return nil
