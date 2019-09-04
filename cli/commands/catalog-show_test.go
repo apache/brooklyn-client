@@ -24,7 +24,7 @@ import (
 	"testing"
 
 	"github.com/apache/brooklyn-client/cli/models"
-	"github.com/stretchr/testify/assert"
+	"github.com/matryer/is"
 	"github.com/urfave/cli"
 )
 
@@ -50,12 +50,14 @@ func testCatalogEntitySummary() models.CatalogEntitySummary {
 }
 
 func assertItemSummaryFields(t *testing.T, expected models.CatalogItemSummary, actual models.CatalogItemSummary) {
-	assert.Equal(t, expected.Id, actual.Id, "id")
-	assert.Equal(t, expected.Name, actual.Name, "name")
-	assert.Equal(t, expected.Version, actual.Version, "version")
-	assert.Equal(t, expected.JavaType, actual.JavaType, "javaType")
-	assert.Equal(t, expected.Config[0].Name, actual.Config[0].Name, "Config[0].Name")
-	assert.Equal(t, expected.Config[0].Pinned, actual.Config[0].Pinned, "Config[0].Pinned")
+	is := is.New(t)
+
+	is.Equal(expected.Id, actual.Id)
+	is.Equal(expected.Name, actual.Name)
+	is.Equal(expected.Version, actual.Version)
+	is.Equal(expected.JavaType, actual.JavaType)
+	is.Equal(expected.Config[0].Name, actual.Config[0].Name)
+	is.Equal(expected.Config[0].Pinned, actual.Config[0].Pinned)
 }
 
 func testInApp(t *testing.T, fn func(c *cli.Context) error, args ...string) string {
@@ -103,18 +105,21 @@ func unmarshalToCatalogEntitySummary(text string) (*models.CatalogEntitySummary,
 }
 
 func TestCatalogItemSummaryDisplay(t *testing.T) {
+	is := is.New(t)
+
 	expected := testCatalogEntitySummary()
 	displayOutput := testInApp(t, func(c *cli.Context) error {
 		return expected.Display(c)
 	}, "--raw-output", "--json", "$")
 
 	actual, err := unmarshalToCatalogEntitySummary(displayOutput)
-	assert.Nil(t, err, "result may be bad JSON: %s", displayOutput)
+	is.NoErr(err)
 
 	assertItemSummaryFields(t, expected.CatalogItemSummary, actual.CatalogItemSummary)
 }
 
 func TestCatalogEntitySummaryDisplay(t *testing.T) {
+	is := is.New(t)
 
 	expected := testCatalogEntitySummary()
 	displayOutput := testInApp(t, func(c *cli.Context) error {
@@ -122,13 +127,15 @@ func TestCatalogEntitySummaryDisplay(t *testing.T) {
 	}, "--raw-output", "--json", "$")
 
 	actual, err := unmarshalToCatalogEntitySummary(displayOutput)
-	assert.Nil(t, err, "result may be bad JSON: %s", displayOutput)
+	is.NoErr(err)
 
 	assertItemSummaryFields(t, expected.CatalogItemSummary, actual.CatalogItemSummary)
-	assert.Equal(t, expected.IconUrl, actual.IconUrl, "iconUrl")
+	is.Equal(expected.IconUrl, actual.IconUrl)
 }
 
 func TestPathsRaw(t *testing.T) {
+	is := is.New(t)
+
 	type pathTest struct {
 		testPath string
 		expected string
@@ -150,7 +157,7 @@ func TestPathsRaw(t *testing.T) {
 		actual := testInApp(t, func(c *cli.Context) error {
 			return testObject.Display(c)
 		}, "--raw-output", "--json", test.testPath)
-		assert.Equal(t, test.expected, actual, fmt.Sprintf("path %s", test.testPath))
+		is.Equal(test.expected, actual)
 	}
 }
 
@@ -159,6 +166,8 @@ func q(s string) string {
 }
 
 func TestPaths(t *testing.T) {
+	is := is.New(t)
+
 	type pathTest struct {
 		testPath string
 		expected string
@@ -179,6 +188,6 @@ func TestPaths(t *testing.T) {
 		actual := testInApp(t, func(c *cli.Context) error {
 			return testObject.Display(c)
 		}, "--json", test.testPath)
-		assert.Equal(t, test.expected, actual, fmt.Sprintf("path %s", test.testPath))
+		is.Equal(test.expected, actual)
 	}
 }

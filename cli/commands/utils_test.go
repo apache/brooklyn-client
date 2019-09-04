@@ -20,11 +20,14 @@ package commands
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/matryer/is"
 )
 
 func TestDivertStdoutToString(t *testing.T) {
+	is := is.New(t)
+
 	result, _ := divertStdoutToString(func() error {
 		fmt.Println("Hello Brooklyn")
 		return nil
@@ -32,5 +35,5 @@ func TestDivertStdoutToString(t *testing.T) {
 	if result != "Hello Brooklyn" {
 		t.Fatalf("Result was %s\n", result)
 	}
-	assert.Equal(t, "Hello Brooklyn", result, "Divert failed")
+	is.Equal("Hello Brooklyn", result)
 }
