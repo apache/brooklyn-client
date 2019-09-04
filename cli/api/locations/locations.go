@@ -21,6 +21,8 @@ package locations
 import (
 	"encoding/json"
 	"fmt"
+	"path"
+
 	"github.com/apache/brooklyn-client/cli/models"
 	"github.com/apache/brooklyn-client/cli/net"
 )
@@ -56,7 +58,7 @@ func DeleteLocation(network *net.Network, locationId string) (string, error) {
 
 // WIP
 func CreateLocation(network *net.Network, locationId string) (string, error) {
-	url := fmt.Sprintf("/v1/locations/%s", locationId)
+	url := path.Join("/v1/locations", locationId)
 	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
 		return "", err
