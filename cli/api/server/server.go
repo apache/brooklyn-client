@@ -155,7 +155,7 @@ func States(network *net.Network) (string, error) {
 	url := "/v1/server/ha/states"
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	return string(body), nil
 }
@@ -165,7 +165,7 @@ func ClearStates(network *net.Network) (string, error) {
 	url := "/v1/server/ha/states/clear"
 	body, err := network.SendEmptyPostRequest(url)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	return string(body), nil
 }
@@ -174,7 +174,7 @@ func Export(network *net.Network) (string, error) {
 	url := "/v1/server/ha/persist/export"
 	body, err := network.SendGetRequest(url)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	return string(body), nil
 }
