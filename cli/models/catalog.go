@@ -79,7 +79,7 @@ func (summary *CatalogItemSummary) Display(c *cli.Context) error {
 
 	if jsonFlag := c.GlobalString("json"); jsonFlag != "" {
 		raw := c.GlobalBool("raw-output")
-		err := displayAsJson(summary, jsonFlag, raw)
+		err := displayAsJson(os.Stdout, summary, jsonFlag, raw)
 		if err != nil {
 			return fmt.Errorf("display error: %s", err)
 		}
@@ -93,7 +93,7 @@ func (summary *CatalogEntitySummary) Display(c *cli.Context) error {
 
 	if jsonFlag := c.GlobalString("json"); jsonFlag != "" {
 		raw := c.GlobalBool("raw-output")
-		err := displayAsJson(summary, jsonFlag, raw)
+		err := displayAsJson(os.Stdout, summary, jsonFlag, raw)
 		if err != nil {
 			return fmt.Errorf("display error: %s\n", err)
 		}
@@ -193,7 +193,7 @@ func resultsBackToJson(wr io.Writer, values []reflect.Value, raw bool) error {
 	return nil
 }
 
-func displayAsJson(v interface{}, displayPath string, raw bool) error {
+func displayAsJson(w io.Writer, v interface{}, displayPath string, raw bool) error {
 	j := jsonpath.New("displayer")
 	j.AllowMissingKeys(true)
 
@@ -208,7 +208,7 @@ func displayAsJson(v interface{}, displayPath string, raw bool) error {
 		return fmt.Errorf("error evaluating JSONPath expression: %s", err)
 	}
 	for ix := range allResults {
-		if err = resultsBackToJson(os.Stdout, allResults[ix], raw); err != nil {
+		if err = resultsBackToJson(w, allResults[ix], raw); err != nil {
 			return fmt.Errorf("display error: %s", err)
 		}
 	}

@@ -23,9 +23,8 @@
 OSVALUES="darwin freebsd linux netbsd openbsd windows"
 ARCHVALUES="386 amd64"
 BRNAME="br"
-PROJECT="github.com/apache/brooklyn-client/cli"
-CLI_PACKAGE="${PROJECT}/${BRNAME}"
-GOBIN=go
+PROJECT_PACKAGE="github.com/apache/brooklyn-client/cli"
+CLI_EXECUTABLE="${PROJECT_PACKAGE}/${BRNAME}"
 
 START_TIME=$(date +%s)
 
@@ -144,11 +143,11 @@ echo "Starting build.sh (brooklyn-client go build script)"
 #
 # Test if go is available
 #
-if ! command -v $GOBIN >/dev/null 2>&1 ; then
+if ! command -v go >/dev/null 2>&1 ; then
   cat 1>&2 << \
 --MARKER--
 
-ERROR: Go language binaries not found (running "$GOBIN")
+ERROR: Go language binaries not found (running "go")
 
 The binaries for go v1.6 must be installed to build the brooklyn-client CLI.
 See golang.org for more information, or run maven with '-Dno-go-client' to skip.
@@ -178,8 +177,8 @@ mkdir -p $outdir
 
 # Set GOPATH to $outdir and link to source code.
 export GOPATH=${outdir}
-mkdir -p ${GOPATH}/src/${PROJECT%/*}
-[ -e ${GOPATH}/src/${PROJECT} ] || ln -s ${sourcedir} ${GOPATH}/src/${PROJECT}
+mkdir -p ${GOPATH}/src/${PROJECT_PACKAGE%/*}
+[ -e ${GOPATH}/src/${PROJECT_PACKAGE} ] || ln -s ${sourcedir} ${GOPATH}/src/${PROJECT_PACKAGE}
 PATH=${GOPATH}/bin:${PATH}
 
 if [ -n "$all" -a \( -n "$os" -o -n "$arch" \) ]; then
@@ -194,7 +193,12 @@ if [ \( -n "$os" -a -z "$arch" \) -o \( -z "$os" -a -n "$arch" \) ]; then
 	exit 1
 fi
 
-EXECUTABLE_DIR="$GOPATH/src/$CLI_PACKAGE"
+# Run unit tests
+echo "Run unit tests"
+cd "$GOPATH/src/${PROJECT_PACKAGE}"
+go test $(go list ./... | grep -v /vendor/) || exit $?
+
+EXECUTABLE_DIR="$GOPATH/src/$CLI_EXECUTABLE"
 if [ -d ${EXECUTABLE_DIR} ]; then
     cd ${EXECUTABLE_DIR}
 else
@@ -211,7 +215,7 @@ export CGO_ENABLED=0
 function build_cli () {
     local filepath=$1
     mkdir -p ${filepath%/*}
-    $GOBIN build -ldflags "-s" -o $filepath $CLI_PACKAGE || return $?
+    go build -ldflags "-s" -o $filepath $CLI_EXECUTABLE || return $?
 }
 
 # Do a build for one platorm, usage like: build_for_platform darwin/amd64
