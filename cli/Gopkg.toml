@@ -16,12 +16,16 @@
 # under the License.
 #
 [[constraint]]
-  name = "github.com/NodePrime/jsonpath"
-  source = "git@github.com:johnmccabe/jsonpath.git"
+  name = "k8s.io/client-go"
+  version = "12.0.0"
 
 [[constraint]]
   name = "github.com/urfave/cli"
   version = "1.12.0"
+
+[[constraint]]
+  name = "github.com/matryer/is"
+  version = "1.2"
 
 [prune]
   go-tests = true

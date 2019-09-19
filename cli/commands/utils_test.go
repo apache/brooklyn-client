@@ -19,51 +19,21 @@
 package commands
 
 import (
-	"bytes"
-	"encoding/json"
-	"io"
-	"os"
-	"strings"
+	"fmt"
+	"testing"
+
+	"github.com/matryer/is"
 )
 
-func stringRepresentation(value interface{}) (string, error) {
-	var result string
-	switch value.(type) {
-	case string:
-		result = value.(string) // use string value as-is
-	default:
-		json, err := json.Marshal(value)
-		if err != nil {
-			return "", err
-		}
-		result = string(json) // return JSON text representation of value object
+func TestDivertStdoutToString(t *testing.T) {
+	is := is.New(t)
+
+	result, _ := divertStdoutToString(func() error {
+		fmt.Println("Hello Brooklyn")
+		return nil
+	})
+	if result != "Hello Brooklyn" {
+		t.Fatalf("Result was %s\n", result)
 	}
-	return result, nil
-}
-
-func divertStdoutToString(fn func() error) (string, error) {
-	previous := os.Stdout
-	defer func() {
-		os.Stdout = previous
-	}()
-
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	err := fn()
-	if err != nil {
-		return "", err
-	}
-
-	errc := make(chan error)
-	var buf bytes.Buffer
-
-	go func() {
-		_, err := io.Copy(&buf, r)
-		errc <- err
-	}()
-	w.Close()
-	err = <-errc
-	output := strings.TrimSpace(buf.String())
-	return output, err
+	is.Equal("Hello Brooklyn", result)
 }

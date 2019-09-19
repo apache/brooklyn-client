@@ -12,11 +12,11 @@ Bundled dependencies:
   # This software includes the following bundled third-party components.
   # Referenced licenses can be found in the accompanying LICENSE file.
 
-  github.com/NodePrime/jsonpath/cli/jsonpath: 
-    Project:      github.com/NodePrime/jsonpath/cli/jsonpath
-    Available at: github.com/NodePrime/jsonpath/
-    License name: MIT License
-    Notice:       Copyright (c) 2015 NodePrime Inc.
+  k8s.io/client-go:
+    Project:      k8s.io/client-go
+    Available at: https://github.com/kubernetes/client-go
+    License name: Apache 2.0
+    Notice:       Copyright The Kubernetes Authors.
   
   github.com/urfave/cli: 
     Project:      github.com/urfave/cli

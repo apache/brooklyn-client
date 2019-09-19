@@ -19,15 +19,16 @@
 package commands
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/apache/brooklyn-client/cli/api/catalog"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/error_handler"
+	"github.com/apache/brooklyn-client/cli/models"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/urfave/cli"
-	"github.com/apache/brooklyn-client/cli/models"
-	"errors"
-	"strings"
 )
 
 type CatalogShow struct {
@@ -60,12 +61,12 @@ func (cmd *CatalogShow) Run(scope scope.Scope, c *cli.Context) {
 	}
 }
 
-func (cmd *CatalogShow) show(c *cli.Context) (error) {
+func (cmd *CatalogShow) show(c *cli.Context) error {
 	if len(c.Args()) != 2 {
 		return errors.New(c.App.Name + " " + showCommandName + catalogItemTypesUsage + " ITEM[:VERSION]")
 	}
 	catalogType, err := GetCatalogType(c)
-	if  err != nil {
+	if err != nil {
 		return err
 	}
 	item := c.Args().Get(1)
@@ -88,7 +89,7 @@ func (cmd *CatalogShow) show(c *cli.Context) (error) {
 	return errors.New("Unrecognised argument")
 }
 
-func (cmd *CatalogShow) showPolicy(c *cli.Context, item string, version string) (error) {
+func (cmd *CatalogShow) showPolicy(c *cli.Context, item string, version string) error {
 	var summary models.CatalogItemSummary
 	var err error
 	if version == "" {
@@ -103,7 +104,7 @@ func (cmd *CatalogShow) showPolicy(c *cli.Context, item string, version string) 
 	return summary.Display(c)
 }
 
-func (cmd *CatalogShow) showCatalogLocation(c *cli.Context, item string, version string) (error) {
+func (cmd *CatalogShow) showCatalogLocation(c *cli.Context, item string, version string) error {
 	var summary models.CatalogItemSummary
 	var err error
 	if version == "" {
@@ -117,7 +118,7 @@ func (cmd *CatalogShow) showCatalogLocation(c *cli.Context, item string, version
 	return summary.Display(c)
 }
 
-func (cmd *CatalogShow) showCatalogEntity(c *cli.Context, item string, version string) (error) {
+func (cmd *CatalogShow) showCatalogEntity(c *cli.Context, item string, version string) error {
 	var summary models.CatalogEntitySummary
 	var err error
 	if version == "" {
@@ -131,7 +132,7 @@ func (cmd *CatalogShow) showCatalogEntity(c *cli.Context, item string, version s
 	return summary.Display(c)
 }
 
-func (cmd *CatalogShow) showCatalogApplication(c *cli.Context, item string, version string) (error) {
+func (cmd *CatalogShow) showCatalogApplication(c *cli.Context, item string, version string) error {
 	var summary models.CatalogEntitySummary
 	var err error
 	if version == "" {

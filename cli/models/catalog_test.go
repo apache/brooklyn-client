@@ -16,54 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package commands
+package models
 
 import (
 	"bytes"
 	"encoding/json"
-	"io"
-	"os"
-	"strings"
+	"github.com/matryer/is"
+	"testing"
 )
 
-func stringRepresentation(value interface{}) (string, error) {
-	var result string
-	switch value.(type) {
-	case string:
-		result = value.(string) // use string value as-is
-	default:
-		json, err := json.Marshal(value)
-		if err != nil {
-			return "", err
-		}
-		result = string(json) // return JSON text representation of value object
+func TestDisplayCatalogEntity(t *testing.T) {
+	assert := is.New(t)
+
+	var summary CatalogEntitySummary
+	je := json.Unmarshal([]byte(testCaseJson), &summary)
+	if je != nil {
+		t.Fatal("failed to unmarshal test object", je)
 	}
-	return result, nil
-}
 
-func divertStdoutToString(fn func() error) (string, error) {
-	previous := os.Stdout
-	defer func() {
-		os.Stdout = previous
-	}()
-
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	err := fn()
+	var bb bytes.Buffer
+	err := displayAsJson(&bb, summary, "$.name", false)
 	if err != nil {
-		return "", err
+		t.Fatal("display error", err)
 	}
+	assert.Equal(bb.String(), `"Test Case"`)
 
-	errc := make(chan error)
-	var buf bytes.Buffer
-
-	go func() {
-		_, err := io.Copy(&buf, r)
-		errc <- err
-	}()
-	w.Close()
-	err = <-errc
-	output := strings.TrimSpace(buf.String())
-	return output, err
+	bb.Reset()
+	err = displayAsJson(&bb, summary, "$.effectors[*].name", false)
+	if err != nil {
+		t.Fatal("display error", err)
+	}
+	assert.Equal(bb.String(), `"restart" "start" "stop"`)
 }
