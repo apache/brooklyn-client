@@ -22,3 +22,4 @@ FROM maven:3.5.4-jdk-8-slim
 RUN apt-get update && apt-get install -y git-core golang-go
 
 RUN mkdir -p /var/maven/.m2/ && chmod -R 777 /var/maven/
+ENV MAVEN_CONFIG=/var/maven/.m2
