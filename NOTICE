@@ -12,11 +12,7 @@ Bundled dependencies:
   # This software includes the following bundled third-party components.
   # Referenced licenses can be found in the accompanying LICENSE file.
 
-  github.com/NodePrime/jsonpath/cli/jsonpath: 
-    Project:      github.com/NodePrime/jsonpath/cli/jsonpath
-    Available at: github.com/NodePrime/jsonpath/
-    License name: MIT License
-    Notice:       Copyright (c) 2015 NodePrime Inc.
+  github.com/kubernetes/client-go/util/jsonpath: 
   
   github.com/urfave/cli: 
     Project:      github.com/urfave/cli
@@ -43,9 +39,9 @@ Runtime dependencies:
     Developed by: QOS.ch (http://www.qos.ch)
     License name: Eclipse Public License, version 1.0
   
-  com.fasterxml.jackson:2.9.7: 
+  com.fasterxml.jackson:2.9.8: 
     Project:      Jackson FasterXML
-    Version:      2.9.7
+    Version:      2.9.8
     Available at: 
       - http://github.com/FasterXML/jackson
       - https://github.com/FasterXML/jackson-core
@@ -118,11 +114,11 @@ Runtime dependencies:
     Developed by: MaxMind, Inc. (http://www.maxmind.com/)
     License name: Apache License, version 2.0
   
-  com.thoughtworks.xstream:1.4.8: 
+  com.thoughtworks.xstream:1.4.11.1: 
     Project:      XStream Core
-    Version:      1.4.8
+    Version:      1.4.11.1
     Available at: http://x-stream.github.io/
-    Developed by: XStream (http://xstream.codehaus.org)
+    Developed by: XStream (http://x-stream.github.io)
     License name: BSD 3-Clause (New BSD) License
   
   commons-codec:1.10: 
@@ -217,9 +213,9 @@ Runtime dependencies:
     Developed by: The Apache Software Foundation (http://www.apache.org/)
     License name: Apache License, version 2.0
   
-  org.apache.felix.org.apache.felix.framework:5.6.10: 
+  org.apache.felix.org.apache.felix.framework:5.6.12: 
     Project:      Apache Felix Framework
-    Version:      5.6.10
+    Version:      5.6.12
     Available at: http://felix.apache.org/
     Developed by: The Apache Software Foundation (http://www.apache.org/)
     License name: Apache License, version 2.0
