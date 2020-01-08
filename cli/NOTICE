@@ -12,11 +12,7 @@ Bundled dependencies:
   # This software includes the following bundled third-party components.
   # Referenced licenses can be found in the accompanying LICENSE file.
 
-  k8s.io/client-go:
-    Project:      k8s.io/client-go
-    Available at: https://github.com/kubernetes/client-go
-    License name: Apache 2.0
-    Notice:       Copyright The Kubernetes Authors.
+  github.com/kubernetes/client-go/util/jsonpath: 
   
   github.com/urfave/cli: 
     Project:      github.com/urfave/cli
