@@ -1,7 +1,7 @@
 Notice: |
 
   Apache Brooklyn
-  Copyright 2014-2018 The Apache Software Foundation
+  Copyright 2014-2020 The Apache Software Foundation
 
   This product includes software developed at
   The Apache Software Foundation (http://www.apache.org/).
@@ -9,10 +9,13 @@ Notice: |
 
 Bundled dependencies:
 
-  # This software includes the following bundled third-party components.
+  # This software distribution includes the following bundled third-party components.
   # Referenced licenses can be found in the accompanying LICENSE file.
 
   github.com/kubernetes/client-go/util/jsonpath: 
+    Project:      Go client for Kubernetes
+    Available at: github.com/kubernetes/client-go
+    License name: Apache License, version 2.0
   
   github.com/urfave/cli: 
     Project:      github.com/urfave/cli

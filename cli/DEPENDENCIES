@@ -1,3 +1,46 @@
+Notice: |
+
+  Apache Brooklyn
+  Copyright 2014-2020 The Apache Software Foundation
+
+  This product includes software developed at
+  The Apache Software Foundation (http://www.apache.org/).
+
+  This software is released under the Apache Software License, verison 2.0.
+  This license and the licenses for all dependencies are included below
+  following the dependencies and their notices.
+
+Source dependencies:
+
+  # This software includes the following third-party components in its source code.
+  # Additional runtime dependencies are required when built and are listed in the subsequent section.
+
+  github.com/kubernetes/client-go/util/jsonpath: 
+    Project:      Go client for Kubernetes
+    Available at: github.com/kubernetes/client-go
+    License name: Apache License, version 2.0
+  
+  github.com/urfave/cli: 
+    Project:      github.com/urfave/cli
+    Available at: https://github.com/urfave/cli
+    License name: MIT License
+    Notice:       Copyright (c) 2016 Jeremy Saenz & Contributors
+  
+  golang.org/x/crypto/ssh: 
+    Project:      golang.org/x/crypto/ssh
+    Available at: https://godoc.org/golang.org/x/crypto/ssh
+    License name: BSD 3-Clause (New BSD) License
+    Notice:       Copyright (c) 2009 The Go Authors. All rights reserved.
+  
+
+Runtime dependencies:
+
+  # This software depends on additional third-party components at runtime.
+  # These are not bundled here but may be included as part of a build.
+
+  # No such dependencies
+
+
 Apache License: |
 
    Apache License
@@ -205,10 +248,7 @@ Apache License: |
    
 Dependency licenses:
 
-   # This source distribution includes third-party code under their licenses.
-   # These licenses are compatible with the Apache License above.
-   # Details of these dependencies can be found in the accompanying NOTICE file.
-   # These licenses are included below with their full text.
+   # Licenses of the source and binary dependencies of this software are included below.
 
   Apache License, version 2.0: |
     # from https://www.apache.org/licenses/LICENSE-2.0
