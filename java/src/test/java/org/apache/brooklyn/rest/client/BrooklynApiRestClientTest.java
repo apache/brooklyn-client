@@ -37,6 +37,7 @@ import org.apache.brooklyn.core.entity.StartableApplication;
 import org.apache.brooklyn.core.location.BasicLocationRegistry;
 import org.apache.brooklyn.core.mgmt.internal.LocalManagementContext;
 import org.apache.brooklyn.core.test.entity.TestEntity;
+import org.apache.brooklyn.core.typereg.BrooklynBomYamlCatalogBundleResolver;
 import org.apache.brooklyn.rest.BrooklynRestApiLauncher;
 import org.apache.brooklyn.rest.BrooklynRestApiLauncherTest;
 import org.apache.brooklyn.rest.domain.ApplicationSummary;
@@ -113,13 +114,32 @@ public class BrooklynApiRestClientTest {
         log.info("locations from catalog are: "+locations);
     }
 
+    // Note that the API method called here is now deprecated.
+    // The equivalent call is used in testCatalogCreate below.
+    public void testCatalogCreateFromYamlDeprecated()throws Exception {
+        String yaml = getFileContentsAsString("catalog/test-catalog.bom");
+        yaml = yaml.replaceAll("simple-tomcat", "simple-tomcat-yaml");
+        final Response response = api.getCatalogApi().createFromYaml(yaml, false);
+        Asserts.assertEquals(response.getStatus(), 201);
+        Asserts.assertStringContains(String.valueOf(response.getEntity()), "simple-tomcat-yaml:1.0");
+    }
+
+    // Note that the API method called here is now deprecated.
+    // The equivalent call is used in testCatalogCreate below.
+    public void testCatalogCreateFromUploadDeprecated()throws Exception {
+        String yaml = getFileContentsAsString("catalog/test-catalog.bom");
+        yaml = yaml.replaceAll("simple-tomcat", "simple-tomcat-upload");
+        final Response response = api.getCatalogApi().createFromUpload(yaml.getBytes(), false);
+        Asserts.assertEquals(response.getStatus(), 201);
+        Asserts.assertStringContains(String.valueOf(response.getEntity()), "simple-tomcat-upload:1.0");
+    }
+
     public void testCatalogCreate()throws Exception {
-        final Response response = api.getCatalogApi().createFromUpload(getFileContentsAsString("catalog/test-catalog.bom").getBytes(), false);
+        String yaml = getFileContentsAsString("catalog/test-catalog.bom");
+        final Response response = api.getCatalogApi().create(yaml.getBytes(), BrooklynBomYamlCatalogBundleResolver.FORMAT, false, true, false);
         Asserts.assertEquals(response.getStatus(), 201);
         Asserts.assertStringContains(String.valueOf(response.getEntity()), "simple-tomcat:1.0");
     }
-
-
 
     public void testApplicationApiList() throws Exception {
         List<ApplicationSummary> apps = api.getApplicationApi().list(null);
