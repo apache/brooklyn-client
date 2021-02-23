@@ -18,7 +18,7 @@
  */
 package command_metadata
 
-import "github.com/urfave/cli"
+import "github.com/urfave/cli/v2"
 
 type CommandMetadata struct {
 	Name            string

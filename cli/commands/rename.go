@@ -25,7 +25,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 type Rename struct {

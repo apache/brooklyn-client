@@ -19,15 +19,15 @@
 package commands
 
 import (
+	"errors"
 	"github.com/apache/brooklyn-client/cli/api/catalog"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/error_handler"
+	"github.com/apache/brooklyn-client/cli/models"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/apache/brooklyn-client/cli/terminal"
-	"github.com/urfave/cli"
-	"github.com/apache/brooklyn-client/cli/models"
-	"errors"
+	"github.com/urfave/cli/v2"
 )
 
 type CatalogList struct {
@@ -66,11 +66,11 @@ func (cmd *CatalogList) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *CatalogList) list(c *cli.Context) ([]models.IdentityDetails, error) {
-	if len(c.Args()) != 1 {
+	if c.Args().Len() != 1 {
 		return nil, errors.New(c.App.Name + " " + listCommandName + catalogItemTypesUsage + " (may be abbreviated)")
 	}
 	catalogType, err := GetCatalogType(c)
-	if  err != nil {
+	if err != nil {
 		return nil, err
 	}
 	switch catalogType {

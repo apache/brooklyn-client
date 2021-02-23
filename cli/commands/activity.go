@@ -28,7 +28,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/apache/brooklyn-client/cli/terminal"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"sort"
 	"strconv"
 	"strings"
@@ -52,7 +52,7 @@ func (cmd *Activity) Metadata() command_metadata.CommandMetadata {
 		Description: "Show the activity for an application / entity",
 		Usage:       "BROOKLYN_NAME SCOPE activity [ACTIVITYID]",
 		Flags: []cli.Flag{
-			cli.StringSliceFlag{
+			&cli.StringSliceFlag{
 				Name:  "children, c",
 				Usage: "List children of the activity",
 			},

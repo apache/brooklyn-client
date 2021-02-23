@@ -25,7 +25,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"strings"
 )
 
@@ -38,10 +38,10 @@ func NewList(network *net.Network) (cmd *List) {
 	cmd = new(List)
 	cmd.network = network
 	cmd.listCommands = map[string]command.Command{
-	//		ListApplicationCommand: NewApplications(cmd.network),
-	//		ListEntityCommand: NewEntities(cmd.network),
-	//		ListSensorCommand: NewSensors(cmd.network),
-	//		ListEffectorCommand: NewEffector(cmd.network),
+		//		ListApplicationCommand: NewApplications(cmd.network),
+		//		ListEntityCommand: NewEntities(cmd.network),
+		//		ListSensorCommand: NewSensors(cmd.network),
+		//		ListEffectorCommand: NewEffector(cmd.network),
 	}
 	return
 }

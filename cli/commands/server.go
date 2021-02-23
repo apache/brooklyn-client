@@ -19,11 +19,11 @@
 package commands
 
 import (
+	"fmt"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
-	"fmt"
+	"github.com/urfave/cli/v2"
 )
 
 type Server struct {

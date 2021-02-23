@@ -25,7 +25,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 type CatalogAdd struct {
@@ -48,9 +48,9 @@ func (cmd *CatalogAdd) Metadata() command_metadata.CommandMetadata {
 }
 
 func (cmd *CatalogAdd) Run(scope scope.Scope, c *cli.Context) {
-        if c.Args().First() == "" {
-                error_handler.ErrorExit("A filename or URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
-        }
+	if c.Args().First() == "" {
+		error_handler.ErrorExit("A filename or URL must be provided as the first argument", error_handler.CLIUsageErrorExitCode)
+	}
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}

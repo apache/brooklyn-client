@@ -19,29 +19,29 @@
 package commands
 
 import (
+	"errors"
+	"fmt"
 	"github.com/apache/brooklyn-client/cli/command"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"strings"
-	"fmt"
-	"errors"
 )
 
 type Catalog struct {
-	network *net.Network
+	network         *net.Network
 	catalogCommands map[string]command.Command
 }
 
 func NewCatalog(network *net.Network) (cmd *Catalog) {
 	cmd = new(Catalog)
 	cmd.network = network
-	cmd.catalogCommands = map[string]command.Command {
-		ShowCatalogCommand: NewCatalogShow(cmd.network),
-		ListCatalogCommand: NewCatalogList(cmd.network),
-		AddCatalogCommand: NewCatalogAdd(cmd.network),
+	cmd.catalogCommands = map[string]command.Command{
+		ShowCatalogCommand:   NewCatalogShow(cmd.network),
+		ListCatalogCommand:   NewCatalogList(cmd.network),
+		AddCatalogCommand:    NewCatalogAdd(cmd.network),
 		DeleteCatalogCommand: NewDeleteCatalogItem(cmd.network),
 	}
 	return
@@ -61,7 +61,8 @@ var catalogCommands = []string{
 var catalogCommandsUsage = "list TYPE | add FILE/URL | delete TYPE ID:VERSION | show ITEM"
 
 type CatalogItemType int
-const  (
+
+const (
 	Unknown = iota
 	ApplicationsItemType
 	EntitiesItemType
@@ -98,7 +99,7 @@ func (cmd *Catalog) Metadata() command_metadata.CommandMetadata {
 		Description: "Catalog operations",
 		Usage:       "BROOKLYN_NAME catalog (" + catalogCommandsUsage + ")",
 		Flags:       []cli.Flag{},
-		Operands:    []command_metadata.CommandMetadata{
+		Operands: []command_metadata.CommandMetadata{
 			cmd.SubCommand(ShowCatalogCommand).Metadata(),
 			cmd.SubCommand(ListCatalogCommand).Metadata(),
 			cmd.SubCommand(AddCatalogCommand).Metadata(),
@@ -111,5 +112,5 @@ func (cmd *Catalog) Run(scope scope.Scope, c *cli.Context) {
 	if err := net.VerifyLoginURL(cmd.network); err != nil {
 		error_handler.ErrorExit(err)
 	}
- 	fmt.Printf("'catalog' requires one of (%s)\n", catalogCommandsUsage)
+	fmt.Printf("'catalog' requires one of (%s)\n", catalogCommandsUsage)
 }

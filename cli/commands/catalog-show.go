@@ -28,7 +28,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/models"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 type CatalogShow struct {
@@ -62,7 +62,7 @@ func (cmd *CatalogShow) Run(scope scope.Scope, c *cli.Context) {
 }
 
 func (cmd *CatalogShow) show(c *cli.Context) error {
-	if len(c.Args()) != 2 {
+	if c.Args().Len() != 2 {
 		return errors.New(c.App.Name + " " + showCommandName + catalogItemTypesUsage + " ITEM[:VERSION]")
 	}
 	catalogType, err := GetCatalogType(c)

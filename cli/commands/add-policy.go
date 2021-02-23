@@ -19,7 +19,7 @@
 package commands
 
 import (
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	//"github.com/apache/brooklyn-client/cli/api/entity_policies"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/net"
