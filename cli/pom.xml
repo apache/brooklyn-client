@@ -61,6 +61,18 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>clean-module-cache</id>
+                        <phase>pre-clean</phase>
+                        <configuration>
+                            <target>
+                                <ant target="pre-clean"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>process-build-all</id>
                         <phase>compile</phase>
                         <configuration>
