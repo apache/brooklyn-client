@@ -99,8 +99,7 @@
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
                     <excludes combine.children="append">
-                        <exclude>vendor/**</exclude>
-                        <exclude>Gopkg.*</exclude>
+                        <exclude>go.sum</exclude>
                     </excludes>
                 </configuration>
             </plugin>
