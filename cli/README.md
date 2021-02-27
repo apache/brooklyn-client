@@ -10,14 +10,8 @@ A command line client for [Apache Brooklyn](https://brooklyn.apache.org).
 The CLI tool is written in Go and should be obtained and built as a standard Go project. 
 You will need the following tools to build it:
 
-- Go (version 1.6.1 or higher), with full cross-compiler support: 
-the standard [binary packages](https://golang.org/dl) include this,
-or you can use your favorite package managers (e.g. `brew install go --with-cc-all`).
-
-Optional:
-- Maven (used by the Brooklyn build process)
-
-- Maven (see note below on the Brooklyn build process)
+- Go (version 1.15 or higher).
+- Maven (optional, used by the Brooklyn build process)
 
 
 ## Workspace Setup
@@ -25,35 +19,10 @@ Optional:
 Go is very particular about the layout of a source tree and the source repository, 
 as it relies on this in the naming of packages.  
 
-If you're familiar with Go and just want to develop the `br` tool itself you may simply work in your usual `GOPATH`, 
+If you're familiar with Go and just want to develop the `br` tool itself you may simply work in your usual manner, 
 using `go get github.com/apache/brooklyn-client/cli/br` and adding your own fork as a remote. 
 
-`br` is built just like any other Go project. Dependencies are managed through [dep](https://github.com/golang/dep).
-
-If you're new to Go and you want to work on the CLI alongside non-Go components in Apache Brooklyn,
-then the common Go setup -- where code lives under the `GOPATH` -- may be tedious to work with.
-A good pattern is to have the requisite `GOPATH` entry linking to the `brooklyn-client` project
-elsewhere on disk, so you have just one copy in the usual space and there is no need to touch the `GOPATH` thereafter.
-This is the recommended default described by the instructions below.
-
-First ensure that a `GOPATH` is set; this is where Go will store its files. 
-`~/go` is the default, and `~/.go` is acceptable also. For example:
-
-```bash
-export GOPATH=$HOME/go
-```
-
-These instructions now assume that you have `brooklyn-client` checked out and are
-in the `cli` subdirectory, where this file resides. 
-Tell Go to use this checked-out project by linking to it under `GOPATH`:
-
-```bash
-rm -rf $GOPATH/src/github.com/apache/brooklyn-client
-cd ..
-ln -s `pwd` $GOPATH/src/github.com/apache/brooklyn-client
-cd cli
-```
-
+`br` is built just like any other Go project. Dependencies are managed through Go modules.
 
 ## Compiling the code with Go for development purposes
 
@@ -91,22 +60,19 @@ Invoke the build script via Maven with one of
   - ```mvn -Dtarget=native clean install```                     build for the current platform
   - ```mvn -Dtarget=cross -Dos=OS -Darch=ARCH clean install```  build for platform with operating system OS and architecture ARCH
 
-*NOTE* This does *not* build the code into your usual GOPATH. To allow the project to be checked out along with the 
-other Brooklyn submodules and built using Maven, without any special treatment to install it into a separate GOPATH
-location, the Maven build makes no assumption about the location of the project root directory. Instead, the Maven
-`target` directory is used as the GOPATH, and a soft link is created as `target/src/github.com/apache/brooklyn-cli` to 
-the code in the root directory. 
-
 This builds the requested binaries into the `target/` directory, each in its own subdirectory with a name that includes 
 the platform/architecture details, e.g. `bin/linux.386/br`.  The build installs a maven artifact to the maven repository,
 consisting of a zip file containing all the binaries.  This artifact can be referenced in a POM as
 
 ```xml
-<groupId>org.apache.brooklyn</groupId>
-<artifactId>brooklyn-client-cli</artifactId>
-<classifier>bin</classifier>
-<type>zip</type>
-<version>1.1.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
+<project>
+    <groupId>org.apache.brooklyn</groupId>
+    <artifactId>brooklyn-client-cli</artifactId>
+    <classifier>bin</classifier>
+    <type>zip</type>
+    <version>1.1.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
+</project>
+
 ```
 
 Most of the work is delegated to the `release/build.sh` script;
