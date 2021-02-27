@@ -199,9 +199,6 @@ go test ./... || exit $?
 
 mkdir -p ${outdir}/bin
 
-# Disable use of C code modules (causes problems with cross-compiling)
-export CGO_ENABLED=0
-
 # build requested file
 function build_cli () {
     local filepath=$1
