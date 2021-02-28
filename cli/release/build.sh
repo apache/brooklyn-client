@@ -141,7 +141,12 @@ done
 echo "Starting build.sh (brooklyn-client go build script)"
 
 # Set GOPATH to ${outdir} so that Go module cache gets put there.
-export GOPATH=${outdir}
+export GOPATH="${outdir}"
+
+# set GOCACHE to avoid
+# "failed to initialize build cache at /.cache/go-build: mkdir /.cache: permission denied"
+# on CI builds
+export GOCACHE="${outdir}/.cache/go-build"
 
 #
 # Test if go is available
