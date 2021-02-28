@@ -61,7 +61,7 @@ Invoke the build script via Maven with one of
   - ```mvn -Dtarget=cross -Dos=OS -Darch=ARCH clean install```  build for platform with operating system OS and architecture ARCH
 
 This builds the requested binaries into the `target/` directory, each in its own subdirectory with a name that includes 
-the platform/architecture details, e.g. `bin/linux.386/br`.  The build installs a maven artifact to the maven repository,
+the platform/architecture details, e.g. `bin/linux.386/br`. (When using this build process, the build script also writes the Go module cache into this directory.) The build installs a maven artifact to the maven repository,
 consisting of a zip file containing all the binaries.  This artifact can be referenced in a POM as
 
 ```xml

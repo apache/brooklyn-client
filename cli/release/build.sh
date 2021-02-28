@@ -140,8 +140,8 @@ done
 
 echo "Starting build.sh (brooklyn-client go build script)"
 
-# Just in case user has accidentally defined GOPATH to include this directory
-unset GOPATH
+# Set GOPATH to ${outdir} so that Go module cache gets put there.
+export GOPATH=${outdir}
 
 #
 # Test if go is available
