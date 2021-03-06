@@ -140,6 +140,14 @@ done
 
 echo "Starting build.sh (brooklyn-client go build script)"
 
+# Set GOPATH to ${outdir} so that Go module cache gets put there.
+export GOPATH="${outdir}"
+
+# set GOCACHE to avoid
+# "failed to initialize build cache at /.cache/go-build: mkdir /.cache: permission denied"
+# on CI builds
+export GOCACHE="${outdir}/.cache/go-build"
+
 #
 # Test if go is available
 #
@@ -149,7 +157,7 @@ if ! command -v go >/dev/null 2>&1 ; then
 
 ERROR: Go language binaries not found (running "go")
 
-The binaries for go v1.6 must be installed to build the brooklyn-client CLI.
+The binaries for Go must be installed to build the brooklyn-client CLI.
 See golang.org for more information, or run maven with '-Dno-go-client' to skip.
 
 --MARKER--
@@ -160,13 +168,13 @@ GO_VERSION=`go version | awk '{print $3}'`
 echo GO_VERSION is ${GO_VERSION}
 GO_V=`echo $GO_VERSION | sed 's/^go1\.\([0-9][0-9]*\).*/\1/'`
 # test if not okay so error shows if regex above not matched
-if ! (( "$GO_V" >= 6 )) ; then
+if ! (( "$GO_V" >= 15 )) ; then
   cat 1>&2 << \
 --MARKER--
 
 ERROR: Incompatible Go language version: $GO_VERSION
 
-Go version 1.6 or higher is required to build the brooklyn-client CLI.
+Go version 1.15 or higher is required to build the brooklyn-client CLI.
 See golang.org for more information, or run maven with '-Dno-go-client' to skip.
 
 --MARKER--
@@ -175,11 +183,8 @@ fi
 
 mkdir -p $outdir
 
-# Set GOPATH to $outdir and link to source code.
-export GOPATH=${outdir}
-mkdir -p ${GOPATH}/src/${PROJECT_PACKAGE%/*}
-[ -e ${GOPATH}/src/${PROJECT_PACKAGE} ] || ln -s ${sourcedir} ${GOPATH}/src/${PROJECT_PACKAGE}
-PATH=${GOPATH}/bin:${PATH}
+# Disable use of C code modules (causes problems with cross-compiling)
+export CGO_ENABLED=0
 
 if [ -n "$all" -a \( -n "$os" -o -n "$arch" \) ]; then
 	show_help
@@ -195,21 +200,9 @@ fi
 
 # Run unit tests
 echo "Run unit tests"
-cd "$GOPATH/src/${PROJECT_PACKAGE}"
-go test $(go list ./... | grep -v /vendor/) || exit $?
+go test ./... || exit $?
 
-EXECUTABLE_DIR="$GOPATH/src/$CLI_EXECUTABLE"
-if [ -d ${EXECUTABLE_DIR} ]; then
-    cd ${EXECUTABLE_DIR}
-else
-	echo "Directory not found: ${EXECUTABLE_DIR}"
-	exit 2
-fi
-
-mkdir -p ${GOPATH}/bin
-
-# Disable use of C code modules (causes problems with cross-compiling)
-export CGO_ENABLED=0
+mkdir -p ${outdir}/bin
 
 # build requested file
 function build_cli () {
@@ -226,13 +219,13 @@ function build_for_platform () {
     if [ "windows" = $os ] ; then
         BINARY=${BINARY}.exe
     fi
-    GOOS="$os" GOARCH="$arch" build_cli "${GOPATH}/bin/$os.$arch/${BINARY}${label}" || return $?
+    GOOS="$os" GOARCH="$arch" build_cli "${outdir}/bin/$os.$arch/${BINARY}${label}" || return $?
 }
 
 # Build as instructed
 if [ -z "$os" -a -z "$all" ]; then
 	echo "Building $BRNAME for native OS/ARCH"
-	build_cli "${GOPATH}/bin/${BRNAME}${label}${timestamp}" || exit $?
+	build_cli "${outdir}/bin/${BRNAME}${label}${timestamp}" || exit $?
 elif [ -z "$all" ]; then
 	validos=`expr " $OSVALUES " : ".* $os "`
 	if [ "$validos" -eq 0 ]; then
@@ -250,7 +243,7 @@ elif [ -z "$all" ]; then
 	build_for_platform $os/$arch || exit $?
 else
 	echo "Building $BRNAME for default OS/ARCH:"
-	for build in ${builds[@]}; do
+	for build in "${builds[@]}"; do
 		echo "    $build"
 		build_for_platform $build || exit $?
 	done
@@ -259,7 +252,7 @@ fi
 echo
 echo Successfully built the following binaries:
 echo
-ls -lR ${GOPATH}/bin
+ls -lR ${outdir}/bin
 echo
 
 END_TIME=$(date +%s)

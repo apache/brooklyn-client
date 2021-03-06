@@ -34,7 +34,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/io"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -64,8 +64,8 @@ func (cmd *Login) Metadata() command_metadata.CommandMetadata {
 		Description: "Login to brooklyn",
 		Usage:       "BROOKLYN_NAME login URL [USER [PASSWORD]]",
 		Flags: []cli.Flag{
-			cli.BoolFlag{Name: skipSslChecksParam, Usage: "Skip SSL Checks"},
-			cli.StringFlag{Name: authorizationParam + ", A", Usage: "Type of authentication header. Format: 'authorization=Basic'" +
+			&cli.BoolFlag{Name: skipSslChecksParam, Usage: "Skip SSL Checks"},
+			&cli.StringFlag{Name: authorizationParam + ", A", Usage: "Type of authentication header. Format: 'authorization=Basic'" +
 				" or 'authorization=Bearer:<JWT-token>'"},
 		},
 	}

@@ -29,7 +29,7 @@ import (
 	"strings"
 
 	"github.com/apache/brooklyn-client/cli/terminal"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"k8s.io/client-go/util/jsonpath"
 )
 
@@ -77,8 +77,8 @@ func createTableWithIdentityDetails(item IdentityDetails) terminal.Table {
 
 func (summary *CatalogItemSummary) Display(c *cli.Context) error {
 
-	if jsonFlag := c.GlobalString("json"); jsonFlag != "" {
-		raw := c.GlobalBool("raw-output")
+	if jsonFlag := c.String("json"); jsonFlag != "" {
+		raw := c.Bool("raw-output")
 		err := displayAsJson(os.Stdout, summary, jsonFlag, raw)
 		if err != nil {
 			return fmt.Errorf("display error: %s", err)
@@ -91,8 +91,8 @@ func (summary *CatalogItemSummary) Display(c *cli.Context) error {
 
 func (summary *CatalogEntitySummary) Display(c *cli.Context) error {
 
-	if jsonFlag := c.GlobalString("json"); jsonFlag != "" {
-		raw := c.GlobalBool("raw-output")
+	if jsonFlag := c.String("json"); jsonFlag != "" {
+		raw := c.Bool("raw-output")
 		err := displayAsJson(os.Stdout, summary, jsonFlag, raw)
 		if err != nil {
 			return fmt.Errorf("display error: %s\n", err)

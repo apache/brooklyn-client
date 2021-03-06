@@ -27,7 +27,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
 	"github.com/apache/brooklyn-client/cli/terminal"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"os"
 )
 
@@ -48,7 +48,7 @@ func (cmd *Entity) Metadata() command_metadata.CommandMetadata {
 		Description: "Show the entities of an application or entity",
 		Usage:       "BROOKLYN_NAME SCOPE entity [ENTITYID]",
 		Flags: []cli.Flag{
-			cli.StringSliceFlag{
+			&cli.StringSliceFlag{
 				Name:  "children, c",
 				Usage: "List children of the entity",
 			},

@@ -25,7 +25,7 @@ import (
 
 	"github.com/apache/brooklyn-client/cli/models"
 	"github.com/matryer/is"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func testCatalogEntitySummary() models.CatalogEntitySummary {
@@ -64,21 +64,22 @@ func testInApp(t *testing.T, fn func(c *cli.Context) error, args ...string) stri
 
 	testApp := cli.NewApp()
 	testApp.Flags = []cli.Flag{
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "json, j",
 			Usage: "Render value as json with json path selector. (Experimental, not supported on all commands at present) ",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "raw-output, r",
 			Usage: "Used with --json; if result is a string, write it without quotes",
 		},
 	}
 	var out string
 	var err error
-	testApp.Action = func(c *cli.Context) {
+	testApp.Action = func(c *cli.Context) error {
 		out, err = divertStdoutToString(func() error {
 			return fn(c)
 		})
+		return nil
 	}
 
 	// prepend `br` so args are the same as in the CLI

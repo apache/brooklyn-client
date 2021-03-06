@@ -19,10 +19,10 @@
 package app
 
 import (
+	"fmt"
 	"github.com/apache/brooklyn-client/cli/command_metadata"
 	"github.com/apache/brooklyn-client/cli/command_runner"
-	"github.com/apache/brooklyn-client/cli/error_handler"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"os"
 	"strings"
 )
@@ -52,29 +52,31 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 	app.Version = appConfig.Version
 
 	app.Flags = []cli.Flag{
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "skipSslChecks",
 			Usage: "Skip verification of server's certificate chain and hostname (for use with self-signed certs)",
 		},
-		cli.StringFlag{
-			Name:  "json, j",
-			Usage: "Render value as json with json path selector. (Experimental, not supported on all commands at present) ",
+		&cli.StringFlag{
+			Name:    "json",
+			Aliases: []string{"j"},
+			Usage:   "Render value as json with json path selector. (Experimental, not supported on all commands at present) ",
 		},
-		cli.BoolFlag{
-			Name:  "raw-output, r",
-			Usage: "Used with --json; if result is a string, write it without quotes",
+		&cli.BoolFlag{
+			Name:    "raw-output",
+			Aliases: []string{"r"},
+			Usage:   "Used with --json; if result is a string, write it without quotes",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "verbose",
 			Usage: "Print HTTP requests and responses",
 		},
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:  "vverbose",
 			Usage: "Print HTTP requests and responses and include body data",
 		},
 	}
 
-	app.Commands = []cli.Command{}
+	app.Commands = []*cli.Command{}
 
 	for _, metadata := range metadatas {
 		primaryCommand := getCommand(baseName, metadata, cmdRunner)
@@ -83,30 +85,28 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 	return
 }
 
-func getCommand(baseName string, metadata command_metadata.CommandMetadata, runner command_runner.Runner) cli.Command {
-	command := cli.Command{
+func getCommand(baseName string, metadata command_metadata.CommandMetadata, runner command_runner.Runner) *cli.Command {
+	command := &cli.Command{
 		Name:        metadata.Name,
 		Aliases:     metadata.Aliases,
-		ShortName:   metadata.ShortName,
 		Description: metadata.Description,
 		Usage:       strings.Replace(metadata.Usage, "BROOKLYN_NAME", baseName, -1),
-		Action: func(context *cli.Context) {
-			err := runner.RunCmdByName(metadata.Name, context)
-			if err != nil {
-				error_handler.ErrorExit(err)
+		Action: func(context *cli.Context) error {
+			if err := runner.RunCmdByName(metadata.Name, context); err != nil {
+				return fmt.Errorf("error running %s: %w", metadata.Name, err)
 			}
+			return nil
 		},
 		Flags:           metadata.Flags,
 		SkipFlagParsing: metadata.SkipFlagParsing,
 	}
 
 	if nil != metadata.Operands {
-		command.Subcommands = make([]cli.Command, 0)
+		command.Subcommands = make([]*cli.Command, 0)
 		for _, operand := range metadata.Operands {
-			command.Subcommands = append(command.Subcommands, cli.Command{
+			command.Subcommands = append(command.Subcommands, &cli.Command{
 				Name:            operand.Name,
 				Aliases:         operand.Aliases,
-				ShortName:       operand.ShortName,
 				Description:     operand.Description,
 				Usage:           strings.Replace(operand.Usage, "BROOKLYN_NAME", baseName, -1),
 				Flags:           operand.Flags,
@@ -122,12 +122,12 @@ func getCommand(baseName string, metadata command_metadata.CommandMetadata, runn
 	return command
 }
 
-func subCommandAction(command string, operand string, runner command_runner.Runner) func(context *cli.Context) {
-	return func(context *cli.Context) {
-		err := runner.RunSubCmdByName(command, operand, context)
-		if err != nil {
-			error_handler.ErrorExit(err)
+func subCommandAction(command string, operand string, runner command_runner.Runner) cli.ActionFunc {
+	return func(context *cli.Context) error {
+		if err := runner.RunSubCmdByName(command, operand, context); err != nil {
+			return fmt.Errorf("error running %s: %w", command, err)
 		}
+		return nil
 	}
 }
 

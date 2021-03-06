@@ -26,7 +26,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/error_handler"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"io/ioutil"
 	"strings"
 )
@@ -72,12 +72,12 @@ func NewInvokeRestart(network *net.Network) (cmd *Restart) {
 }
 
 var paramFlags = []cli.Flag{
-	cli.StringSliceFlag{
-		Name:  "param, P",
+	&cli.StringSliceFlag{
+		Name: "param, P",
 		Usage: "Parameter and value separated by '=', e.g. -P x=y. If the parameter value is complex or multi-" +
-		       "lined it may be provided in a file and referenced as: '@<file>', e.g. -P x=@/path/to/file.",
+			"lined it may be provided in a file and referenced as: '@<file>', e.g. -P x=@/path/to/file.",
 	},
-	cli.StringFlag{
+	&cli.StringFlag{
 		Name:  "timeout",
 		Usage: "Timeout for waiting for effector (e.g. '1s' for one second, '0' for forever); defaults to forever.",
 	},

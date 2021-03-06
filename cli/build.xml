@@ -22,6 +22,14 @@
     </condition>
     <property name="build.script" location="${basedir}/release/build${platform.extension}"/>
 
+    <target name="pre-clean">
+        <exec executable="chmod">
+            <arg value="-R"/>
+            <arg value="+w"/>
+            <arg value="target"/>
+        </exec>
+    </target>
+
     <target name="all" >
         <exec executable="${build.script}" failonerror="true">
             <arg value="-A"/>

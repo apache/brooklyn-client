@@ -16,10 +16,23 @@
 # under the License.
 
 # For Brooklyn Client, we use a debian distribution instead of alpine as there are some libgcc incompatibilities with GO
-FROM maven:3.5.4-jdk-8-slim
+FROM maven:3.6.3-jdk-8-slim
 
 # Install necessary binaries to build brooklyn-client
-RUN apt-get update && apt-get install -y git-core golang-go
+RUN apt-get update && apt-get install -y git-core
+
+# Download Go 1.15 and verify checksum against value from https://golang.org/dl/
+# then install to /usr/local
+RUN cd /tmp \
+&& curl -O https://dl.google.com/go/go1.15.8.linux-amd64.tar.gz \
+&& CKSUM=$(sha256sum go1.15.8.linux-amd64.tar.gz | awk '{print $1}') \
+&& [ ${CKSUM} = "d3379c32a90fdf9382166f8f48034c459a8cc433730bc9476d39d9082c94583b" ] \
+&& tar xf go1.15.8.linux-amd64.tar.gz \
+&& rm go1.15.8.linux-amd64.tar.gz \
+&& chown -R root:root ./go \
+&& mv go /usr/local
+
+ENV PATH="${PATH}:/usr/local/go/bin"
 
 RUN mkdir -p /var/maven/.m2/ && chmod -R 777 /var/maven/
 ENV MAVEN_CONFIG=/var/maven/.m2

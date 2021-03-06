@@ -24,7 +24,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/io"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 type Logout struct {

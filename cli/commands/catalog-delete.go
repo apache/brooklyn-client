@@ -19,17 +19,17 @@
 package commands
 
 import (
-	"github.com/apache/brooklyn-client/cli/net"
-	"github.com/apache/brooklyn-client/cli/command_metadata"
-	"github.com/urfave/cli"
-	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/apache/brooklyn-client/cli/error_handler"
-	"strings"
-	"github.com/apache/brooklyn-client/cli/api/catalog"
 	"errors"
+	"github.com/apache/brooklyn-client/cli/api/catalog"
+	"github.com/apache/brooklyn-client/cli/command_metadata"
+	"github.com/apache/brooklyn-client/cli/error_handler"
+	"github.com/apache/brooklyn-client/cli/net"
+	"github.com/apache/brooklyn-client/cli/scope"
+	"github.com/urfave/cli/v2"
+	"strings"
 )
 
-type DeleteCatalogItem  struct {
+type DeleteCatalogItem struct {
 	network *net.Network
 }
 
@@ -54,12 +54,12 @@ func (cmd *DeleteCatalogItem) Run(scope scope.Scope, c *cli.Context) {
 		error_handler.ErrorExit(err)
 	}
 	args := c.Args()
-	if len(args) != 2 {
+	if args.Len() != 2 {
 		error_handler.ErrorExit(c.App.Name + " " + deleteCommandUsage)
 	}
 	itemVersion := strings.Split(args.Get(1), ":")
 	if len(itemVersion) != 2 {
-		error_handler.ErrorExit(c.App.Name +  " " + deleteCommandUsage)
+		error_handler.ErrorExit(c.App.Name + " " + deleteCommandUsage)
 	}
 	itemId := itemVersion[0]
 	version := itemVersion[1]
@@ -69,9 +69,9 @@ func (cmd *DeleteCatalogItem) Run(scope scope.Scope, c *cli.Context) {
 	}
 }
 
-func (cmd *DeleteCatalogItem) deleteItem(c *cli.Context, itemId string, version string) (error){
+func (cmd *DeleteCatalogItem) deleteItem(c *cli.Context, itemId string, version string) error {
 	catalogType, err := GetCatalogType(c)
-	if  err != nil {
+	if err != nil {
 		return err
 	}
 	switch catalogType {
@@ -87,22 +87,22 @@ func (cmd *DeleteCatalogItem) deleteItem(c *cli.Context, itemId string, version 
 	return errors.New("Unknown type " + c.Args().First())
 }
 
-func (cmd *DeleteCatalogItem) deleteApplication(c *cli.Context, itemId string, version string) (error){
+func (cmd *DeleteCatalogItem) deleteApplication(c *cli.Context, itemId string, version string) error {
 	_, err := catalog.DeleteApplicationWithVersion(cmd.network, itemId, version)
 	return err
 }
 
-func (cmd *DeleteCatalogItem) deleteEntity(c *cli.Context, itemId string, version string) (error){
+func (cmd *DeleteCatalogItem) deleteEntity(c *cli.Context, itemId string, version string) error {
 	_, err := catalog.DeleteEntityWithVersion(cmd.network, itemId, version)
 	return err
 }
 
-func (cmd *DeleteCatalogItem) deletePolicy(c *cli.Context, itemId string, version string) (error){
+func (cmd *DeleteCatalogItem) deletePolicy(c *cli.Context, itemId string, version string) error {
 	_, err := catalog.DeletePolicyWithVersion(cmd.network, itemId, version)
 	return err
 }
 
-func (cmd *DeleteCatalogItem) deleteLocation(c *cli.Context, itemId string, version string) (error){
+func (cmd *DeleteCatalogItem) deleteLocation(c *cli.Context, itemId string, version string) error {
 	_, err := catalog.DeleteLocationWithVersion(cmd.network, itemId, version)
 	return err
 }
