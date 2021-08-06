@@ -51,6 +51,7 @@ import org.apache.brooklyn.util.collections.MutableMap;
 import org.apache.brooklyn.util.exceptions.Exceptions;
 import org.apache.brooklyn.util.javalang.AggregateClassLoader;
 import org.apache.brooklyn.util.net.Urls;
+import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -348,13 +349,16 @@ public class BrooklynApi {
         if (response instanceof ClientResponse) {
             ClientResponse<?> clientResponse = (ClientResponse<?>) response;
             return clientResponse.getEntity(type);
-        } else if (response instanceof BuiltResponse) {
-            // Handle BuiltResponsePreservingError turning objects into Strings
-            if (response.getEntity() instanceof String && !type.equals(String.class)) {
-                failSomeErrors(response, type, true);
-                return new Gson().fromJson(response.getEntity().toString(), type);
-            }
         }
+
+        Object entity = response.getEntity();
+
+        // Handle JSON BuiltResponsePreservingError turning objects into Strings
+        if (entity instanceof String && !type.isAssignableFrom(String.class)) {
+            failSomeErrors(response, type, true);
+            return new Gson().fromJson(response.getEntity().toString(), type);
+        }
+
         // Last-gasp attempt.
         return type.cast(response.getEntity());
     }
