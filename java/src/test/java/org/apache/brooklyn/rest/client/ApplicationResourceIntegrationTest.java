@@ -166,7 +166,7 @@ public class ApplicationResourceIntegrationTest {
         Asserts.succeedsEventually(ImmutableMap.of("timeout", timeout), new Runnable() {
             @Override
             public void run() {
-                Object status = api.getSensorApi().get(app, entity, "service.state", false);
+                Object status = api.getSensorApi().get(app, entity, "service.state", false, false);
                 assertTrue(state.toString().equalsIgnoreCase(status.toString()), "status="+status);
             }});
     }
