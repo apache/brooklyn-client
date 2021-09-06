@@ -138,11 +138,10 @@ USAGE:
    {{.Name}} {{if .Flags}}[global options] {{end}}command{{if .Flags}} [command options]{{end}} [arguments...]
 
 VERSION:
-   {{.Version}}{{if or .Author .Email}}
+   {{.Version}}{{if .Authors}}
 
-AUTHOR:{{if .Author}}
-  {{.Author}}{{if .Email}} - <{{.Email}}>{{end}}{{else}}
-  {{.Email}}{{end}}{{end}}
+AUTHOR:
+  {{.Authors}}{{end}}
 
 
 SCOPES:
@@ -161,7 +160,7 @@ COMMANDS:
    releases.  If not otherwise specified, "SCOPE" below means application or entity scope.  If an entity scope is not
    specified, the application entity is used as a default.
 
-   {{range .Commands}}{{.Name}}{{with .ShortName}}, {{.}}{{end}}{{ "\t" }}{{.Description}}
+   {{range .Commands}}{{.Name}}{{ "\t" }}{{.Description}}
    {{end}}{{if .Flags}}
 GLOBAL OPTIONS:
    {{range .Flags}}{{.}}
