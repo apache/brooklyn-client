@@ -184,6 +184,19 @@ See golang.org for more information, or run maven with '-Dno-go-client' to skip.
   exit 1
 fi
 
+if !(( "$GO_V" >= 16 )) ; then
+  export GO386=387
+  echo "Updated GO386=$GO386 due GO version compatibilityq"
+  cat 1>&2 << \
+--MARKER--
+
+ERROR: Incompatible Go language version: $GO_VERSION
+
+Go version 1.16 doesn't support GO386=387
+
+--MARKER--
+fi
+
 mkdir -p $outdir
 
 # Disable use of C code modules (causes problems with cross-compiling)
