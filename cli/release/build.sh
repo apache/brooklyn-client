@@ -186,15 +186,7 @@ fi
 
 if !(( "$GO_V" >= 16 )) ; then
   export GO386=387
-  echo "Updated GO386=$GO386 due GO version compatibilityq"
-  cat 1>&2 << \
---MARKER--
-
-ERROR: Incompatible Go language version: $GO_VERSION
-
-Go version 1.16 doesn't support GO386=387
-
---MARKER--
+  echo "Updated to use GO386=$GO386 due GO version compatibility as $GO_GO_VERSION does not support 'softfloat'"
 fi
 
 mkdir -p $outdir
