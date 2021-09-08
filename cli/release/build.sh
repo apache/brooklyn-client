@@ -16,7 +16,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
+echo "Setting up go environment"
+go env -w GO111MODULE=auto
+export GO386='softfloat'
+echo "GO386=$GO386"
 #
 # Constants
 #
