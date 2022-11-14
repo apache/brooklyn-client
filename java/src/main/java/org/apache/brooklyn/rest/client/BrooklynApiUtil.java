@@ -140,7 +140,8 @@ public class BrooklynApiUtil {
      */
     public static String getTaskResult(BrooklynApi api, String taskId) {
         checkNotNull(taskId, "taskId");
-        TaskSummary summary = api.getActivityApi().get(taskId);
+        Response response = api.getActivityApi().get(taskId, null, null);
+        TaskSummary summary = BrooklynApi.getEntity(response, TaskSummary.class);
         return summary == null || summary.getResult() == null ? "unknown" : summary.getResult().toString();
     }
 
