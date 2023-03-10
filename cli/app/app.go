@@ -52,10 +52,10 @@ func NewApp(baseName string, cmdRunner command_runner.Runner, metadatas ...comma
 	app.Version = appConfig.Version
 
 	app.Flags = []cli.Flag{
-		&cli.BoolFlag{
-			Name:  "skipSslChecks",
-			Usage: "Skip verification of server's certificate chain and hostname (for use with self-signed certs)",
-		},
+		//&cli.BoolFlag{
+		//	Name:  "skipSslChecks",
+		//	Usage: "Skip verification of server's certificate chain and hostname (for use with self-signed certs)",
+		//},
 		&cli.StringFlag{
 			Name:    "json",
 			Aliases: []string{"j"},
