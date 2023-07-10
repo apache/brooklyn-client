@@ -19,7 +19,7 @@
 FROM --platform=linux/amd64 maven:3.9.0-amazoncorretto-8
 
 # Install necessary binaries to build brooklyn-client
-RUN yum update && yum install -y git-core
+RUN yum -y update && yum install -y git-core
 
 # Download Go 1.15 and verify checksum against value from https://golang.org/dl/
 # then install to /usr/local
