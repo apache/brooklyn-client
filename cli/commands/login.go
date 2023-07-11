@@ -24,6 +24,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"syscall"
@@ -34,7 +35,7 @@ import (
 	"github.com/apache/brooklyn-client/cli/io"
 	"github.com/apache/brooklyn-client/cli/net"
 	"github.com/apache/brooklyn-client/cli/scope"
-	"github.com/urfave/cli/v2"
+	cli "github.com/urfave/cli/v2"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -174,6 +175,20 @@ func (cmd *Login) Run(scope scope.Scope, c *cli.Context) {
 	if nil != err {
 		if code == http.StatusUnauthorized {
 			err = errors.New("Unauthorized")
+		}
+		switch err.(type) {
+		case *url.Error:
+			urlError := err.(*url.Error)
+			if !cmd.network.SkipSslChecks && strings.Contains(fmt.Sprint(urlError.Err), "x509") {
+				message := fmt.Sprint(urlError) + `
+
+This may be due to a missing or untrusted certificate in use by the server.
+If this is expected and you trust the connection to the server, you can ignore this with:
+
+    br login --skipSslChecks ` + cmd.network.BrooklynUrl + `
+`
+				err = errors.New(message)
+			}
 		}
 		error_handler.ErrorExit(err)
 	}
