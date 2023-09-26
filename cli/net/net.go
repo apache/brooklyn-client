@@ -20,34 +20,36 @@ package net
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
 	"path/filepath"
-	"crypto/tls"
-	"net"
-	"time"
 	"strings"
+	"time"
 )
 
 type Network struct {
 	BrooklynUrl       string
 	SkipSslChecks     bool
 	Verbosity         string
-	Credentials         string
+	Credentials       string
 	AuthorizationType string
 }
 
+const unauthorizedMessageHeader = "X_brooklyn_unauthorized_message"
+
 func (net *Network) NewRequest(method, path string, body io.Reader) *http.Request {
 	req, _ := http.NewRequest(method, net.BrooklynUrl+path, body)
-	req.Header.Set("Authorization", net.AuthorizationType + " " + net.Credentials)
+	req.Header.Set("Authorization", net.AuthorizationType+" "+net.Credentials)
 	return req
 }
 
@@ -85,7 +87,7 @@ func makeError(resp *http.Response, code int, body []byte) error {
 
 func makeSimpleError(code int, body []byte) error {
 	theError := HttpError{
-		Code:    code,
+		Code: code,
 	}
 	return makeErrorBody(theError, body)
 }
@@ -107,7 +109,7 @@ func (net *Network) SendRequest(req *http.Request) ([]byte, error) {
 	return body, err
 }
 
-func (net *Network) makeClient() (*http.Client) {
+func (net *Network) makeClient() *http.Client {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: net.SkipSslChecks},
 	}
@@ -137,7 +139,7 @@ func debug(verbosity string, supp func(b bool) ([]byte, error)) {
 
 func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, error) {
 	client := net.makeClient()
-	debug(net.Verbosity, func (includeBody bool) ([]byte, error) {
+	debug(net.Verbosity, func(includeBody bool) ([]byte, error) {
 		var authHeader = req.Header.Get("Authorization")
 		if authHeader != "" {
 			req.Header.Set("Authorization", "******")
@@ -149,7 +151,7 @@ func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, er
 		return data, err
 	})
 	resp, err := client.Do(req)
-	debug(net.Verbosity, func (includeBody bool) ([]byte, error) {
+	debug(net.Verbosity, func(includeBody bool) ([]byte, error) {
 		return httputil.DumpResponse(resp, includeBody)
 	})
 	if err != nil {
@@ -161,6 +163,9 @@ func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, er
 		body = nil
 	}
 	if failed := unsuccessful(resp.StatusCode); failed {
+		if messages, arePresent := resp.Header[unauthorizedMessageHeader]; arePresent {
+			fmt.Printf("%s\n", strings.Join(messages, ", "))
+		}
 		return nil, resp.StatusCode, makeError(resp, resp.StatusCode, body)
 	}
 	return body, resp.StatusCode, err
@@ -169,7 +174,7 @@ func (net *Network) SendRequestGetStatusCode(req *http.Request) ([]byte, int, er
 const httpSuccessSeriesFrom = 200
 const httpSuccessSeriesTo = 300
 
-func unsuccessful(code int) (bool) {
+func unsuccessful(code int) bool {
 	return code < httpSuccessSeriesFrom || httpSuccessSeriesTo <= code
 }
 
@@ -238,7 +243,7 @@ func (net *Network) openResource(resourceUrl string) (io.ReadCloser, error) {
 }
 
 func (net *Network) openFileResource(url *url.URL) (io.ReadCloser, error) {
-	filePath := url.Path;
+	filePath := url.Path
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
 		return nil, err
@@ -252,12 +257,11 @@ func (net *Network) openHttpResource(resourceUrl string) (io.ReadCloser, error) 
 	if err != nil {
 		return nil, err
 	}
-	if failed := unsuccessful(resp.StatusCode) ; failed {
+	if failed := unsuccessful(resp.StatusCode); failed {
 		return nil, errors.New("Error retrieving " + resourceUrl + " (" + resp.Status + ")")
 	}
 	return resp.Body, nil
 }
-
 
 func VerifyLoginURL(network *Network) error {
 	url, err := url.Parse(network.BrooklynUrl)
@@ -279,7 +283,7 @@ func VerifyLoginURL(network *Network) error {
 			network.BrooklynUrl = url.String()
 		}
 	}
-	_, err = net.DialTimeout("tcp", url.Host, time.Duration(30) * time.Second)
+	_, err = net.DialTimeout("tcp", url.Host, time.Duration(30)*time.Second)
 	if err != nil {
 		return errors.New("Could not connect to " + url.Host)
 	}
