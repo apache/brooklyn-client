@@ -24,7 +24,7 @@ echo "GO386=$GO386"
 # Constants
 #
 OSVALUES="darwin freebsd linux netbsd openbsd windows"
-ARCHVALUES="386 amd64"
+ARCHVALUES="386 amd64 arm arm64"
 BRNAME="br"
 PROJECT_PACKAGE="github.com/apache/brooklyn-client/cli"
 CLI_EXECUTABLE="${PROJECT_PACKAGE}/${BRNAME}"
