@@ -70,7 +70,7 @@ consisting of a zip file containing all the binaries.  This artifact can be refe
     <artifactId>brooklyn-client-cli</artifactId>
     <classifier>bin</classifier>
     <type>zip</type>
-    <version>1.1.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
+    <version>1.2.0-SNAPSHOT</version>  <!-- BROOKLYN_VERSION -->
 </project>
 
 ```
