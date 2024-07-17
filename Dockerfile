@@ -24,11 +24,11 @@ RUN yum -y update && yum install -y git-core
 # Download Go 1.15 and verify checksum against value from https://golang.org/dl/
 # then install to /usr/local
 RUN cd /tmp \
-&& curl -O https://dl.google.com/go/go1.20.2.linux-amd64.tar.gz \
-&& CKSUM=$(sha256sum go1.20.2.linux-amd64.tar.gz | awk '{print $1}') \
-&& [ ${CKSUM} = "4eaea32f59cde4dc635fbc42161031d13e1c780b87097f4b4234cfce671f1768" ] \
-&& tar xf go1.20.2.linux-amd64.tar.gz \
-&& rm go1.20.2.linux-amd64.tar.gz \
+&& curl -O https://dl.google.com/go/go1.22.5.linux-amd64.tar.gz \
+&& CKSUM=$(sha256sum go1.22.5.linux-amd64.tar.gz | awk '{print $1}') \
+&& [ ${CKSUM} = "904b924d435eaea086515bc63235b192ea441bd8c9b198c507e85009e6e4c7f0" ] \
+&& tar xf go1.22.5.linux-amd64.tar.gz \
+&& rm go1.22.5.linux-amd64.tar.gz \
 && chown -R root:root ./go \
 && mv go /usr/local
 

@@ -84,7 +84,6 @@ try `release/build.sh -h` for more information.
 
 See instructions in the included [Runtime README](release/files/README) file.
 
-
 ----
 Licensed to the Apache Software Foundation (ASF) under one 
 or more contributor license agreements.  See the NOTICE file
